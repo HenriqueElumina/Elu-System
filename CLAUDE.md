@@ -209,10 +209,9 @@ Etapas da Onda 0, uma por vez, cada uma com minha aprovação antes da seguinte:
 > produção em 2026-09-22 — ver
 > `docs/decisions/0006-comercial-lead-proposta.md`. Provedor de
 > assinatura digital decidido: **ZapSign**. Etapa 1.4 (Contrato a partir
-> da proposta) com código pronto em 2026-09-23 — ver
+> da proposta) concluída e validada em produção em 2026-09-23 — ver
 > `docs/decisions/0007-contrato-a-partir-da-proposta.md`. Handoff
 > completo dividido em 1.5 (assinatura ZapSign) e 1.6 (handoff parcial:
 > criar projeto), porque Tarefas e Financeiro ainda não existem.
-> **Aguardando o dono do produto aplicar
-> `supabase/migrations/20260923090000_contrato_a_partir_da_proposta.sql`
-> no Supabase real e testar o fluxo antes de seguir para a Etapa 1.5.**
+> **Aguardando definição/aprovação da Etapa 1.5 (integração de assinatura
+> digital com ZapSign).**

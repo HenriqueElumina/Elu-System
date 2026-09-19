@@ -161,7 +161,7 @@ Aprovada e validada em produção em 2026-09-21 pelo dono do produto.
 
 Aprovada e validada em produção em 2026-09-22 pelo dono do produto.
 
-### Etapa 1.4 — Contrato a partir da proposta (código pronto em 2026-09-23, aguardando aplicar migration + teste)
+### Etapa 1.4 — Contrato a partir da proposta (concluída em 2026-09-23)
 
 - Provedor de assinatura digital decidido: **ZapSign** (integração de
   verdade é a Etapa 1.5).
@@ -182,7 +182,11 @@ Aprovada e validada em produção em 2026-09-22 pelo dono do produto.
 - Testes: Vitest (schema de datas do contrato, 36 testes no total),
   Playwright (`/contratos` exige login), migration testada localmente
   (fluxo completo, bloqueio de contrato duplicado, revert/reaplicação).
-- **Pendente:** dono do produto aplicar
-  `20260923090000_contrato_a_partir_da_proposta.sql` no Supabase real e
-  testar o fluxo (vincular cliente ao lead, gerar contrato a partir de
-  proposta aceita).
+- Migration aplicada pelo dono do produto no Supabase real e fluxo
+  validado em produção (cliente vinculado ao lead, contrato gerado a
+  partir de proposta aceita).
+
+Aprovada e validada em produção em 2026-09-23 pelo dono do produto.
+
+**Aguardando definição/aprovação da Etapa 1.5 (integração de assinatura
+digital com ZapSign).**
