@@ -185,8 +185,13 @@ Etapas da Onda 0, uma por vez, cada uma com minha aprovação antes da seguinte:
 
 **Comece pela Etapa 0.1. Não avance para a 0.2 até eu aprovar.**
 
-> **Status (2026-09-19):** Etapas 0.1 e 0.2 concluídas. Stack e decisões de
-> negócio em `docs/decisions/0001-stack-e-decisoes-fundacionais.md`. Mapa de
-> módulos, perfis de acesso e recorte do MVP da Onda 1 em `docs/00-visao.md`.
-> Detalhes e pendências em `docs/progress.md` e `docs/backlog.md`.
-> **Aguardando aprovação para iniciar a Etapa 0.3 (modelo de dados inicial).**
+> **Status (2026-09-19):** Etapas 0.1, 0.2 e 0.3 concluídas. Stack e
+> decisões de negócio em
+> `docs/decisions/0001-stack-e-decisoes-fundacionais.md`. Mapa de módulos,
+> perfis de acesso e recorte do MVP da Onda 1 em `docs/00-visao.md`. Schema
+> SQL da Fundação (com RLS) em
+> `supabase/migrations/20260919120000_foundation_schema.sql`, ERD em
+> `docs/01-modelo-de-dados.md`, decisões de modelagem em
+> `docs/decisions/0002-modelagem-fundacao.md`. Detalhes e pendências em
+> `docs/progress.md` e `docs/backlog.md`.
+> **Aguardando aprovação para iniciar a Etapa 0.4 (scaffold).**

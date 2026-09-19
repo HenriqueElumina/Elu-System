@@ -11,3 +11,7 @@
 - **Assinatura digital:** decidir entre Clicksign e ZapSign ao construir o
   módulo Comercial (Onda 1). O MVP já prevê assinatura digital integrada
   (decisão da Etapa 0.2), falta escolher o provedor.
+- **RLS de `client`/`project` para `colaborador`:** hoje o colaborador lê
+  todos os clientes e projetos; quando o módulo de Tarefas (Onda 2) trouxer
+  alocação em projeto, ajustar as policies para filtrar só o que ele está
+  alocado.

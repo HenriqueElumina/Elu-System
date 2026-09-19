@@ -26,8 +26,25 @@ Aprovada em 2026-09-19 pelo dono do produto.
 - Pendências novas registradas em `docs/backlog.md`: escolha entre
   Clicksign/ZapSign.
 
-**Aguardando aprovação para avançar à Etapa 0.3 — Modelo de dados inicial.**
+Aprovada em 2026-09-19 pelo dono do produto.
 
-### Etapa 0.3 — Modelo de dados inicial (não iniciada)
+### Etapa 0.3 — Modelo de dados inicial (concluída em 2026-09-19)
+
+- Schema SQL da Fundação em
+  `supabase/migrations/20260919120000_foundation_schema.sql`: `profile`,
+  `employee`, `client`, `client_contact`, `service`, `contract`,
+  `contract_item`, `project`, `audit_log`. RLS habilitado em todas as
+  tabelas.
+- ERD e descrição de cada tabela em `docs/01-modelo-de-dados.md`.
+- Decisões de modelagem em `docs/decisions/0002-modelagem-fundacao.md`
+  (perfil como enum, `employee` separado de `profile`, `contract_item`,
+  inclusão do `audit_log`, simplificação de RLS para `colaborador`).
+- Migration testada localmente com PostgreSQL 16: aplica limpo, inserts de
+  caminho feliz funcionam, constraints rejeitam dado inválido, RLS bloqueia
+  sem sessão autenticada, reverte e reaplica sem erro.
+- Pendência nova registrada no backlog: ajustar RLS de `client`/`project`
+  quando o módulo de Tarefas trouxer alocação em projeto.
+
+**Aguardando aprovação para avançar à Etapa 0.4 — Scaffold.**
 
 ### Etapa 0.4 — Scaffold (não iniciada)
