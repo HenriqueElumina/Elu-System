@@ -184,3 +184,8 @@ Etapas da Onda 0, uma por vez, cada uma com minha aprovação antes da seguinte:
 - **Etapa 0.4 — Scaffold:** criar o projeto base (auth, perfis, layout, migrations, testes, CI) e uma primeira tela funcional protegida por perfil.
 
 **Comece pela Etapa 0.1. Não avance para a 0.2 até eu aprovar.**
+
+> **Status (2026-09-19):** Etapa 0.1 concluída — stack e decisões de negócio
+> confirmadas em `docs/decisions/0001-stack-e-decisoes-fundacionais.md`.
+> Detalhes em `docs/progress.md`. Pendência de NFSe em `docs/backlog.md`.
+> **Aguardando aprovação para iniciar a Etapa 0.2.**
