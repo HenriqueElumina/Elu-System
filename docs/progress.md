@@ -73,6 +73,11 @@ Aprovada em 2026-09-19 pelo dono do produto.
   ação do dono do produto), shadcn/ui, Playwright no CI, tipos gerados do
   Supabase, fluxo de convite de colaborador.
 
-**Onda 0 (planejamento) concluída.** Próximo passo: dono do produto aplica
-as migrations no Supabase e testa o login; depois disso, decidir e aprovar
-a primeira etapa da Onda 1.
+**Onda 0 (planejamento) concluída e validada em produção em 2026-09-19:**
+dono do produto aplicou as duas migrations no Supabase real, criou o
+usuário sócio e publicou no Vercel. Login funcionando, perfil `socio`
+lido corretamente, tela `/clientes` protegida carregando (vazia, como
+esperado — nenhum cliente cadastrado ainda).
+
+Aguardando aprovação explícita do dono do produto para iniciar a **Onda 1
+— Fundação e receita**, e definição de qual etapa começa primeiro.

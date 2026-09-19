@@ -197,5 +197,7 @@ Etapas da Onda 0, uma por vez, cada uma com minha aprovação antes da seguinte:
 > (login + tela `/clientes` protegida por perfil), decisões em
 > `docs/decisions/0003-scaffold.md`, passo a passo de setup no `README.md`.
 > Detalhes e pendências em `docs/progress.md` e `docs/backlog.md`.
-> **Aguardando o dono do produto aplicar as migrations no Supabase real e
-> testar o login (README.md); depois disso, aprovar o início da Onda 1.**
+> Validado em produção: login, perfil `socio` e a tela `/clientes`
+> funcionando (Vercel + Supabase reais).
+> **Aguardando aprovação explícita do dono do produto para iniciar a Onda
+> 1 (Fundação e receita) e a definição de qual etapa começa primeiro.**
