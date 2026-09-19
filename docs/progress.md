@@ -161,5 +161,28 @@ Aprovada e validada em produção em 2026-09-21 pelo dono do produto.
 
 Aprovada e validada em produção em 2026-09-22 pelo dono do produto.
 
-**Aguardando definição/aprovação da Etapa 1.4 (contrato + assinatura
-digital + handoff automático).**
+### Etapa 1.4 — Contrato a partir da proposta (código pronto em 2026-09-23, aguardando aplicar migration + teste)
+
+- Provedor de assinatura digital decidido: **ZapSign** (integração de
+  verdade é a Etapa 1.5).
+- Etapa 1.4 dividida em 3 (1.4 nesta etapa, 1.5 assinatura, 1.6 handoff
+  parcial) porque o handoff completo depende dos módulos de Tarefas e
+  Financeiro, que ainda não existem.
+- Tela do lead ganhou "vincular cliente" (escolher um já cadastrado ou
+  cadastrar um novo, que volta linkado automaticamente).
+- Na proposta aceita, botão "Gerar contrato" (pede data de início/fim,
+  copia os itens da proposta — preço e tipo de cobrança do catálogo).
+  Impede gerar dois contratos da mesma proposta.
+- Telas `/contratos` (lista) e `/contratos/[id]` (detalhe, com status
+  editável manualmente por enquanto).
+- Migration
+  `supabase/migrations/20260923090000_contrato_a_partir_da_proposta.sql`:
+  `contract.proposal_id` (rastreabilidade, único por proposta).
+- Decisões em `docs/decisions/0007-contrato-a-partir-da-proposta.md`.
+- Testes: Vitest (schema de datas do contrato, 36 testes no total),
+  Playwright (`/contratos` exige login), migration testada localmente
+  (fluxo completo, bloqueio de contrato duplicado, revert/reaplicação).
+- **Pendente:** dono do produto aplicar
+  `20260923090000_contrato_a_partir_da_proposta.sql` no Supabase real e
+  testar o fluxo (vincular cliente ao lead, gerar contrato a partir de
+  proposta aceita).

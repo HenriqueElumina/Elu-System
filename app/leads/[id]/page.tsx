@@ -5,6 +5,7 @@ import { centsToReais } from "@/lib/validation/service";
 import { PROPOSAL_STATUS_LABELS } from "@/lib/validation/proposal";
 import { EditarLeadClient } from "./editar-lead-client";
 import { StatusChanger } from "./status-changer";
+import { LinkClient } from "./link-client";
 
 export default async function LeadDetailPage({
   params,
@@ -35,13 +36,22 @@ export default async function LeadDetailPage({
 
   const { data: lead } = await supabase
     .from("lead")
-    .select("*")
+    .select("*, client:client_id(id, legal_name)")
     .eq("id", id)
     .single();
 
   if (!lead) notFound();
 
   const canManage = profile.role === "socio" || profile.role === "gestor";
+
+  const { data: availableClients } =
+    canManage && !lead.client_id
+      ? await supabase
+          .from("client")
+          .select("id, legal_name")
+          .is("deleted_at", null)
+          .order("legal_name")
+      : { data: null };
 
   const { data: proposals } = await supabase
     .from("proposal")
@@ -57,7 +67,7 @@ export default async function LeadDetailPage({
       <h1 className="mb-6 mt-2 text-xl font-semibold">{lead.company_name}</h1>
 
       {canManage && (
-        <div className="mb-8">
+        <div className="mb-4">
           <StatusChanger
             leadId={lead.id}
             currentStatus={lead.status}
@@ -65,6 +75,24 @@ export default async function LeadDetailPage({
           />
         </div>
       )}
+
+      <div className="mb-8">
+        {lead.client ? (
+          <p className="text-sm text-gray-600">
+            Cliente vinculado:{" "}
+            <Link
+              href={`/clientes/${lead.client.id}`}
+              className="font-medium text-gray-900 hover:underline"
+            >
+              {lead.client.legal_name}
+            </Link>
+          </p>
+        ) : (
+          canManage && (
+            <LinkClient leadId={lead.id} clients={availableClients ?? []} />
+          )
+        )}
+      </div>
 
       <section className="mb-10">
         {canManage ? (

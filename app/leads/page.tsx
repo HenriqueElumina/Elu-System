@@ -38,9 +38,14 @@ export default async function LeadsPage() {
       <div className="mb-8 flex items-center justify-between">
         <div>
           <h1 className="text-xl font-semibold">Comercial — Leads</h1>
-          <Link href="/clientes" className="text-sm text-gray-500 hover:underline">
-            ← Clientes
-          </Link>
+          <div className="flex gap-3 text-sm text-gray-500">
+            <Link href="/clientes" className="hover:underline">
+              ← Clientes
+            </Link>
+            <Link href="/contratos" className="hover:underline">
+              Contratos →
+            </Link>
+          </div>
         </div>
         {canManage && (
           <Link

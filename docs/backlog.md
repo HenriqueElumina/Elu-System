@@ -8,9 +8,8 @@
   Onda 2).
 - **MLabs:** avaliar se o módulo Conteúdo (social) vai integrar via API com o
   MLabs ou substituí-lo, quando chegarmos na Onda 2/3.
-- **Assinatura digital:** decidir entre Clicksign e ZapSign ao construir o
-  módulo Comercial (Onda 1). O MVP já prevê assinatura digital integrada
-  (decisão da Etapa 0.2), falta escolher o provedor.
+- **Assinatura digital — integração ZapSign:** provedor decidido (ZapSign,
+  ver ADR 0007). Falta construir a integração de verdade — Etapa 1.5.
 - **RLS de `client`/`project` para `colaborador`:** hoje o colaborador lê
   todos os clientes e projetos; quando o módulo de Tarefas (Onda 2) trouxer
   alocação em projeto, ajustar as policies para filtrar só o que ele está
@@ -43,3 +42,10 @@
 - **Sub-checklist por etapa do playbook:** hoje cada `playbook_step` é um
   item só (nome/descrição/SLA). Se precisarmos de múltiplos itens de
   checklist dentro de uma etapa, é uma tabela nova. Ver ADR 0005.
+- **Handoff automático completo:** tarefas de onboarding a partir do
+  playbook e cobrança recorrente automática ao assinar o contrato
+  dependem dos módulos de Tarefas (Onda 2) e Financeiro (Onda 1, ainda
+  não construído). Ver ADR 0007.
+- **Criação manual de contrato:** hoje só dá pra gerar contrato a partir
+  de uma proposta aceita. Um fluxo de contrato manual (sem proposta) fica
+  de fora por enquanto — ninguém pediu ainda.

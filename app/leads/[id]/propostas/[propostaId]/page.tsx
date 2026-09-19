@@ -4,6 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import { centsToReais } from "@/lib/validation/service";
 import { EditarPropostaClient } from "./editar-proposta-client";
 import { PropostaStatusChanger } from "./proposta-status-changer";
+import { GerarContrato } from "./gerar-contrato";
 
 export default async function PropostaDetailPage({
   params,
@@ -47,6 +48,18 @@ export default async function PropostaDetailPage({
     .select("id, name, base_price_cents")
     .order("name");
 
+  const { data: lead } = await supabase
+    .from("lead")
+    .select("client_id")
+    .eq("id", leadId)
+    .single();
+
+  const { data: existingContract } = await supabase
+    .from("contract")
+    .select("id")
+    .eq("proposal_id", propostaId)
+    .maybeSingle();
+
   return (
     <main className="mx-auto max-w-2xl px-4 py-12">
       <Link
@@ -58,12 +71,31 @@ export default async function PropostaDetailPage({
       <h1 className="mb-6 mt-2 text-xl font-semibold">Proposta</h1>
 
       {canManage && (
-        <div className="mb-8">
+        <div className="mb-4">
           <PropostaStatusChanger
             leadId={leadId}
             proposalId={proposal.id}
             currentStatus={proposal.status}
           />
+        </div>
+      )}
+
+      {canManage && proposal.status === "accepted" && (
+        <div className="mb-8">
+          {existingContract ? (
+            <Link
+              href={`/contratos/${existingContract.id}`}
+              className="text-sm font-medium text-gray-900 hover:underline"
+            >
+              Ver contrato gerado →
+            </Link>
+          ) : lead?.client_id ? (
+            <GerarContrato proposalId={proposal.id} />
+          ) : (
+            <p className="text-sm text-amber-800">
+              Vincule um cliente ao lead antes de gerar o contrato.
+            </p>
+          )}
         </div>
       )}
 

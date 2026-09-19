@@ -46,6 +46,7 @@ type ActionResult =
 
 export async function createClientDirect(
   input: ClientIntakeInput,
+  leadId?: string,
 ): Promise<ActionResult> {
   const parsed = clientIntakeSchema.safeParse(input);
   if (!parsed.success) {
@@ -135,6 +136,33 @@ export async function createClientDirect(
     }
   }
 
+  if (leadId) {
+    const { error: leadError } = await supabase
+      .from("lead")
+      .update({ client_id: client.id })
+      .eq("id", leadId);
+    if (leadError) {
+      return { ok: false, message: leadError.message };
+    }
+    revalidatePath(`/leads/${leadId}`);
+  }
+
   revalidatePath("/clientes");
   return { ok: true, clientId: client.id as string };
+}
+
+export async function linkLeadToClient(
+  leadId: string,
+  clientId: string,
+): Promise<{ ok: true } | { ok: false; message: string }> {
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from("lead")
+    .update({ client_id: clientId })
+    .eq("id", leadId);
+
+  if (error) return { ok: false, message: error.message };
+
+  revalidatePath(`/leads/${leadId}`);
+  return { ok: true };
 }
