@@ -5,7 +5,13 @@ import { useRouter } from "next/navigation";
 import { STANDARD_EXTRAS } from "@/lib/validation/contract";
 import { sendContractForSignature } from "../actions";
 
-export function EnviarAssinatura({ contractId }: { contractId: string }) {
+export function EnviarAssinatura({
+  contractId,
+  isResend = false,
+}: {
+  contractId: string;
+  isResend?: boolean;
+}) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [included, setIncluded] = useState<Set<string>>(new Set());
@@ -40,7 +46,9 @@ export function EnviarAssinatura({ contractId }: { contractId: string }) {
   if (signUrls) {
     return (
       <div className="rounded-md border border-green-200 bg-green-50 p-4 text-sm text-green-900">
-        <p className="font-medium">Enviado para assinatura no ZapSign.</p>
+        <p className="font-medium">
+          {isResend ? "Reenviado" : "Enviado"} para assinatura no ZapSign.
+        </p>
         <ul className="mt-2 space-y-1">
           {signUrls.map((s) => (
             <li key={s.url}>
@@ -61,13 +69,19 @@ export function EnviarAssinatura({ contractId }: { contractId: string }) {
         onClick={() => setOpen(true)}
         className="rounded-md bg-gray-900 px-3 py-1.5 text-sm font-medium text-white"
       >
-        Enviar para assinatura
+        {isResend ? "Reenviar para assinatura" : "Enviar para assinatura"}
       </button>
     );
   }
 
   return (
     <div className="space-y-3 rounded-md border border-gray-200 p-3">
+      {isResend && (
+        <p className="text-sm text-amber-700">
+          Isso cria um novo envio no ZapSign (o anterior continua pendente por
+          lá, mas o sistema passa a acompanhar este novo).
+        </p>
+      )}
       <p className="text-sm font-medium">
         Algum destes itens já está incluso no escopo deste contrato? (eles somem
         da lista de &ldquo;não inclusos&rdquo; do PDF)
@@ -91,7 +105,7 @@ export function EnviarAssinatura({ contractId }: { contractId: string }) {
           disabled={busy}
           className="rounded-md bg-gray-900 px-3 py-1.5 text-sm font-medium text-white disabled:opacity-50"
         >
-          {busy ? "Enviando..." : "Confirmar e enviar"}
+          {busy ? "Enviando..." : isResend ? "Confirmar e reenviar" : "Confirmar e enviar"}
         </button>
         <button
           onClick={() => setOpen(false)}

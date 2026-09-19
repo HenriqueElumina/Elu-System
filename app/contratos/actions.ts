@@ -108,7 +108,7 @@ export async function sendContractForSignature(
   const { data: contract, error: contractError } = await supabase
     .from("contract")
     .select(
-      "id, start_date, status, external_signature_id, client:client_id(legal_name, trade_name, document_type, document, address_street, address_number, address_complement, address_neighborhood, address_city, address_state, address_zip_code, phone, id), contract_item(quantity, unit_price_cents, billing_type, service:service_id(name, description))",
+      "id, start_date, status, external_signature_id, signature_status, client:client_id(legal_name, trade_name, document_type, document, address_street, address_number, address_complement, address_neighborhood, address_city, address_state, address_zip_code, phone, id), contract_item(quantity, unit_price_cents, billing_type, service:service_id(name, description))",
     )
     .eq("id", contractId)
     .single();
@@ -116,8 +116,8 @@ export async function sendContractForSignature(
   if (contractError || !contract) {
     return { ok: false, message: "Contrato não encontrado." };
   }
-  if (contract.external_signature_id) {
-    return { ok: false, message: "Este contrato já foi enviado para assinatura." };
+  if (contract.signature_status === "signed") {
+    return { ok: false, message: "Este contrato já foi assinado." };
   }
 
   const client = contract.client as unknown as {

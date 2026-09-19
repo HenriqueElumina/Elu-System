@@ -79,8 +79,8 @@ export default async function ContratoDetailPage({
       )}
 
       {canManage && (
-        <div className="mb-8">
-          {contract.external_signature_id ? (
+        <div className="mb-8 space-y-3">
+          {contract.external_signature_id && (
             <p className="text-sm text-gray-600">
               Enviado para assinatura (ZapSign) — status:{" "}
               <span className="font-medium">
@@ -89,8 +89,12 @@ export default async function ContratoDetailPage({
               {contract.signed_at &&
                 ` — assinado em ${new Date(contract.signed_at).toLocaleDateString("pt-BR")}`}
             </p>
-          ) : (
-            <EnviarAssinatura contractId={contract.id} />
+          )}
+          {contract.signature_status !== "signed" && (
+            <EnviarAssinatura
+              contractId={contract.id}
+              isResend={Boolean(contract.external_signature_id)}
+            />
           )}
         </div>
       )}

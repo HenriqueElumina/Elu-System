@@ -52,10 +52,6 @@ export function ContratoStatusChanger({
           ))}
         </select>
       </label>
-      <p className="text-sm text-gray-500">
-        Assinatura digital ainda é manual por enquanto — a integração com
-        ZapSign é a próxima etapa.
-      </p>
       {error && <p className="text-sm text-red-600">{error}</p>}
     </div>
   );
