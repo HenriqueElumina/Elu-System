@@ -1,0 +1,103 @@
+# ADR 0008 — Assinatura digital com ZapSign
+
+**Status:** Aceito — 2026-09-24
+
+## Contexto
+
+Etapa 1.5 da Onda 1: enviar o contrato gerado (Etapa 1.4) para assinatura
+digital via ZapSign, e receber a confirmação de assinatura por webhook. O
+dono do produto forneceu um contrato real já assinado (cliente Baazar
+Decor) como modelo — usado só nesta conversa para extrair a estrutura;
+nenhum dado desse cliente específico foi commitado no repositório.
+
+## Decisões
+
+### Geração de PDF em código, com o texto jurídico fornecido pelo dono do produto
+
+O PDF é montado com `@react-pdf/renderer` (roda em Node, sem precisar de
+navegador headless — mais simples no Vercel que Puppeteer). Todo o texto
+das cláusulas em `lib/pdf/contract-document.tsx` veio do modelo real que
+a Elumina já usa — eu não escrevi nenhuma cláusula nova, só genericizei
+(tirei os dados do cliente Baazar Decor) e ajustei a cláusula de
+pagamento conforme as regras que o dono do produto confirmou (abaixo).
+
+### Regra de pagamento e vigência confirmada com o dono do produto
+
+- **Vigência = data do contrato.** A data que aparece no rodapé do PDF
+  ("Bragança Paulista-SP, [data]") é a mesma data de início da vigência
+  — não a data em que alguém clica em "Enviar para assinatura" depois.
+- **Pagamento recorrente mensal único** (sem mais o parcelamento em 2x
+  do modelo original). Primeiro vencimento = 1 mês após a data do
+  contrato (`lib/validation/contract.ts`, `addOneMonth`); os seguintes
+  vencem todo mês nessa mesma data.
+- **Multa de rescisão (40%) e reajuste anual (IPCA)** ficam fixos no
+  texto do contrato, iguais em todo contrato.
+- **"Não inclusos no projeto"**: lista fixa de 4 itens padrão
+  (`STANDARD_EXTRAS`), mas quem gera o envio pra assinatura marca quais
+  já estão dentro do escopo deste contrato específico — esses saem da
+  lista no PDF. Guardado em `contract.included_extras`.
+- **"Inclusos no projeto"**: vem da `description` de cada serviço
+  vendido no contrato (campo que já existe no catálogo desde a Etapa
+  1.2) — sem campo de texto livre por contrato.
+
+### Detalhes técnicos do ZapSign confirmados via busca (fetch direto bloqueado)
+
+O acesso direto a `docs.zapsign.com.br` está bloqueado pela política de
+rede desta sessão; os detalhes abaixo vieram de busca (`WebSearch`), não
+de leitura direta da documentação — vale conferir na conta real do
+ZapSign se algo não bater:
+
+- Criar documento: `POST https://api.zapsign.com.br/api/v1/docs/`,
+  `Authorization: Bearer <token>`, corpo `{ name, base64_pdf, signers }`.
+- Consultar documento: `GET /api/v1/docs/{token}/` → `status`
+  (`"pending"`, `"signed"`, ...).
+- Webhook: sem HMAC — a autenticidade vem de um cabeçalho customizado
+  que a gente define ao cadastrar o webhook no ZapSign (aqui,
+  `X-Elu-Webhook-Secret`), comparado com `timingSafeEqual` no nosso
+  endpoint.
+- O evento `doc_signed` dispara **por signatário**, não só quando todos
+  assinaram — por isso o webhook sempre reconsulta `GET /docs/{token}/`
+  pra saber o status real do documento, em vez de confiar no corpo do
+  webhook.
+
+### Webhook sem sessão: função `SECURITY DEFINER`, mesmo padrão da Etapa 1.1
+
+O webhook do ZapSign chega sem usuário logado no Supabase. Em vez de
+usar a `service_role` key (que ignoraria toda RLS), criei
+`update_contract_signature_status`, uma função de banco que só localiza
+o contrato pelo `external_signature_id` e atualiza status/`signed_at`
+— chamada via `anon`, sem expor a tabela `contract` diretamente. Mesmo
+padrão do `get_client_invite`/`submit_client_invite` (ADR 0004).
+
+### Auditoria: primeiro uso de verdade da `audit_log`
+
+A função grava uma entrada em `audit_log` a cada atualização de status
+de assinatura — primeira vez que essa tabela (criada na Etapa 0.3, mas
+nunca populada) é efetivamente usada. Ações manuais de troca de status
+de contrato (`updateContractStatus`, Etapa 1.4) ainda não geram log —
+registrado em `docs/backlog.md`.
+
+## Validação
+
+- Migration testada localmente: sócio/gestor com sessão normal não
+  conseguem chamar a função como se fossem o webhook; `anon` não lê
+  `contract`/`audit_log` diretamente; a função atualiza o contrato e
+  grava o log; token desconhecido dá erro; revert e reaplicação, limpos.
+- PDF de exemplo gerado e conferido visualmente (mandado pro dono do
+  produto antes de integrar de verdade) — 4 páginas, todas as cláusulas,
+  campos dinâmicos corretos, item marcado como "já incluso" some da
+  lista de não inclusos.
+- `npm run lint`, `typecheck`, `test` (49 testes) e `build` sem erro.
+
+## Consequências
+
+- **Não testado ainda contra a API real do ZapSign** (criação de
+  documento, webhook de verdade) — isso é o próximo passo, com o dono do
+  produto testando como próprio cliente/signatário antes de usar com
+  cliente real.
+- Depois do deploy, falta registrar o webhook no ZapSign (URL de
+  produção + o valor de `ZAPSIGN_WEBHOOK_SECRET`) — vou fazer isso via
+  API assim que tivermos a URL do Vercel.
+- Detalhes da API do ZapSign vieram de busca, não da documentação
+  oficial lida diretamente — se algo não bater no teste real, é o
+  primeiro lugar a conferir.

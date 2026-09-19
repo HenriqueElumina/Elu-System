@@ -8,8 +8,13 @@
   Onda 2).
 - **MLabs:** avaliar se o módulo Conteúdo (social) vai integrar via API com o
   MLabs ou substituí-lo, quando chegarmos na Onda 2/3.
-- **Assinatura digital — integração ZapSign:** provedor decidido (ZapSign,
-  ver ADR 0007). Falta construir a integração de verdade — Etapa 1.5.
+- **Assinatura digital — ZapSign em produção:** integração construída
+  (ADR 0008), mas ainda não testada contra a API real (só localmente e
+  com dados de exemplo). Falta: testar geração/envio de verdade, registrar
+  o webhook no painel do ZapSign com a URL de produção, e conferir se os
+  detalhes da API (endpoints, campos) batem com a documentação oficial —
+  usei busca porque o fetch direto da documentação estava bloqueado
+  nesta sessão.
 - **RLS de `client`/`project` para `colaborador`:** hoje o colaborador lê
   todos os clientes e projetos; quando o módulo de Tarefas (Onda 2) trouxer
   alocação em projeto, ajustar as policies para filtrar só o que ele está
@@ -49,3 +54,6 @@
 - **Criação manual de contrato:** hoje só dá pra gerar contrato a partir
   de uma proposta aceita. Um fluxo de contrato manual (sem proposta) fica
   de fora por enquanto — ninguém pediu ainda.
+- **Auditoria de troca manual de status do contrato:** `updateContractStatus`
+  (Etapa 1.4) ainda não grava em `audit_log`; só a atualização via webhook
+  do ZapSign (Etapa 1.5) grava. Padronizar quando fizer sentido.

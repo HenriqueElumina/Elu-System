@@ -3,6 +3,7 @@ import { notFound, redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { centsToReais } from "@/lib/validation/service";
 import { ContratoStatusChanger } from "./contrato-status-changer";
+import { EnviarAssinatura } from "./enviar-assinatura";
 
 export default async function ContratoDetailPage({
   params,
@@ -34,7 +35,7 @@ export default async function ContratoDetailPage({
   const { data: contract } = await supabase
     .from("contract")
     .select(
-      "id, status, start_date, end_date, client:client_id(id, legal_name), contract_item(id, quantity, unit_price_cents, service:service_id(name))",
+      "id, status, start_date, end_date, signature_provider, signature_status, signed_at, external_signature_id, client:client_id(id, legal_name), contract_item(id, quantity, unit_price_cents, service:service_id(name))",
     )
     .eq("id", id)
     .single();
@@ -69,11 +70,28 @@ export default async function ContratoDetailPage({
       </h1>
 
       {canManage && (
-        <div className="mb-8">
+        <div className="mb-4">
           <ContratoStatusChanger
             contractId={contract.id}
             currentStatus={contract.status}
           />
+        </div>
+      )}
+
+      {canManage && (
+        <div className="mb-8">
+          {contract.external_signature_id ? (
+            <p className="text-sm text-gray-600">
+              Enviado para assinatura (ZapSign) — status:{" "}
+              <span className="font-medium">
+                {contract.signature_status ?? "pending"}
+              </span>
+              {contract.signed_at &&
+                ` — assinado em ${new Date(contract.signed_at).toLocaleDateString("pt-BR")}`}
+            </p>
+          ) : (
+            <EnviarAssinatura contractId={contract.id} />
+          )}
         </div>
       )}
 

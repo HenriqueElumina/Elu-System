@@ -188,5 +188,34 @@ Aprovada e validada em produção em 2026-09-22 pelo dono do produto.
 
 Aprovada e validada em produção em 2026-09-23 pelo dono do produto.
 
-**Aguardando definição/aprovação da Etapa 1.5 (integração de assinatura
-digital com ZapSign).**
+### Etapa 1.5 — Assinatura digital com ZapSign (código pronto em 2026-09-24, aguardando aplicar migration + teste real)
+
+- Dono do produto forneceu o modelo de contrato real da Elumina (usado só
+  na conversa, sem dados de cliente indo pro repositório). Regras
+  confirmadas: vigência = data do contrato; pagamento recorrente mensal
+  único (1ª parcela 1 mês após a data do contrato); multa/reajuste fixos;
+  "inclusos" vem da descrição do serviço no catálogo; "não inclusos" é
+  lista fixa, com checklist na hora do envio pra assinatura marcando o
+  que já está incluso nesse contrato específico.
+- PDF gerado em código (`@react-pdf/renderer`, `lib/pdf/`) — texto
+  jurídico fornecido pelo dono do produto, só genericizado + campos
+  dinâmicos.
+- Integração com a API do ZapSign (`lib/zapsign/`): criar documento,
+  consultar status. Botão "Enviar para assinatura" no contrato.
+- Webhook em `/api/webhooks/zapsign`: verifica segredo compartilhado
+  (cabeçalho customizado, sem HMAC — não é o modelo do ZapSign),
+  reconsulta o documento na API (o evento dispara por signatário, não só
+  quando todos assinaram) e atualiza o contrato via função
+  `SECURITY DEFINER` (mesmo padrão da Etapa 1.1 — sem `service_role` key).
+- Primeira vez que `audit_log` (criada na Etapa 0.3) é efetivamente usada:
+  grava um registro a cada atualização de status de assinatura.
+- Migration
+  `supabase/migrations/20260924090000_assinatura_digital_zapsign.sql`.
+- Decisões em `docs/decisions/0008-assinatura-digital-zapsign.md`.
+- Testes: Vitest (49 testes no total — inclui geração de PDF válido e
+  autenticação do webhook), migration testada localmente (RLS, função,
+  auditoria, revert/reaplicação).
+- **Pendências:** aplicar a migration no Supabase real; testar o envio de
+  verdade pro ZapSign (dono do produto como signatário de teste antes de
+  usar com cliente real); registrar o webhook no painel do ZapSign com a
+  URL de produção + `ZAPSIGN_WEBHOOK_SECRET`, depois do deploy.
