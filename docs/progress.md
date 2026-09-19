@@ -114,7 +114,7 @@ Aguardando aprovação explícita do dono do produto para iniciar a **Onda 1
 
 Aprovada e validada em produção em 2026-09-20 pelo dono do produto.
 
-### Etapa 1.2 — Catálogo de serviços e playbooks (código pronto em 2026-09-21, aguardando aplicar migration + teste)
+### Etapa 1.2 — Catálogo de serviços e playbooks (concluída em 2026-09-21)
 
 - Telas `/servicos` (lista), `/servicos/novo` e `/servicos/[id]` (editar
   serviço + montar playbook: adicionar/editar/remover/reordenar etapas).
@@ -131,6 +131,9 @@ Aprovada e validada em produção em 2026-09-20 pelo dono do produto.
 - Testes: Vitest (validação de serviço/etapa e conversão reais↔centavos,
   26 testes no total), Playwright (`/servicos` exige login), migration
   testada localmente (sócio escreve, gestor só lê, revert/reaplicação).
-- **Pendente:** dono do produto aplicar
-  `20260921090000_service_catalog.sql` no Supabase real e testar o fluxo
-  (cadastrar serviço, montar playbook).
+- Migration aplicada pelo dono do produto no Supabase real e fluxo
+  validado em produção (cadastro de serviço + montagem do playbook).
+
+Aprovada e validada em produção em 2026-09-21 pelo dono do produto.
+
+**Aguardando definição/aprovação da próxima etapa da Onda 1.**
