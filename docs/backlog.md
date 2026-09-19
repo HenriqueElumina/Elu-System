@@ -8,13 +8,19 @@
   Onda 2).
 - **MLabs:** avaliar se o módulo Conteúdo (social) vai integrar via API com o
   MLabs ou substituí-lo, quando chegarmos na Onda 2/3.
-- **Assinatura digital — ZapSign em produção:** integração construída
-  (ADR 0008), mas ainda não testada contra a API real (só localmente e
-  com dados de exemplo). Falta: testar geração/envio de verdade, registrar
-  o webhook no painel do ZapSign com a URL de produção, e conferir se os
-  detalhes da API (endpoints, campos) batem com a documentação oficial —
-  usei busca porque o fetch direto da documentação estava bloqueado
-  nesta sessão.
+- **Assinatura digital — ZapSign, trocar sandbox por produção:** o teste de
+  ponta a ponta (Etapa 1.5) foi feito no ambiente sandbox do ZapSign (sem
+  validade jurídica). Antes de usar com cliente real: trocar
+  `ZAPSIGN_API_TOKEN`/`ZAPSIGN_API_BASE_URL` no Vercel pro valor de
+  produção que já foi configurado antes, contratar o plano de API de
+  produção do ZapSign (exige pagamento — decisão do dono do produto,
+  hoje ainda sandbox), e recadastrar o webhook na conta de produção (o
+  cadastro de sandbox não vale lá).
+- **ZapSign — link de download expira:** `original_file`/`signed_file` que
+  a API devolve expiram em 60min, por isso não são guardados no banco — o
+  botão "Baixar PDF assinado" busca um link novo a cada clique. Se um dia
+  precisarmos de um link permanente (ex.: portal do cliente, Onda 3), aí
+  sim vale considerar baixar o PDF assinado pra um storage nosso.
 - **RLS de `client`/`project` para `colaborador`:** hoje o colaborador lê
   todos os clientes e projetos; quando o módulo de Tarefas (Onda 2) trouxer
   alocação em projeto, ajustar as policies para filtrar só o que ele está

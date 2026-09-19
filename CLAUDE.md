@@ -211,12 +211,20 @@ Etapas da Onda 0, uma por vez, cada uma com minha aprovação antes da seguinte:
 > assinatura digital decidido: **ZapSign**. Etapa 1.4 (Contrato a partir
 > da proposta) concluída e validada em produção em 2026-09-23 — ver
 > `docs/decisions/0007-contrato-a-partir-da-proposta.md`. Etapa 1.5
-> (Assinatura digital ZapSign) com código pronto em 2026-09-24 — ver
-> `docs/decisions/0008-assinatura-digital-zapsign.md`. Etapa 1.6 (handoff
-> parcial: criar projeto ao assinar) ainda não começada — Tarefas e
-> Financeiro seguem não construídos, então handoff completo (tarefas +
-> cobrança) continua fora de alcance.
-> **Aguardando o dono do produto aplicar
-> `supabase/migrations/20260924090000_assinatura_digital_zapsign.sql` no
-> Supabase real e testar o envio de verdade pro ZapSign (como próprio
-> signatário de teste) antes de usar com cliente real.**
+> (Assinatura digital ZapSign) concluída e validada em produção
+> (ambiente **sandbox** do ZapSign, sem validade jurídica) em
+> 2026-09-24 — teste de ponta a ponta feito pelo dono do produto como
+> signatário dos dois lados: PDF gerado, enviado, e-mail recebido,
+> assinado, status atualizado sozinho via webhook, PDF assinado baixado
+> pela tela. Três bugs só visíveis contra a API real foram achados e
+> corrigidos nesse teste — ver
+> `docs/decisions/0008-assinatura-digital-zapsign.md`. **Pendência antes
+> de usar com cliente de verdade:** trocar as credenciais do ZapSign no
+> Vercel de sandbox pra produção e recadastrar o webhook lá (contratar
+> plano de API de produção é decisão do dono do produto, registrada no
+> backlog). Etapa 1.6 (handoff parcial: criar projeto ao assinar) ainda
+> não começada — Tarefas e Financeiro seguem não construídos, então
+> handoff completo (tarefas + cobrança) continua fora de alcance.
+>
+> **Pausado em 2026-09-24 a pedido do dono do produto — retomar daqui
+> quando ele voltar.**

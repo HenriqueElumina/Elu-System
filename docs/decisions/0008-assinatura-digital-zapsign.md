@@ -1,6 +1,6 @@
 # ADR 0008 — Assinatura digital com ZapSign
 
-**Status:** Aceito — 2026-09-24
+**Status:** Aceito e validado em produção (ambiente sandbox do ZapSign) — 2026-09-24
 
 ## Contexto
 
@@ -90,16 +90,43 @@ registrado em `docs/backlog.md`.
   campos dinâmicos corretos, item marcado como "já incluso" some da
   lista de não inclusos.
 - `npm run lint`, `typecheck`, `test` (49 testes) e `build` sem erro.
+- **Teste de ponta a ponta em produção, ambiente sandbox do ZapSign**
+  (gratuito, sem validade jurídica): contrato gerado, enviado, e-mail
+  recebido, ambos os signatários assinaram, status atualizou sozinho no
+  sistema via webhook, PDF assinado baixado pela tela. Ver os 3 bugs
+  achados e corrigidos abaixo.
+
+## Bugs achados no teste real (não visíveis testando local/offline)
+
+Confirma o aviso que eu já tinha deixado registrado: os detalhes da API
+do ZapSign vieram de busca, não da documentação oficial lida direto
+(bloqueada nesta sessão) — três coisas não bateram:
+
+1. **`send_automatic_email` é campo de cada signatário, não do
+   documento.** Minha primeira tentativa colocou no nível raiz do corpo
+   da requisição (`POST /api/v1/docs/`); o ZapSign aceitou sem erro, mas
+   não mandou e-mail nenhum. Corrigido movendo o campo pra dentro de cada
+   objeto em `signers`.
+2. **O middleware de sessão (`proxy.ts`) barrava a própria rota do
+   webhook.** Ele exigia usuário logado em toda rota, inclusive
+   `/api/webhooks/...`; sem sessão, redirecionava a chamada do ZapSign
+   pra `/login`, que não aceita POST — resultado: 405 no histórico de
+   webhooks do ZapSign (visível lá, não nos nossos logs). Corrigido
+   excluindo `/api` do matcher do middleware — rotas de API cuidam da
+   própria autenticação (aqui, o segredo na URL).
+3. **A tela real de "Criar webhook" do ZapSign não tem campo de
+   cabeçalho customizado** (só "Tipo de evento" e "URL do webhook") —
+   diferente do que a busca sugeria. Corrigido antes do teste, movendo o
+   segredo pra própria URL (`/api/webhooks/zapsign/[secret]`).
 
 ## Consequências
 
-- **Não testado ainda contra a API real do ZapSign** (criação de
-  documento, webhook de verdade) — isso é o próximo passo, com o dono do
-  produto testando como próprio cliente/signatário antes de usar com
-  cliente real.
-- Depois do deploy, falta registrar o webhook no ZapSign (URL de
-  produção + o valor de `ZAPSIGN_WEBHOOK_SECRET`) — vou fazer isso via
-  API assim que tivermos a URL do Vercel.
+- Testado só contra o **ambiente sandbox** do ZapSign (sem validade
+  jurídica) — trocar pra produção fica pro backlog, quando o dono do
+  produto decidir contratar o plano de API de produção.
+- Os links de PDF que a API devolve (`original_file`/`signed_file`)
+  expiram em 60min — por isso não são guardados no banco; o botão
+  "Baixar PDF assinado" busca um link novo a cada clique.
 - Detalhes da API do ZapSign vieram de busca, não da documentação
-  oficial lida diretamente — se algo não bater no teste real, é o
-  primeiro lugar a conferir.
+  oficial lida diretamente — já rendeu os 3 bugs acima; se aparecer mais
+  alguma coisa esquisita, é o primeiro lugar a suspeitar.

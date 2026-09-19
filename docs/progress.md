@@ -188,7 +188,7 @@ Aprovada e validada em produção em 2026-09-22 pelo dono do produto.
 
 Aprovada e validada em produção em 2026-09-23 pelo dono do produto.
 
-### Etapa 1.5 — Assinatura digital com ZapSign (código pronto em 2026-09-24, aguardando aplicar migration + teste real)
+### Etapa 1.5 — Assinatura digital com ZapSign (concluída e validada em produção — sandbox — em 2026-09-24)
 
 - Dono do produto forneceu o modelo de contrato real da Elumina (usado só
   na conversa, sem dados de cliente indo pro repositório). Regras
@@ -201,21 +201,39 @@ Aprovada e validada em produção em 2026-09-23 pelo dono do produto.
   jurídico fornecido pelo dono do produto, só genericizado + campos
   dinâmicos.
 - Integração com a API do ZapSign (`lib/zapsign/`): criar documento,
-  consultar status. Botão "Enviar para assinatura" no contrato.
-- Webhook em `/api/webhooks/zapsign`: verifica segredo compartilhado
-  (cabeçalho customizado, sem HMAC — não é o modelo do ZapSign),
-  reconsulta o documento na API (o evento dispara por signatário, não só
-  quando todos assinaram) e atualiza o contrato via função
-  `SECURITY DEFINER` (mesmo padrão da Etapa 1.1 — sem `service_role` key).
+  consultar status. Botão "Enviar para assinatura" no contrato, com opção
+  de reenviar (cria novo documento no ZapSign) enquanto não assinado.
+- Webhook em `/api/webhooks/zapsign/[secret]`: segredo compartilhado vai
+  na própria URL (a tela de cadastro de webhook do ZapSign não tem campo
+  de cabeçalho customizado), comparado com `timingSafeEqual`. Reconsulta
+  o documento na API (o evento dispara por signatário, não só quando
+  todos assinaram) e atualiza o contrato via função `SECURITY DEFINER`
+  (mesmo padrão da Etapa 1.1 — sem `service_role` key).
+- Botão "Baixar PDF assinado" quando o contrato está assinado — busca um
+  link novo no ZapSign a cada clique (o link que a API devolve expira em
+  60min, não dá pra guardar).
 - Primeira vez que `audit_log` (criada na Etapa 0.3) é efetivamente usada:
   grava um registro a cada atualização de status de assinatura.
 - Migration
   `supabase/migrations/20260924090000_assinatura_digital_zapsign.sql`.
-- Decisões em `docs/decisions/0008-assinatura-digital-zapsign.md`.
+- Decisões em `docs/decisions/0008-assinatura-digital-zapsign.md`
+  (inclui os bugs achados e corrigidos no teste real, abaixo).
 - Testes: Vitest (49 testes no total — inclui geração de PDF válido e
   autenticação do webhook), migration testada localmente (RLS, função,
   auditoria, revert/reaplicação).
-- **Pendências:** aplicar a migration no Supabase real; testar o envio de
-  verdade pro ZapSign (dono do produto como signatário de teste antes de
-  usar com cliente real); registrar o webhook no painel do ZapSign com a
-  URL de produção + `ZAPSIGN_WEBHOOK_SECRET`, depois do deploy.
+- **Teste de ponta a ponta feito em produção, ambiente sandbox do ZapSign**
+  (dono do produto como signatário dos dois lados) — três bugs achados e
+  corrigidos ao longo do teste, todos só visíveis contra a API real:
+  1. `send_automatic_email` precisa vir dentro de cada signatário, não no
+     nível do documento — sem isso o ZapSign não mandava e-mail nenhum.
+  2. O middleware de sessão (`proxy.ts`) barrava a própria rota do
+     webhook — sem usuário logado, redirecionava a chamada do ZapSign pra
+     `/login`, que devolve 405 pra POST. `/api` foi excluído do
+     middleware (rotas de API cuidam da própria autenticação).
+  3. A tela de cadastro de webhook do ZapSign não tem campo de cabeçalho
+     customizado — o segredo foi movido pra própria URL.
+- **Pendência para quando for usar com cliente real:** trocar
+  `ZAPSIGN_API_TOKEN`/`ZAPSIGN_API_BASE_URL` no Vercel de volta pra
+  produção (hoje configurado pra sandbox, sem validade jurídica) e
+  recadastrar o webhook na conta de produção do ZapSign — registrado no
+  backlog.
