@@ -7,6 +7,10 @@ export async function proxy(request: NextRequest) {
 
 export const config = {
   matcher: [
-    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
+    // /api fica de fora: rotas de API (como o webhook do ZapSign) cuidam da
+    // própria autenticação e não têm sessão de usuário do Supabase -- esse
+    // middleware redirecionava chamadas sem sessão pra /login, que não
+    // aceita POST, e isso virava 405 pro ZapSign.
+    "/((?!_next/static|_next/image|favicon.ico|api/|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
   ],
 };
