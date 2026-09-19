@@ -185,13 +185,17 @@ Etapas da Onda 0, uma por vez, cada uma com minha aprovação antes da seguinte:
 
 **Comece pela Etapa 0.1. Não avance para a 0.2 até eu aprovar.**
 
-> **Status (2026-09-19):** Etapas 0.1, 0.2 e 0.3 concluídas. Stack e
-> decisões de negócio em
+> **Status (2026-09-19):** Onda 0 (planejamento) concluída — Etapas 0.1,
+> 0.2, 0.3 e 0.4 feitas. Stack e decisões de negócio em
 > `docs/decisions/0001-stack-e-decisoes-fundacionais.md`. Mapa de módulos,
 > perfis de acesso e recorte do MVP da Onda 1 em `docs/00-visao.md`. Schema
 > SQL da Fundação (com RLS) em
-> `supabase/migrations/20260919120000_foundation_schema.sql`, ERD em
+> `supabase/migrations/20260919120000_foundation_schema.sql` e
+> `..._profile_signup_trigger_and_grants.sql`, ERD em
 > `docs/01-modelo-de-dados.md`, decisões de modelagem em
-> `docs/decisions/0002-modelagem-fundacao.md`. Detalhes e pendências em
-> `docs/progress.md` e `docs/backlog.md`.
-> **Aguardando aprovação para iniciar a Etapa 0.4 (scaffold).**
+> `docs/decisions/0002-modelagem-fundacao.md`. Projeto Next.js scaffolded
+> (login + tela `/clientes` protegida por perfil), decisões em
+> `docs/decisions/0003-scaffold.md`, passo a passo de setup no `README.md`.
+> Detalhes e pendências em `docs/progress.md` e `docs/backlog.md`.
+> **Aguardando o dono do produto aplicar as migrations no Supabase real e
+> testar o login (README.md); depois disso, aprovar o início da Onda 1.**

@@ -45,6 +45,34 @@ Aprovada em 2026-09-19 pelo dono do produto.
 - Pendência nova registrada no backlog: ajustar RLS de `client`/`project`
   quando o módulo de Tarefas trouxer alocação em projeto.
 
-**Aguardando aprovação para avançar à Etapa 0.4 — Scaffold.**
+Aprovada em 2026-09-19 pelo dono do produto.
 
-### Etapa 0.4 — Scaffold (não iniciada)
+### Etapa 0.4 — Scaffold (concluída em 2026-09-19)
+
+- Projeto Next.js 16 (App Router) + TypeScript + Tailwind criado na raiz
+  do repositório. Ver decisões técnicas em
+  `docs/decisions/0003-scaffold.md`.
+- Supabase: cliente browser/server (`lib/supabase/`), `proxy.ts`
+  protegendo rotas (exige sessão), login (`/login`) e primeira tela
+  funcional protegida por perfil (`/clientes`, lista a tabela `client`).
+- Nova migration
+  `supabase/migrations/20260919130000_profile_signup_trigger_and_grants.sql`:
+  cria `profile` automaticamente no signup + grants explícitos para
+  `authenticated` (projeto Supabase criado com exposição automática de
+  tabelas desligada).
+- Testes: Vitest (7 testes, regra de perfil interno) e Playwright (login
+  redireciona quem não está autenticado; credencial inválida mostra erro
+  chamando a API real do Supabase). CI no GitHub Actions rodando
+  lint/typecheck/testes unitários a cada push.
+- Projeto Supabase real criado pelo dono do produto (`elu-system`, região
+  São Paulo). `.env.local` configurado com as credenciais.
+- Validado localmente: lint, typecheck, testes unitários, build de
+  produção e testes e2e todos passando.
+- Pendências novas registradas no backlog: aplicar as migrations no
+  Supabase real e criar o primeiro usuário (passo a passo no `README.md`,
+  ação do dono do produto), shadcn/ui, Playwright no CI, tipos gerados do
+  Supabase, fluxo de convite de colaborador.
+
+**Onda 0 (planejamento) concluída.** Próximo passo: dono do produto aplica
+as migrations no Supabase e testa o login; depois disso, decidir e aprovar
+a primeira etapa da Onda 1.

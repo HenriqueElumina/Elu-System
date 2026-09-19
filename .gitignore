@@ -1,0 +1,22 @@
+# Next.js
+/.next/
+/out/
+
+# Dependências
+/node_modules/
+
+# Ambiente (segredos)
+.env
+.env.local
+.env.*.local
+
+# Testes
+/coverage/
+/playwright-report/
+/test-results/
+/blob-report/
+
+# Build/misc
+.DS_Store
+*.tsbuildinfo
+next-env.d.ts
