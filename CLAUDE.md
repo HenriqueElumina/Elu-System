@@ -205,5 +205,9 @@ Etapas da Onda 0, uma por vez, cada uma com minha aprovação antes da seguinte:
 > `docs/decisions/0004-cadastro-clientes-onboarding.md`. Etapa 1.2
 > (Catálogo de serviços e playbooks) concluída e validada em produção em
 > 2026-09-21 — ver `docs/decisions/0005-catalogo-servicos-playbooks.md`.
-> **Aguardando definição/aprovação da próxima etapa da Onda 1** (sugestão:
-> Comercial — módulo 3).
+> Etapa 1.3 (Comercial: leads e propostas) com código pronto em
+> 2026-09-22 — ver `docs/decisions/0006-comercial-lead-proposta.md`.
+> **Aguardando o dono do produto aplicar
+> `supabase/migrations/20260922090000_comercial_lead_proposta.sql` no
+> Supabase real e testar o fluxo antes de definir a próxima etapa (1.4:
+> contrato + assinatura digital + handoff automático).**

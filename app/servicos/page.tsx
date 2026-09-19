@@ -41,9 +41,14 @@ export default async function ServicosPage() {
       <div className="mb-8 flex items-center justify-between">
         <div>
           <h1 className="text-xl font-semibold">Catálogo de serviços</h1>
-          <Link href="/clientes" className="text-sm text-gray-500 hover:underline">
-            ← Clientes
-          </Link>
+          <div className="flex gap-3 text-sm text-gray-500">
+            <Link href="/clientes" className="hover:underline">
+              ← Clientes
+            </Link>
+            <Link href="/leads" className="hover:underline">
+              Comercial →
+            </Link>
+          </div>
         </div>
         {profile.role === "socio" && (
           <Link

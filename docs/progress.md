@@ -136,4 +136,25 @@ Aprovada e validada em produção em 2026-09-20 pelo dono do produto.
 
 Aprovada e validada em produção em 2026-09-21 pelo dono do produto.
 
-**Aguardando definição/aprovação da próxima etapa da Onda 1.**
+### Etapa 1.3 — Comercial: leads e propostas (código pronto em 2026-09-22, aguardando aplicar migration + teste)
+
+- Telas `/leads` (funil por estágio), `/leads/novo`, `/leads/[id]`
+  (editar lead, mudar estágio com motivo de perda, lista de propostas) e
+  `/leads/[id]/propostas/novo` + `/propostas/[id]` (montar/editar
+  proposta escolhendo serviços do catálogo, preço editável, total
+  calculado, mudar status da proposta).
+- Só `socio`/`gestor` criam/editam; `financeiro` só lê (mesmo padrão de
+  `contract`).
+- Novas tabelas `lead`, `proposal`, `proposal_item`.
+- Migration
+  `supabase/migrations/20260922090000_comercial_lead_proposta.sql`.
+- Decisões em `docs/decisions/0006-comercial-lead-proposta.md`.
+- Testes: Vitest (schemas de lead/proposta, 32 testes no total),
+  Playwright (`/leads` exige login), migration testada localmente
+  (sócio/gestor escrevem, colaborador só lê, revert/reaplicação).
+- **Fora do escopo desta etapa** (fica pra Etapa 1.4): contrato,
+  assinatura digital, handoff automático (criar cliente/projeto/tarefas a
+  partir do playbook, cobrança recorrente).
+- **Pendente:** dono do produto aplicar
+  `20260922090000_comercial_lead_proposta.sql` no Supabase real e testar
+  o fluxo (criar lead, criar proposta, mudar estágios).
