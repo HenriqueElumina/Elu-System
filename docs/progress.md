@@ -136,7 +136,7 @@ Aprovada e validada em produção em 2026-09-20 pelo dono do produto.
 
 Aprovada e validada em produção em 2026-09-21 pelo dono do produto.
 
-### Etapa 1.3 — Comercial: leads e propostas (código pronto em 2026-09-22, aguardando aplicar migration + teste)
+### Etapa 1.3 — Comercial: leads e propostas (concluída em 2026-09-22)
 
 - Telas `/leads` (funil por estágio), `/leads/novo`, `/leads/[id]`
   (editar lead, mudar estágio com motivo de perda, lista de propostas) e
@@ -155,6 +155,11 @@ Aprovada e validada em produção em 2026-09-21 pelo dono do produto.
 - **Fora do escopo desta etapa** (fica pra Etapa 1.4): contrato,
   assinatura digital, handoff automático (criar cliente/projeto/tarefas a
   partir do playbook, cobrança recorrente).
-- **Pendente:** dono do produto aplicar
-  `20260922090000_comercial_lead_proposta.sql` no Supabase real e testar
-  o fluxo (criar lead, criar proposta, mudar estágios).
+- Migration aplicada pelo dono do produto no Supabase real e fluxo
+  validado em produção (lead criado, proposta montada, estágios
+  mudados).
+
+Aprovada e validada em produção em 2026-09-22 pelo dono do produto.
+
+**Aguardando definição/aprovação da Etapa 1.4 (contrato + assinatura
+digital + handoff automático).**
