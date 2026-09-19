@@ -84,7 +84,7 @@ Aguardando aprovação explícita do dono do produto para iniciar a **Onda 1
 
 ## Onda 1 — Fundação e receita
 
-### Etapa 1.1 — Cadastro de clientes (código pronto em 2026-09-20, aguardando aplicar migration + teste)
+### Etapa 1.1 — Cadastro de clientes (concluída em 2026-09-20)
 
 - Fluxo de onboarding: sócio/gestor gera um link único (`/clientes` →
   "Gerar link para novo cliente"), cliente preenche em `/convite/[token]`
@@ -108,6 +108,10 @@ Aguardando aprovação explícita do dono do produto para iniciar a **Onda 1
   testes no total no projeto), Playwright (link de convite inválido mostra
   erro sem exigir login), migration testada localmente (fluxo completo do
   convite, RLS, revert e reaplicação).
-- **Pendente:** dono do produto aplicar
-  `20260920090000_client_onboarding.sql` no Supabase real e testar o fluxo
-  ponta a ponta (gerar link → preencher → aprovar).
+- Migration aplicada pelo dono do produto no Supabase real e fluxo
+  validado em produção: link gerado, formulário preenchido (dados +
+  redes sociais), cliente aprovado.
+
+Aprovada e validada em produção em 2026-09-20 pelo dono do produto.
+
+**Aguardando definição/aprovação da próxima etapa da Onda 1.**
