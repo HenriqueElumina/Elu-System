@@ -3,6 +3,8 @@
 // Detalhes de API confirmados em docs.zapsign.com.br (setembro/2026):
 // POST /api/v1/docs/ cria documento a partir de PDF em base64;
 // GET /api/v1/docs/{token}/ consulta status ("pending" | "signed" | ...).
+// send_automatic_email é campo de cada signatário, não do documento --
+// colocar só no nível raiz do corpo (primeira tentativa) não dispara e-mail.
 
 type ZapSignSigner = {
   name: string;
@@ -63,8 +65,10 @@ export async function createDocument(
     body: JSON.stringify({
       name: input.name,
       base64_pdf: input.base64Pdf,
-      signers: input.signers,
-      send_automatic_email: true,
+      signers: input.signers.map((signer) => ({
+        ...signer,
+        send_automatic_email: true,
+      })),
     }),
   });
 }
