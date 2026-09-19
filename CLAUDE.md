@@ -185,7 +185,8 @@ Etapas da Onda 0, uma por vez, cada uma com minha aprovação antes da seguinte:
 
 **Comece pela Etapa 0.1. Não avance para a 0.2 até eu aprovar.**
 
-> **Status (2026-09-19):** Etapa 0.1 concluída — stack e decisões de negócio
-> confirmadas em `docs/decisions/0001-stack-e-decisoes-fundacionais.md`.
-> Detalhes em `docs/progress.md`. Pendência de NFSe em `docs/backlog.md`.
-> **Aguardando aprovação para iniciar a Etapa 0.2.**
+> **Status (2026-09-19):** Etapas 0.1 e 0.2 concluídas. Stack e decisões de
+> negócio em `docs/decisions/0001-stack-e-decisoes-fundacionais.md`. Mapa de
+> módulos, perfis de acesso e recorte do MVP da Onda 1 em `docs/00-visao.md`.
+> Detalhes e pendências em `docs/progress.md` e `docs/backlog.md`.
+> **Aguardando aprovação para iniciar a Etapa 0.3 (modelo de dados inicial).**

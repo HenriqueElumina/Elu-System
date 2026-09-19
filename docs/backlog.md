@@ -8,3 +8,6 @@
   Onda 2).
 - **MLabs:** avaliar se o módulo Conteúdo (social) vai integrar via API com o
   MLabs ou substituí-lo, quando chegarmos na Onda 2/3.
+- **Assinatura digital:** decidir entre Clicksign e ZapSign ao construir o
+  módulo Comercial (Onda 1). O MVP já prevê assinatura digital integrada
+  (decisão da Etapa 0.2), falta escolher o provedor.
