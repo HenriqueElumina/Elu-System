@@ -4,6 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import { centsToReais } from "@/lib/validation/service";
 import { ContratoStatusChanger } from "./contrato-status-changer";
 import { EnviarAssinatura } from "./enviar-assinatura";
+import { BaixarPdfAssinado } from "./baixar-pdf-assinado";
 
 export default async function ContratoDetailPage({
   params,
@@ -90,7 +91,9 @@ export default async function ContratoDetailPage({
                 ` — assinado em ${new Date(contract.signed_at).toLocaleDateString("pt-BR")}`}
             </p>
           )}
-          {contract.signature_status !== "signed" && (
+          {contract.signature_status === "signed" ? (
+            <BaixarPdfAssinado contractId={contract.id} />
+          ) : (
             <EnviarAssinatura
               contractId={contract.id}
               isResend={Boolean(contract.external_signature_id)}

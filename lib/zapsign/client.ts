@@ -20,6 +20,10 @@ type CreateDocumentInput = {
 type ZapSignDocumentResponse = {
   token: string;
   status: string;
+  // Links temporários (expiram em 60min) -- nunca guardar, sempre buscar
+  // na hora que alguém precisar abrir o PDF.
+  original_file: string | null;
+  signed_file: string | null;
   signers: Array<{
     token: string;
     sign_url: string;

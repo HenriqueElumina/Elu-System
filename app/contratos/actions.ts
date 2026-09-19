@@ -9,7 +9,7 @@ import {
   type CONTRACT_STATUSES,
 } from "@/lib/validation/contract";
 import { CONTRACT_SIGNER } from "@/lib/config";
-import { createDocument } from "@/lib/zapsign/client";
+import { createDocument, getDocument } from "@/lib/zapsign/client";
 import { renderContractPdfBase64 } from "@/lib/pdf/render-contract-pdf";
 import type { ContractPdfItem } from "@/lib/pdf/contract-document";
 
@@ -235,6 +235,41 @@ export async function sendContractForSignature(
       url: signer.sign_url,
     })),
   };
+}
+
+export async function getSignedDocumentUrl(
+  contractId: string,
+): Promise<ActionResult<{ url: string }>> {
+  const supabase = await createClient();
+
+  const { data: contract, error: contractError } = await supabase
+    .from("contract")
+    .select("external_signature_id")
+    .eq("id", contractId)
+    .single();
+
+  if (contractError || !contract) {
+    return { ok: false, message: "Contrato não encontrado." };
+  }
+  if (!contract.external_signature_id) {
+    return { ok: false, message: "Contrato ainda não foi enviado para assinatura." };
+  }
+
+  let doc;
+  try {
+    doc = await getDocument(contract.external_signature_id);
+  } catch (err) {
+    return {
+      ok: false,
+      message: err instanceof Error ? err.message : "Erro ao consultar ZapSign.",
+    };
+  }
+
+  if (!doc.signed_file) {
+    return { ok: false, message: "Documento ainda não foi assinado por todos." };
+  }
+
+  return { ok: true, url: doc.signed_file };
 }
 
 export async function updateContractStatus(
