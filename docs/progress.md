@@ -114,4 +114,23 @@ Aguardando aprovação explícita do dono do produto para iniciar a **Onda 1
 
 Aprovada e validada em produção em 2026-09-20 pelo dono do produto.
 
-**Aguardando definição/aprovação da próxima etapa da Onda 1.**
+### Etapa 1.2 — Catálogo de serviços e playbooks (código pronto em 2026-09-21, aguardando aplicar migration + teste)
+
+- Telas `/servicos` (lista), `/servicos/novo` e `/servicos/[id]` (editar
+  serviço + montar playbook: adicionar/editar/remover/reordenar etapas).
+  Só `socio` edita; demais perfis internos veem em modo leitura.
+- Correção de bug: RLS de `service` permitia `gestor` escrever, contra o
+  que `docs/00-visao.md` definia (catálogo é leitura para gestor). Corrigido
+  nesta etapa.
+- Nova tabela `playbook_step` (nome, descrição, ordem, SLA em dias) — um
+  serviço, uma lista ordenada de etapas, sem tabela `playbook` separada.
+- Migration
+  `supabase/migrations/20260921090000_service_catalog.sql`: corrige a
+  policy `service_write` e cria `playbook_step` com RLS.
+- Decisões em `docs/decisions/0005-catalogo-servicos-playbooks.md`.
+- Testes: Vitest (validação de serviço/etapa e conversão reais↔centavos,
+  26 testes no total), Playwright (`/servicos` exige login), migration
+  testada localmente (sócio escreve, gestor só lê, revert/reaplicação).
+- **Pendente:** dono do produto aplicar
+  `20260921090000_service_catalog.sql` no Supabase real e testar o fluxo
+  (cadastrar serviço, montar playbook).

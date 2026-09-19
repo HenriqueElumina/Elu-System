@@ -201,8 +201,10 @@ Etapas da Onda 0, uma por vez, cada uma com minha aprovação antes da seguinte:
 > funcionando (Vercel + Supabase reais).
 >
 > **Onda 1 — Fundação e receita, em andamento.** Etapa 1.1 (Cadastro de
-> clientes: link público de onboarding + revisão + cadastro manual)
-> concluída e validada em produção em 2026-09-20 — ver
-> `docs/decisions/0004-cadastro-clientes-onboarding.md`.
-> **Aguardando definição/aprovação da próxima etapa da Onda 1** (sugestão:
-> catálogo de serviços, módulo 2).
+> clientes) concluída e validada em produção em 2026-09-20 — ver
+> `docs/decisions/0004-cadastro-clientes-onboarding.md`. Etapa 1.2
+> (Catálogo de serviços e playbooks) com código pronto em 2026-09-21 — ver
+> `docs/decisions/0005-catalogo-servicos-playbooks.md`.
+> **Aguardando o dono do produto aplicar
+> `supabase/migrations/20260921090000_service_catalog.sql` no Supabase
+> real e testar o fluxo antes de definir a próxima etapa.**

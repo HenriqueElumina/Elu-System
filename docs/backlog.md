@@ -40,3 +40,6 @@
 - **Máscara de CEP/telefone/CNPJ-CPF:** os campos aceitam texto livre,
   validado só no formato/dígito verificador. Adicionar máscara de digitação
   é melhoria de UX, não bloqueia o uso.
+- **Sub-checklist por etapa do playbook:** hoje cada `playbook_step` é um
+  item só (nome/descrição/SLA). Se precisarmos de múltiplos itens de
+  checklist dentro de uma etapa, é uma tabela nova. Ver ADR 0005.

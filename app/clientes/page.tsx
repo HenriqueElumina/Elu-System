@@ -64,6 +64,9 @@ export default async function ClientesPage() {
           <p className="text-sm text-gray-500">
             Logado como {profile.full_name} ({profile.role})
           </p>
+          <Link href="/servicos" className="text-sm text-gray-500 hover:underline">
+            Catálogo de serviços →
+          </Link>
         </div>
         <LogoutButton />
       </div>
