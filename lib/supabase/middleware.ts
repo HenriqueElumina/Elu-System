@@ -30,8 +30,10 @@ export async function updateSession(request: NextRequest) {
   } = await supabase.auth.getUser();
 
   const isLoginPage = request.nextUrl.pathname.startsWith("/login");
+  // /convite/[token]: página pública que o cliente preenche sem login.
+  const isPublicPage = isLoginPage || request.nextUrl.pathname.startsWith("/convite");
 
-  if (!user && !isLoginPage) {
+  if (!user && !isPublicPage) {
     const url = request.nextUrl.clone();
     url.pathname = "/login";
     return NextResponse.redirect(url);

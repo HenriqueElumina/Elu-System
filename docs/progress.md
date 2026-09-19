@@ -81,3 +81,33 @@ esperado — nenhum cliente cadastrado ainda).
 
 Aguardando aprovação explícita do dono do produto para iniciar a **Onda 1
 — Fundação e receita**, e definição de qual etapa começa primeiro.
+
+## Onda 1 — Fundação e receita
+
+### Etapa 1.1 — Cadastro de clientes (código pronto em 2026-09-20, aguardando aplicar migration + teste)
+
+- Fluxo de onboarding: sócio/gestor gera um link único (`/clientes` →
+  "Gerar link para novo cliente"), cliente preenche em `/convite/[token]`
+  (público, sem login) — dados da empresa, endereço, contato principal,
+  contato financeiro e baseline de redes sociais (Instagram, Facebook,
+  TikTok, YouTube, LinkedIn + outra). Fica como `pending_review` até
+  sócio/financeiro/gestor aprovar em `/clientes/[id]`.
+- Cadastro manual em `/clientes/novo` (mesmo formulário, sem o link) para
+  clientes que a agência já tem hoje — entra direto como `approved`.
+- Nova migration
+  `supabase/migrations/20260920090000_client_onboarding.sql`: colunas de
+  documento/endereço/status em `client`, `is_billing` em `client_contact`,
+  tabelas novas `client_social_account` e `client_invite`, funções
+  `get_client_invite`/`submit_client_invite` (únicas portas de entrada
+  públicas, sem expor tabela nenhuma a `anon`).
+- Decisões em `docs/decisions/0004-cadastro-clientes-onboarding.md`.
+- Validação de CPF/CNPJ com dígito verificador real
+  (`lib/validation/document.ts`) e Zod (`lib/validation/client-intake.ts`)
+  na fronteira do formulário, cliente e servidor.
+- Testes: Vitest (validadores de documento + schema do formulário, 20
+  testes no total no projeto), Playwright (link de convite inválido mostra
+  erro sem exigir login), migration testada localmente (fluxo completo do
+  convite, RLS, revert e reaplicação).
+- **Pendente:** dono do produto aplicar
+  `20260920090000_client_onboarding.sql` no Supabase real e testar o fluxo
+  ponta a ponta (gerar link → preencher → aprovar).

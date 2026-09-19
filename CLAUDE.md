@@ -199,5 +199,10 @@ Etapas da Onda 0, uma por vez, cada uma com minha aprovação antes da seguinte:
 > Detalhes e pendências em `docs/progress.md` e `docs/backlog.md`.
 > Validado em produção: login, perfil `socio` e a tela `/clientes`
 > funcionando (Vercel + Supabase reais).
-> **Aguardando aprovação explícita do dono do produto para iniciar a Onda
-> 1 (Fundação e receita) e a definição de qual etapa começa primeiro.**
+>
+> **Onda 1 — Fundação e receita, em andamento.** Etapa 1.1 (Cadastro de
+> clientes: link público de onboarding + revisão + cadastro manual)
+> aprovada e com código pronto em `docs/decisions/0004-cadastro-clientes-onboarding.md`.
+> **Aguardando o dono do produto aplicar
+> `supabase/migrations/20260920090000_client_onboarding.sql` no Supabase
+> real e testar o fluxo ponta a ponta antes de definir a próxima etapa.**

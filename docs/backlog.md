@@ -28,3 +28,15 @@
 - **Convite de colaborador:** hoje só dá para criar usuário direto no
   painel do Supabase. Um fluxo de convite (via API admin do Supabase)
   fica para o módulo de RH (Onda 2).
+- **Envio automático do link de convite:** hoje sócio/gestor copia e manda
+  por fora (e-mail/WhatsApp manual). Quando o módulo Comercial existir,
+  gerar e enviar o link vira parte do handoff automático venda→operação.
+- **Série histórica de redes sociais:** `client_social_account` hoje só
+  guarda o baseline do fechamento. Novas medições ao longo do tempo e
+  gráfico de evolução são do módulo de Conteúdo (Onda 2).
+- **UF como lista fixa:** o campo Estado do endereço é texto livre (2
+  letras) — trocar por um select com as 27 UFs quando ajustarmos o design
+  do formulário (shadcn/ui).
+- **Máscara de CEP/telefone/CNPJ-CPF:** os campos aceitam texto livre,
+  validado só no formato/dígito verificador. Adicionar máscara de digitação
+  é melhoria de UX, não bloqueia o uso.
