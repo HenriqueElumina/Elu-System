@@ -64,6 +64,7 @@ export async function createDocument(
       name: input.name,
       base64_pdf: input.base64Pdf,
       signers: input.signers,
+      send_automatic_email: true,
     }),
   });
 }
