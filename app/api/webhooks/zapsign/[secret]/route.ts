@@ -2,11 +2,16 @@ import { createClient } from "@supabase/supabase-js";
 import { getDocument } from "@/lib/zapsign/client";
 import { extractDocToken, isAuthorizedWebhook } from "@/lib/zapsign/webhook";
 
-const WEBHOOK_HEADER = "x-elu-webhook-secret";
-
-export async function POST(request: Request) {
-  const header = request.headers.get(WEBHOOK_HEADER);
-  if (!isAuthorizedWebhook(header, process.env.ZAPSIGN_WEBHOOK_SECRET)) {
+// A UI de webhooks do ZapSign (checada em set/2026) não expõe cabeçalho
+// customizado no cadastro -- só a URL. Por isso o segredo vai no próprio
+// caminho da URL em vez de um header, comparado da mesma forma
+// (timingSafeEqual, via isAuthorizedWebhook).
+export async function POST(
+  request: Request,
+  { params }: { params: Promise<{ secret: string }> },
+) {
+  const { secret } = await params;
+  if (!isAuthorizedWebhook(secret, process.env.ZAPSIGN_WEBHOOK_SECRET)) {
     return new Response("Unauthorized", { status: 401 });
   }
 

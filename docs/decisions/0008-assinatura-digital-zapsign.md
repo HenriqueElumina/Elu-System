@@ -51,10 +51,12 @@ ZapSign se algo não bater:
   `Authorization: Bearer <token>`, corpo `{ name, base64_pdf, signers }`.
 - Consultar documento: `GET /api/v1/docs/{token}/` → `status`
   (`"pending"`, `"signed"`, ...).
-- Webhook: sem HMAC — a autenticidade vem de um cabeçalho customizado
-  que a gente define ao cadastrar o webhook no ZapSign (aqui,
-  `X-Elu-Webhook-Secret`), comparado com `timingSafeEqual` no nosso
-  endpoint.
+- Webhook: sem HMAC. Tentei usar um cabeçalho customizado (`X-Elu-Webhook-Secret`),
+  mas a tela de "Criar webhook" do ZapSign (conferida com o dono do
+  produto em 24/09/2026) só tem "Tipo de evento" e "URL do webhook" — sem
+  campo de cabeçalho. Ajustei para o segredo ir **na própria URL**
+  (`/api/webhooks/zapsign/[secret]`), comparado com `timingSafeEqual` no
+  nosso endpoint — mesmo nível de proteção, só muda onde o valor viaja.
 - O evento `doc_signed` dispara **por signatário**, não só quando todos
   assinaram — por isso o webhook sempre reconsulta `GET /docs/{token}/`
   pra saber o status real do documento, em vez de confiar no corpo do
