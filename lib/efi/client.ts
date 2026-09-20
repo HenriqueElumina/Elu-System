@@ -153,26 +153,28 @@ export async function createBoleto(
 ): Promise<EfiChargeResponse> {
   const token = await getAccessToken();
 
-  const bankingBillet: Record<string, unknown> = {
-    expire_at: input.dueDate,
-    customer: {
-      name: input.customer.name,
-      email: input.customer.email ?? undefined,
-      phone_number: sanitizePhoneNumber(input.customer.phone),
-      ...(input.customer.documentType === "cpf"
-        ? { cpf: input.customer.document }
-        : {}),
-    },
+  const customer: Record<string, unknown> = {
+    name: input.customer.name,
+    email: input.customer.email ?? undefined,
+    phone_number: sanitizePhoneNumber(input.customer.phone),
+    ...(input.customer.documentType === "cpf"
+      ? { cpf: input.customer.document }
+      : {}),
   };
 
-  // Pessoa jurídica vai num objeto à parte (juridical_person), junto do
-  // customer -- cpf não se aplica nesse caso.
+  // Pessoa jurídica vai num objeto à parte (juridical_person) dentro do
+  // próprio customer -- cpf não se aplica nesse caso.
   if (input.customer.documentType === "cnpj") {
-    bankingBillet.juridical_person = {
+    customer.juridical_person = {
       corporate_name: input.customer.name,
       cnpj: input.customer.document,
     };
   }
+
+  const bankingBillet: Record<string, unknown> = {
+    expire_at: input.dueDate,
+    customer,
+  };
 
   const body = {
     items: [{ name: input.description, value: input.amountCents, amount: 1 }],
