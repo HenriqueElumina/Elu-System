@@ -231,21 +231,19 @@ Etapas da Onda 0, uma por vez, cada uma com minha aprovação antes da seguinte:
 > os módulos de Tarefas (Onda 2) e Financeiro (Onda 1) existirem.
 >
 > **Financeiro (módulo novo da Onda 1), Etapa 1.7 — Contas a receber:**
-> código pronto em 2026-09-26, migration principal já aplicada em
-> produção (`CRON_SECRET` configurado na Vercel, `/financeiro` no ar) —
-> contrato passa a exigir data de fim; fatura mensal gerada sozinha (Cron
-> Job diário da Vercel + `generate_due_invoices()`, mesmo padrão
-> `SECURITY DEFINER` das etapas anteriores); tela `/financeiro` (parcela,
-> total, remanescente por contrato) e seção "Faturas" no contrato com
-> "Marcar como paga" — ver `docs/decisions/0010-financeiro-contas-a-receber.md`.
-> **Correção no mesmo dia** (revisando o PDF gerado): vigência sempre
-> aparecia "por prazo indeterminado" mesmo com data de fim definida (bug
-> desde a Etapa 1.5), e a regra de vencimento estava errada — corrigida
-> pra: dia 1–15 do contrato vence dia 10 do mês seguinte, dia 16–31 vence
-> dia 25 — ver ADRs 0008 e 0010. **Pendência:** aplicar a migration de
-> correção (`20260926150000_corrige_vencimento_cobranca.sql`) no Supabase
-> real e validar em produção (contrato de teste, conferir PDF e
-> `/financeiro`). Próximas etapas do Financeiro: 1.8 (boleto/Pix via Efí)
+> concluída e validada em produção em 2026-09-26 — contrato passa a
+> exigir data de fim; fatura mensal gerada sozinha (Cron Job diário da
+> Vercel + `generate_due_invoices()`, mesmo padrão `SECURITY DEFINER` das
+> etapas anteriores); tela `/financeiro` (parcela, total, remanescente
+> por contrato) e seção "Faturas" no contrato com "Marcar como paga" —
+> ver `docs/decisions/0010-financeiro-contas-a-receber.md`. **Correção no
+> mesmo dia** (revisando o PDF gerado): vigência sempre aparecia "por
+> prazo indeterminado" mesmo com data de fim definida (bug desde a Etapa
+> 1.5), e a regra de vencimento estava errada — corrigida pra: dia 1–15
+> do contrato vence dia 10 do mês seguinte, dia 16–31 vence dia 25 — ver
+> ADRs 0008 e 0010. Teste de ponta a ponta confirmado pelo dono do
+> produto: PDF com vigência certa, fatura com vencimento certo em
+> `/financeiro`. Próximas etapas do Financeiro: 1.8 (boleto/Pix via Efí)
 > e 1.9 (contas a pagar + fluxo de caixa, com conciliação futura via OFX —
 > `docs/backlog.md`); NFSe segue pendente de confirmação com o contador.
 > Trocar o ZapSign de sandbox pra produção continua como pendência

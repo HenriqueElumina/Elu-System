@@ -313,10 +313,10 @@ Aprovada e validada em produção em 2026-09-25 pelo dono do produto.
   exige login); `npm run lint`, `typecheck` e `build` sem erro.
 - **Fora do escopo:** boleto/Pix de verdade (Etapa 1.8), NFSe (pendente
   do contador), contas a pagar/fluxo de caixa (Etapa 1.9).
-- **Pendências:** aplicar a migration de correção
-  (`20260926150000_corrige_vencimento_cobranca.sql`) no Supabase real;
-  dono do produto validar assinando um contrato de teste com data de fim
-  e conferindo o PDF (vigência certa) e se a fatura aparece em
-  `/financeiro` com o vencimento certo (não precisa esperar o cron — dá
-  pra chamar `generate_due_invoices()` manualmente pelo SQL Editor pra
-  testar na hora).
+- Migration de correção
+  (`20260926150000_corrige_vencimento_cobranca.sql`) aplicada pelo dono
+  do produto no Supabase real e fluxo validado em produção: PDF de
+  contrato de teste com vigência certa, fatura gerada com o vencimento
+  certo (dia 10 ou 25, conforme a regra), visível em `/financeiro`.
+
+Aprovada e validada em produção em 2026-09-26 pelo dono do produto.
