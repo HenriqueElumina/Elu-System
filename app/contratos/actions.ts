@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import {
-  addOneMonth,
+  computeFirstDueDate,
   createContractSchema,
   type CreateContractInput,
   type CONTRACT_STATUSES,
@@ -108,7 +108,7 @@ export async function sendContractForSignature(
   const { data: contract, error: contractError } = await supabase
     .from("contract")
     .select(
-      "id, start_date, status, external_signature_id, signature_status, client:client_id(legal_name, trade_name, document_type, document, address_street, address_number, address_complement, address_neighborhood, address_city, address_state, address_zip_code, phone, id), contract_item(quantity, unit_price_cents, billing_type, service:service_id(name, description))",
+      "id, start_date, end_date, status, external_signature_id, signature_status, client:client_id(legal_name, trade_name, document_type, document, address_street, address_number, address_complement, address_neighborhood, address_city, address_state, address_zip_code, phone, id), contract_item(quantity, unit_price_cents, billing_type, service:service_id(name, description))",
     )
     .eq("id", contractId)
     .single();
@@ -188,11 +188,11 @@ export async function sendContractForSignature(
     },
     clientSignerName: primaryContact.full_name,
     startDate: contract.start_date,
-    endDate: null,
+    endDate: contract.end_date,
     items: pdfItems,
     includedExtraKeys: includedExtras,
     monthlyTotalCents,
-    firstPaymentDate: addOneMonth(contract.start_date),
+    firstPaymentDate: computeFirstDueDate(contract.start_date),
   });
 
   let zapDoc;

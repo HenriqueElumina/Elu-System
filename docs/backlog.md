@@ -86,3 +86,11 @@
   authenticated` de verdade) já usada a partir dessa etapa nas próximas,
   e reconferir com atenção redobrada as etapas anteriores que só testaram
   RLS "por leitura de código" em vez de execução de verdade.
+- **Regra de vencimento duplicada em TS e SQL:** `computeFirstDueDate`
+  (`lib/validation/contract.ts`, usada na cláusula do PDF) e
+  `handle_contract_signed` (SQL, usada pro `next_invoice_due_date` de
+  verdade) implementam a mesma regra (dia 10/25) em dois lugares
+  independentes. Se um dia essa regra mudar de novo, as duas cópias
+  precisam ser atualizadas juntas — considerar unificar (ex.: o app
+  consultar o banco em vez de recalcular) se isso já tiver dado problema
+  na prática. Ver ADR 0010.

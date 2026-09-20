@@ -130,3 +130,23 @@ do ZapSign vieram de busca, não da documentação oficial lida direto
 - Detalhes da API do ZapSign vieram de busca, não da documentação
   oficial lida diretamente — já rendeu os 3 bugs acima; se aparecer mais
   alguma coisa esquisita, é o primeiro lugar a suspeitar.
+
+## Correção (2026-09-26, durante a Etapa 1.7)
+
+Revisando o PDF gerado, o dono do produto achou dois problemas nas regras
+desta ADR, que valeram um bug fix (`app/contratos/actions.ts`,
+`lib/validation/contract.ts`):
+
+1. **Cláusula de vigência sempre mostrava "por prazo indeterminado"**,
+   mesmo quando o contrato tinha data de fim definida. O template do PDF
+   (`lib/pdf/contract-document.tsx`) já sabia mostrar a data de fim
+   quando recebia uma — só que `sendContractForSignature` sempre mandava
+   `endDate: null` pro renderizador, um bug desde a criação desta etapa.
+   Corrigido: agora usa `contract.end_date` de verdade.
+2. **Regra de primeiro vencimento estava errada.** Este ADR dizia
+   "primeira parcela 1 mês após a data do contrato, mesmo dia" — a regra
+   real (confirmada pelo dono do produto): contrato registrado do dia 1
+   ao 15 vence dia 10 do mês seguinte; do dia 16 em diante (inclusive dia
+   31) vence dia 25. `addOneMonth` foi substituída por
+   `computeFirstDueDate` (mesma regra usada pela Etapa 1.7 em
+   `generate_due_invoices`/`handle_contract_signed`).

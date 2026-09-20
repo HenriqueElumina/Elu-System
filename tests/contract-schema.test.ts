@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { addOneMonth, createContractSchema } from "@/lib/validation/contract";
+import { computeFirstDueDate, createContractSchema } from "@/lib/validation/contract";
 
 describe("createContractSchema", () => {
   it("rejeita sem data de fim (obrigatória desde a Etapa 1.7)", () => {
@@ -29,18 +29,24 @@ describe("createContractSchema", () => {
   });
 });
 
-describe("addOneMonth", () => {
-  it("mesmo dia, mês seguinte", () => {
-    expect(addOneMonth("2026-04-10")).toBe("2026-05-10");
+describe("computeFirstDueDate", () => {
+  it("contrato do dia 1 ao 15 vence dia 10 do mês seguinte", () => {
+    expect(computeFirstDueDate("2026-03-01")).toBe("2026-04-10");
+  });
+
+  it("dia 15 conta no primeiro grupo (vence dia 10)", () => {
+    expect(computeFirstDueDate("2026-03-15")).toBe("2026-04-10");
+  });
+
+  it("dia 16 em diante vence dia 25 do mês seguinte", () => {
+    expect(computeFirstDueDate("2026-03-16")).toBe("2026-04-25");
+  });
+
+  it("dia 31 conta no segundo grupo (vence dia 25)", () => {
+    expect(computeFirstDueDate("2026-03-31")).toBe("2026-04-25");
   });
 
   it("vira o ano quando necessário", () => {
-    expect(addOneMonth("2026-12-15")).toBe("2027-01-15");
-  });
-
-  it("dia 31 em mês seguinte mais curto rola para o próximo mês (limitação conhecida)", () => {
-    // Não existe 31/02 -- comportamento padrão do JS Date, documentado
-    // aqui para não virar surpresa. Casos assim são raros na prática.
-    expect(addOneMonth("2026-01-31")).toBe("2026-03-03");
+    expect(computeFirstDueDate("2026-12-20")).toBe("2027-01-25");
   });
 });

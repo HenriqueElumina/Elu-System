@@ -64,11 +64,15 @@ export const STANDARD_EXTRAS = [
 
 export type StandardExtraKey = (typeof STANDARD_EXTRAS)[number]["key"];
 
-// Primeiro vencimento: mesmo dia, um mês após a data de início do
-// contrato (ex.: contrato em 10/04 -> primeira parcela em 10/05).
-export function addOneMonth(dateStr: string): string {
+// Vencimento da cobrança recorrente (regra do dono do produto, Etapa 1.7):
+// contrato registrado do dia 1 ao 15 vence dia 10 do mês seguinte;
+// do dia 16 em diante (inclusive dia 31) vence dia 25 do mês seguinte.
+// Corrige a regra anterior ("mesmo dia, um mês depois") do ADR 0008.
+export function computeFirstDueDate(dateStr: string): string {
   const [year, month, day] = dateStr.split("-").map(Number);
-  const date = new Date(Date.UTC(year!, month! - 1, day!));
+  const dueDay = day! <= 15 ? 10 : 25;
+  const date = new Date(Date.UTC(year!, month! - 1, 1));
   date.setUTCMonth(date.getUTCMonth() + 1);
+  date.setUTCDate(dueDay);
   return date.toISOString().slice(0, 10);
 }

@@ -42,11 +42,22 @@ só confere o `CRON_SECRET` e chama a função.
 `contract.next_invoice_due_date` guarda o progresso: a trigger
 `handle_contract_signed` (Etapa 1.6, agora `BEFORE UPDATE` em vez de
 `AFTER` -- dava pra só atribuir em `NEW` sem precisar de um update
-recursivo dentro da própria trigger) agenda o primeiro vencimento (1 mês
-após a data do contrato, mesma regra da Etapa 1.5) só se o contrato tiver
-item de cobrança recorrente. `generate_due_invoices()` gera toda fatura
-vencida e ainda não criada -- inclusive cobrindo vários meses de atraso
-numa única chamada, se o cron ficar fora do ar por um tempo.
+recursivo dentro da própria trigger) agenda o primeiro vencimento só se o
+contrato tiver item de cobrança recorrente. `generate_due_invoices()`
+gera toda fatura vencida e ainda não criada -- inclusive cobrindo vários
+meses de atraso numa única chamada, se o cron ficar fora do ar por um
+tempo.
+
+**Regra de vencimento (corrigida em 2026-09-26, revisando o PDF gerado):**
+não é "1 mês após a data do contrato, mesmo dia" como o ADR 0008 dizia --
+é contrato registrado do dia 1 ao 15 vence dia 10 do mês seguinte; do dia
+16 em diante (inclusive dia 31) vence dia 25. Migration
+`20260926150000_corrige_vencimento_cobranca.sql` troca a função (a
+anterior, `20260926090000`, já tinha sido aplicada em produção sem
+nenhuma fatura gerada ainda -- sem dado pra migrar). Mesma regra em
+`computeFirstDueDate` (`lib/validation/contract.ts`, ex-`addOneMonth`),
+usada tanto pela cláusula de pagamento do PDF quanto implicitamente pelo
+SQL (as duas nunca podem divergir -- ver backlog sobre isso).
 
 ### 1 fatura por contrato/mês, trava contra duplicata
 
@@ -78,9 +89,12 @@ exige testar.
   (catch-up) e não duplica ao rodar de novo; view calcula total/pago/
   remanescente certo; RLS por perfil testada com `SET ROLE authenticated`
   de verdade (não como superusuário -- ver nota abaixo); revert limpo.
-- `npm run lint`, `typecheck`, `test` (52 testes, incluindo
-  `computeReceivableSummary`) e `build` sem erro. Playwright:
-  `/financeiro` exige login.
+- Regra de vencimento corrigida testada nos casos de fronteira (dia 1, 15,
+  16, 31, virada de ano) -- confirma dia 15 no primeiro grupo (vence dia
+  10) e dia 31 no segundo (vence dia 25), como o dono do produto definiu.
+- `npm run lint`, `typecheck`, `test` (54 testes, incluindo
+  `computeReceivableSummary` e `computeFirstDueDate`) e `build` sem erro.
+  Playwright: `/financeiro` exige login.
 
 **Nota sobre o próprio processo de teste:** nas primeiras rodadas eu testei
 como usuário `postgres` (superusuário), que **ignora RLS por padrão** --
@@ -99,3 +113,7 @@ de role de verdade, nunca como superusuário.
 - Depende de configurar `CRON_SECRET` na Vercel (variável nova) e de o
   plano de hospedagem permitir Cron Jobs -- Vercel Hobby permite só 1x/dia
   por projeto, que é exatamente o que esta etapa usa.
+- A regra de vencimento (dia 10/25) vive duplicada em dois lugares --
+  `computeFirstDueDate` (TypeScript, cláusula do PDF) e `handle_contract_signed`
+  (SQL, `next_invoice_due_date` de verdade). Registrado no backlog: se
+  essa regra mudar de novo, os dois lugares precisam mudar juntos.
