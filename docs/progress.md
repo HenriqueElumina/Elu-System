@@ -268,3 +268,43 @@ dono do produto.
   visível em `/projetos`).
 
 Aprovada e validada em produção em 2026-09-25 pelo dono do produto.
+
+## Onda 1 — Financeiro
+
+### Etapa 1.7 — Contas a receber, cobrança recorrente (código pronto em 2026-09-26, aguardando aplicar migration + configurar Cron na Vercel)
+
+- Contrato passa a exigir data de fim (antes opcional) — necessário pra
+  calcular quantas parcelas o contrato tem. Contratos antigos sem
+  `end_date` continuam existindo assim, só aparecem como "sem prazo
+  definido" nas contas a receber.
+- Nova tabela `invoice` (1 por contrato/mês). Trigger da Etapa 1.6
+  estendida (`handle_contract_signed`) agenda o primeiro vencimento ao
+  assinar; função `generate_due_invoices()` (chamada por um Cron Job
+  diário da Vercel) gera as faturas vencidas — cobre vários meses de
+  atraso numa chamada só, sem duplicar.
+- Tela `/financeiro`: uma linha por contrato (cliente, parcela, parcelas
+  pagas/total, valor total, remanescente). Seção "Faturas" dentro de
+  `/contratos/[id]` com cada parcela e botão "Marcar como paga"
+  (`socio`/`financeiro`).
+- Migration
+  `supabase/migrations/20260926090000_financeiro_contas_a_receber.sql`.
+- Decisões em `docs/decisions/0010-financeiro-contas-a-receber.md`
+  (inclui uma correção no próprio processo de teste local — testar RLS
+  como superusuário mascarava bugs de permissão).
+- Testes: migration testada localmente (geração de fatura com catch-up de
+  meses atrasados, idempotência, cálculo de total/remanescente, RLS por
+  perfil com troca de role de verdade, revert limpo); Vitest
+  (`computeReceivableSummary`, 52 testes no total); Playwright
+  (`/financeiro` exige login); `npm run lint`, `typecheck` e `build` sem
+  erro.
+- **Fora do escopo:** boleto/Pix de verdade (Etapa 1.8), NFSe (pendente
+  do contador), contas a pagar/fluxo de caixa (Etapa 1.9).
+- **Pendências:** aplicar a migration no Supabase real; configurar
+  `CRON_SECRET` nas variáveis de ambiente da Vercel (valor já gerado,
+  aguardando o dono do produto colar) — o Cron Job em si (`vercel.json`)
+  já sobe junto do próximo deploy, sem configuração manual adicional na
+  Vercel além da variável; dono do produto validar assinando um contrato
+  de teste com data de fim e conferindo se a fatura aparece em
+  `/financeiro` (não precisa esperar o cron — dá pra chamar
+  `generate_due_invoices()` manualmente pelo SQL Editor pra testar na
+  hora).

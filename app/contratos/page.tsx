@@ -42,6 +42,9 @@ export default async function ContratosPage() {
           <Link href="/leads" className="hover:underline">
             ← Comercial
           </Link>
+          <Link href="/financeiro" className="hover:underline">
+            Financeiro →
+          </Link>
           <Link href="/projetos" className="hover:underline">
             Projetos →
           </Link>

@@ -2,9 +2,9 @@ import { describe, expect, it } from "vitest";
 import { addOneMonth, createContractSchema } from "@/lib/validation/contract";
 
 describe("createContractSchema", () => {
-  it("aceita data de início sozinha", () => {
+  it("rejeita sem data de fim (obrigatória desde a Etapa 1.7)", () => {
     const result = createContractSchema.safeParse({ startDate: "2026-10-01" });
-    expect(result.success).toBe(true);
+    expect(result.success).toBe(false);
   });
 
   it("aceita fim depois do início", () => {

@@ -63,7 +63,7 @@ export async function createContractFromProposal(
       client_id: clientId,
       proposal_id: proposalId,
       start_date: data.startDate,
-      end_date: data.endDate || null,
+      end_date: data.endDate,
       status: "draft",
     })
     .select("id")
@@ -285,6 +285,23 @@ export async function updateContractStatus(
   if (error) return { ok: false, message: error.message };
 
   revalidatePath("/contratos");
+  revalidatePath(`/contratos/${contractId}`);
+  return { ok: true };
+}
+
+export async function markInvoiceAsPaid(
+  invoiceId: string,
+  contractId: string,
+): Promise<ActionResult> {
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from("invoice")
+    .update({ status: "paid", paid_at: new Date().toISOString() })
+    .eq("id", invoiceId);
+
+  if (error) return { ok: false, message: error.message };
+
+  revalidatePath("/financeiro");
   revalidatePath(`/contratos/${contractId}`);
   return { ok: true };
 }

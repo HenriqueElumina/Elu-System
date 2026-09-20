@@ -5,6 +5,8 @@ import { centsToReais } from "@/lib/validation/service";
 import { ContratoStatusChanger } from "./contrato-status-changer";
 import { EnviarAssinatura } from "./enviar-assinatura";
 import { BaixarPdfAssinado } from "./baixar-pdf-assinado";
+import { MarcarFaturaPaga } from "./marcar-fatura-paga";
+import { INVOICE_STATUS_LABELS } from "@/lib/billing/receivable";
 
 export default async function ContratoDetailPage({
   params,
@@ -49,7 +51,15 @@ export default async function ContratoDetailPage({
     .eq("contract_id", contract.id)
     .maybeSingle();
 
+  const { data: invoices } = await supabase
+    .from("invoice")
+    .select("id, due_date, amount_cents, status")
+    .eq("contract_id", contract.id)
+    .order("due_date");
+
   const canManage = profile.role === "socio" || profile.role === "gestor";
+  const canManageFinance =
+    profile.role === "socio" || profile.role === "financeiro";
   const client = contract.client as unknown as {
     id: string;
     legal_name: string;
@@ -159,6 +169,50 @@ export default async function ContratoDetailPage({
           })}
         </p>
       </section>
+
+      {invoices && invoices.length > 0 && (
+        <section className="mt-8">
+          <h2 className="mb-3 text-sm font-semibold text-gray-700">Faturas</h2>
+          <table className="w-full border-collapse text-sm">
+            <thead>
+              <tr className="border-b border-gray-200 text-left text-gray-500">
+                <th className="py-2 pr-4">Vencimento</th>
+                <th className="py-2 pr-4">Valor</th>
+                <th className="py-2 pr-4">Status</th>
+                {canManageFinance && <th className="py-2"></th>}
+              </tr>
+            </thead>
+            <tbody>
+              {invoices.map((invoice) => (
+                <tr key={invoice.id} className="border-b border-gray-100">
+                  <td className="py-2 pr-4">
+                    {new Date(invoice.due_date).toLocaleDateString("pt-BR")}
+                  </td>
+                  <td className="py-2 pr-4">
+                    {centsToReais(invoice.amount_cents).toLocaleString("pt-BR", {
+                      style: "currency",
+                      currency: "BRL",
+                    })}
+                  </td>
+                  <td className="py-2 pr-4">
+                    {INVOICE_STATUS_LABELS[invoice.status] ?? invoice.status}
+                  </td>
+                  {canManageFinance && (
+                    <td className="py-2">
+                      {invoice.status === "pending" && (
+                        <MarcarFaturaPaga
+                          invoiceId={invoice.id}
+                          contractId={contract.id}
+                        />
+                      )}
+                    </td>
+                  )}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </section>
+      )}
     </main>
   );
 }

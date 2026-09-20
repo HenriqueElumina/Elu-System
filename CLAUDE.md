@@ -230,7 +230,17 @@ Etapas da Onda 0, uma por vez, cada uma com minha aprovação antes da seguinte:
 > (tarefas do playbook + cobrança recorrente) continua fora de alcance até
 > os módulos de Tarefas (Onda 2) e Financeiro (Onda 1) existirem.
 >
-> **Onda 1 essencialmente completa — falta o módulo Financeiro** (contas
-> a receber, boleto/Pix, NFSe) pra fechar de vez. Próxima decisão: seguir
-> pro Financeiro, ou primeiro trocar o ZapSign de sandbox pra produção
-> (pendência registrada acima e em `docs/backlog.md`).
+> **Financeiro (módulo novo da Onda 1), Etapa 1.7 — Contas a receber:**
+> código pronto em 2026-09-26 — contrato passa a exigir data de fim;
+> fatura mensal gerada sozinha (Cron Job diário da Vercel +
+> `generate_due_invoices()`, mesmo padrão `SECURITY DEFINER` das etapas
+> anteriores); tela `/financeiro` (parcela, total, remanescente por
+> contrato) e seção "Faturas" no contrato com "Marcar como paga" — ver
+> `docs/decisions/0010-financeiro-contas-a-receber.md`. **Pendências:**
+> aplicar a migration no Supabase real, configurar `CRON_SECRET` na
+> Vercel (valor já gerado, aguardando o dono do produto colar) e validar
+> em produção. Próximas etapas do Financeiro: 1.8 (boleto/Pix via Efí) e
+> 1.9 (contas a pagar + fluxo de caixa, com conciliação futura via OFX —
+> `docs/backlog.md`); NFSe segue pendente de confirmação com o contador.
+> Trocar o ZapSign de sandbox pra produção continua como pendência
+> separada, sem data.

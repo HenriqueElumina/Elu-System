@@ -24,10 +24,12 @@ export const CONTRACT_STATUS_LABELS: Record<
 export const createContractSchema = z
   .object({
     startDate: z.string().trim().min(1, "Informe a data de início"),
-    endDate: z.string().trim().optional().or(z.literal("")),
+    // Obrigatória (Etapa 1.7): sem data de fim não dá pra calcular quantas
+    // parcelas o contrato tem, pra tela de contas a receber.
+    endDate: z.string().trim().min(1, "Informe a data de fim"),
   })
   .refine(
-    (value) => !value.endDate || value.endDate >= value.startDate,
+    (value) => value.endDate >= value.startDate,
     { message: "Data de fim não pode ser antes da data de início", path: ["endDate"] },
   );
 

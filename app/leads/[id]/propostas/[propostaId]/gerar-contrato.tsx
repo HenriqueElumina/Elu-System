@@ -52,7 +52,7 @@ export function GerarContrato({ proposalId }: { proposalId: string }) {
           />
         </label>
         <label className="block space-y-1">
-          <span className="text-sm font-medium">Data de fim (opcional)</span>
+          <span className="text-sm font-medium">Data de fim</span>
           <input
             type="date"
             value={endDate}

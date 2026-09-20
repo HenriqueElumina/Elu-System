@@ -75,3 +75,14 @@
   (contas a pagar + fluxo de caixa), mesmo que a importação de OFX em si
   fique pra depois (conciliação bancária automática já era fora do MVP
   da Onda 1, `docs/00-visao.md`).
+- **Cancelar faturas pendentes quando o contrato é cancelado:** hoje
+  cancelar um contrato só para a geração de *novas* faturas (o cron
+  ignora contratos fora de `signed`/`active`); faturas `pending` já
+  geradas continuam penduradas. Ver ADR 0010.
+- **RLS local: nunca testar como superusuário do Postgres:** durante a
+  Etapa 1.7, testar como `postgres` mascarou um bug real de permissão
+  (faltava `grant ... to authenticated` em `invoice`) porque superusuário
+  ignora RLS por padrão. Retomar a metodologia de teste local (`SET ROLE
+  authenticated` de verdade) já usada a partir dessa etapa nas próximas,
+  e reconferir com atenção redobrada as etapas anteriores que só testaram
+  RLS "por leitura de código" em vez de execução de verdade.
