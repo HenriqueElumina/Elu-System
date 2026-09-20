@@ -53,10 +53,15 @@
 - **Sub-checklist por etapa do playbook:** hoje cada `playbook_step` é um
   item só (nome/descrição/SLA). Se precisarmos de múltiplos itens de
   checklist dentro de uma etapa, é uma tabela nova. Ver ADR 0005.
-- **Handoff automático completo:** tarefas de onboarding a partir do
-  playbook e cobrança recorrente automática ao assinar o contrato
-  dependem dos módulos de Tarefas (Onda 2) e Financeiro (Onda 1, ainda
-  não construído). Ver ADR 0007.
+- **Handoff automático completo:** a Etapa 1.6 já cria o `project`
+  sozinho ao assinar o contrato (ADR 0009); falta tarefas de onboarding a
+  partir do playbook e cobrança recorrente automática, que dependem dos
+  módulos de Tarefas (Onda 2) e Financeiro (Onda 1, ainda não
+  construído). Ver ADR 0007.
+- **Tela de projeto dedicada e edição:** hoje `/projetos` é só lista
+  (leitura) e o projeto nasce automático sem tela de criação/edição
+  manual. Uma página de projeto de verdade (Kanban, tarefas, prazos)
+  fica pro módulo de Tarefas (Onda 2) — ver ADR 0009.
 - **Criação manual de contrato:** hoje só dá pra gerar contrato a partir
   de uma proposta aceita. Um fluxo de contrato manual (sem proposta) fica
   de fora por enquanto — ninguém pediu ainda.

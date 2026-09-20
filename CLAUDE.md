@@ -222,9 +222,12 @@ Etapas da Onda 0, uma por vez, cada uma com minha aprovação antes da seguinte:
 > de usar com cliente de verdade:** trocar as credenciais do ZapSign no
 > Vercel de sandbox pra produção e recadastrar o webhook lá (contratar
 > plano de API de produção é decisão do dono do produto, registrada no
-> backlog). Etapa 1.6 (handoff parcial: criar projeto ao assinar) ainda
-> não começada — Tarefas e Financeiro seguem não construídos, então
-> handoff completo (tarefas + cobrança) continua fora de alcance.
->
-> **Pausado em 2026-09-24 a pedido do dono do produto — retomar daqui
-> quando ele voltar.**
+> backlog). Etapa 1.6 (handoff parcial: criar projeto ao assinar)
+> concluída em 2026-09-25 — trigger no banco cria `project` sozinho
+> quando o contrato vira assinado (webhook ou manual), tela `/projetos`
+> nova (lista, sem edição), link na página do contrato — ver
+> `docs/decisions/0009-handoff-parcial-projeto.md`. **Pendência:** aplicar
+> a migration no Supabase real e o dono do produto validar em produção.
+> Handoff completo (tarefas do playbook + cobrança recorrente) continua
+> fora de alcance até os módulos de Tarefas (Onda 2) e Financeiro (Onda 1)
+> existirem.

@@ -38,9 +38,14 @@ export default async function ContratosPage() {
     <main className="mx-auto max-w-4xl px-4 py-12">
       <div className="mb-8">
         <h1 className="text-xl font-semibold">Contratos</h1>
-        <Link href="/leads" className="text-sm text-gray-500 hover:underline">
-          ← Comercial
-        </Link>
+        <div className="flex gap-3 text-sm text-gray-500">
+          <Link href="/leads" className="hover:underline">
+            ← Comercial
+          </Link>
+          <Link href="/projetos" className="hover:underline">
+            Projetos →
+          </Link>
+        </div>
       </div>
 
       {error && (

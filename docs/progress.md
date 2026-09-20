@@ -237,3 +237,32 @@ Aprovada e validada em produção em 2026-09-23 pelo dono do produto.
   produção (hoje configurado pra sandbox, sem validade jurídica) e
   recadastrar o webhook na conta de produção do ZapSign — registrado no
   backlog.
+
+Aprovada e validada em produção (ambiente sandbox) em 2026-09-24 pelo
+dono do produto.
+
+### Etapa 1.6 — Handoff parcial: criar projeto ao assinar (concluída em 2026-09-25)
+
+- Trigger no banco (`handle_contract_signed`, `AFTER UPDATE ON contract`):
+  sempre que o contrato vira `status = 'signed'` — pelo webhook do
+  ZapSign ou por troca manual de status — cria uma linha em `project`
+  (tabela existente desde a Fundação, nunca usada até agora). Um só
+  projeto por contrato (`unique (contract_id)`), nome = nome do cliente,
+  data de início = data do contrato, auditoria com o ator quando aplicável.
+- Tela nova `/projetos`: lista (nome, cliente, status, início), cada
+  linha leva pra página do cliente — sem tela de projeto dedicada ainda
+  (fica pra quando o módulo de Tarefas, Onda 2, existir de verdade).
+  Link "Projeto criado" na página do contrato quando já existe.
+- Migration
+  `supabase/migrations/20260925090000_handoff_parcial_projeto.sql`.
+- Decisões em `docs/decisions/0009-handoff-parcial-projeto.md`.
+- Testes: migration testada localmente (contrato manual e via função do
+  webhook criam o projeto certo, idempotência contra duplicata, revert
+  limpo); Playwright (`/projetos` exige login); `npm run lint`,
+  `typecheck`, `test` (49 testes) e `build` sem erro.
+- **Fora do escopo** (fica pro backlog/Onda 2): handoff completo (tarefas
+  do playbook, cobrança recorrente), tela de edição de projeto, tela de
+  projeto dedicada.
+- **Pendência:** aplicar a migration no Supabase real e o dono do
+  produto validar em produção (assinar um contrato de teste e conferir
+  se o projeto nasce sozinho em `/projetos`).

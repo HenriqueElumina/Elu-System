@@ -43,6 +43,12 @@ export default async function ContratoDetailPage({
 
   if (!contract) notFound();
 
+  const { data: project } = await supabase
+    .from("project")
+    .select("id, name")
+    .eq("contract_id", contract.id)
+    .maybeSingle();
+
   const canManage = profile.role === "socio" || profile.role === "gestor";
   const client = contract.client as unknown as {
     id: string;
@@ -77,6 +83,18 @@ export default async function ContratoDetailPage({
             currentStatus={contract.status}
           />
         </div>
+      )}
+
+      {project && (
+        <p className="mb-4 text-sm text-gray-600">
+          Projeto criado:{" "}
+          <Link
+            href={`/clientes/${client?.id}`}
+            className="font-medium underline-offset-2 hover:underline"
+          >
+            {project.name}
+          </Link>
+        </p>
       )}
 
       {canManage && (
