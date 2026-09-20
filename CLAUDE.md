@@ -246,5 +246,6 @@ Etapas da Onda 0, uma por vez, cada uma com minha aprovação antes da seguinte:
 > `/financeiro`. Próximas etapas do Financeiro: 1.8 (boleto/Pix via Efí)
 > e 1.9 (contas a pagar + fluxo de caixa, com conciliação futura via OFX —
 > `docs/backlog.md`); NFSe segue pendente de confirmação com o contador.
-> Trocar o ZapSign de sandbox pra produção continua como pendência
-> separada, sem data.
+> **Decisão do dono do produto:** trocar o ZapSign de sandbox pra
+> produção fica pra só no final do projeto base (não antes) — sem data
+> definida.

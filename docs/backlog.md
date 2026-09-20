@@ -13,9 +13,10 @@
   validade jurídica). Antes de usar com cliente real: trocar
   `ZAPSIGN_API_TOKEN`/`ZAPSIGN_API_BASE_URL` no Vercel pro valor de
   produção que já foi configurado antes, contratar o plano de API de
-  produção do ZapSign (exige pagamento — decisão do dono do produto,
-  hoje ainda sandbox), e recadastrar o webhook na conta de produção (o
-  cadastro de sandbox não vale lá).
+  produção do ZapSign (exige pagamento), e recadastrar o webhook na conta
+  de produção (o cadastro de sandbox não vale lá). **Decisão do dono do
+  produto (2026-09-26): só fazer essa troca no final do projeto base**,
+  não antes — sem data definida.
 - **ZapSign — link de download expira:** `original_file`/`signed_file` que
   a API devolve expiram em 60min, por isso não são guardados no banco — o
   botão "Baixar PDF assinado" busca um link novo a cada clique. Se um dia
