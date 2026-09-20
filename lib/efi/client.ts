@@ -16,7 +16,7 @@ type EfiTokenResponse = {
 };
 
 export type EfiChargeResponse = {
-  charge_id: number;
+  charge_id: number | string;
   status: string;
   total: number;
   expire_at: string;
@@ -24,6 +24,17 @@ export type EfiChargeResponse = {
   link?: string;
   pdf?: { charge?: string };
 };
+
+// Algumas respostas da Efí vêm "cruas" ({charge_id, status, ...}), outras
+// embrulhadas num envelope ({code, data: {charge_id, status, ...}}) -- não
+// consegui confirmar qual é qual pra cada rota (docs bloqueadas nesta
+// sessão), então aceita os dois em vez de travar num só formato.
+export function unwrapChargeResponse(
+  raw: Record<string, unknown>,
+): EfiChargeResponse {
+  const data = (raw.data ?? raw) as EfiChargeResponse;
+  return data;
+}
 
 export type EfiCustomer = {
   name: string;
@@ -185,22 +196,24 @@ export async function createBoleto(
     },
   };
 
-  return efiRequest<EfiChargeResponse>(
+  const raw = await efiRequest<Record<string, unknown>>(
     "POST",
     "/v1/charge/one-step",
     body,
     token,
   );
+  return unwrapChargeResponse(raw);
 }
 
 export async function getCharge(chargeId: string): Promise<EfiChargeResponse> {
   const token = await getAccessToken();
-  return efiRequest<EfiChargeResponse>(
+  const raw = await efiRequest<Record<string, unknown>>(
     "GET",
     `/v1/charge/${chargeId}`,
     undefined,
     token,
   );
+  return unwrapChargeResponse(raw);
 }
 
 // A notificação que chega no webhook só traz um token -- este endpoint

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { sanitizePhoneNumber } from "@/lib/efi/client";
+import { sanitizePhoneNumber, unwrapChargeResponse } from "@/lib/efi/client";
 
 describe("sanitizePhoneNumber", () => {
   it("aceita número já limpo", () => {
@@ -25,5 +25,20 @@ describe("sanitizePhoneNumber", () => {
 
   it("retorna undefined quando o número não bate com o formato esperado", () => {
     expect(sanitizePhoneNumber("123")).toBeUndefined();
+  });
+});
+
+describe("unwrapChargeResponse", () => {
+  it("lê charge_id direto quando a resposta vem crua", () => {
+    const result = unwrapChargeResponse({ charge_id: 123, status: "waiting" });
+    expect(result.charge_id).toBe(123);
+  });
+
+  it("desembrulha quando a resposta vem dentro de data (bug real da Etapa 1.8)", () => {
+    const result = unwrapChargeResponse({
+      code: 200,
+      data: { charge_id: 456, status: "waiting" },
+    });
+    expect(result.charge_id).toBe(456);
   });
 });
