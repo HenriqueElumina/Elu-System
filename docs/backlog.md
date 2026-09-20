@@ -68,3 +68,10 @@
 - **Auditoria de troca manual de status do contrato:** `updateContractStatus`
   (Etapa 1.4) ainda não grava em `audit_log`; só a atualização via webhook
   do ZapSign (Etapa 1.5) grava. Padronizar quando fizer sentido.
+- **Contas a pagar — conciliação bancária via OFX:** dono do produto
+  confirmou (durante o planejamento da Etapa 1.9) que lançamento manual
+  serve por enquanto, mas a conciliação de verdade precisa ser feita
+  importando extrato em **OFX**. Considerar isso no desenho da Etapa 1.9
+  (contas a pagar + fluxo de caixa), mesmo que a importação de OFX em si
+  fique pra depois (conciliação bancária automática já era fora do MVP
+  da Onda 1, `docs/00-visao.md`).
