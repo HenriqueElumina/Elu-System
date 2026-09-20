@@ -1,6 +1,6 @@
 # ADR 0011 — Financeiro: boleto via Efí
 
-**Status:** Aceito, aguardando teste real (código pronto) — 2026-09-27
+**Status:** Aceito e validado em produção (ambiente de homologação da Efí) — 2026-09-27
 
 ## Contexto
 
@@ -67,22 +67,53 @@ das etapas anteriores) só muda o registro quando o status da Efí é
 `"identified"` etc., que eu não confirmei com certeza) não faz nada, em
 vez de inventar um mapeamento.
 
-### Pessoa jurídica em objeto à parte
+### Pessoa jurídica dentro de `customer`
 
-Cliente CNPJ manda `juridical_person: { corporate_name, cnpj }` junto do
-`customer` (sem `cpf`); cliente CPF manda `customer.cpf`. **Risco
-conhecido:** a Efí pode exigir data de nascimento (`birth`) pra
+Cliente CNPJ manda `customer.juridical_person: { corporate_name, cnpj }`
+— aninhado **dentro** de `customer`, não como irmão dele (bug real do
+teste, abaixo). Cliente CPF manda `customer.cpf`. **Risco conhecido, não
+testado ainda:** a Efí pode exigir data de nascimento (`birth`) pra
 pagador pessoa física, campo que o sistema não coleta hoje (`client` não
-tem esse dado) — se isso travar um teste real com cliente CPF, é uma
-lacuna de cadastro a resolver, não algo pra inventar aqui.
+tem esse dado) — só vamos saber quando testarmos com um cliente CPF de
+verdade.
 
-### Link do boleto buscado sob demanda
+### Link do boleto guardado na criação, não buscado sob demanda
 
-Mesmo padrão do PDF assinado do ZapSign (Etapa 1.5): não sei se o link
-do boleto/PDF da Efí expira, então por precaução `getBoletoUrl` busca um
-link novo a cada clique em "Ver boleto", em vez de guardar. A linha
-digitável (`boleto_barcode`) é guardada, por ser um valor fixo que não
-expira.
+Diferente do PDF assinado do ZapSign (Etapa 1.5, onde o link realmente
+expira em 60min), não achei evidência de que o link do boleto da Efí
+expire — e a resposta de "detalhar cobrança" (`GET /v1/charge/:id`) não
+trouxe o link no mesmo formato da resposta de criação (virou mais um
+formato pra adivinhar, sem necessidade). Mais simples: `generateBoleto`
+já guarda `boleto_url` (e `boleto_barcode`, a linha digitável) na hora da
+criação; "Ver boleto" é só um link, sem chamada de servidor.
+
+## Bugs achados no teste real (2026-09-27)
+
+Confirma o aviso já registrado: vários detalhes vieram de busca, não da
+documentação oficial lida direto. Quatro coisas não bateram, encontradas
+em sequência testando de verdade contra a homologação da Efí:
+
+1. **Telefone precisa vir só com dígitos, sem código de país**
+   (`^[1-9]{2}9?[0-9]{8}$`) — o cadastro de cliente (Etapa 1.1) guarda
+   telefone como texto livre (parênteses, traço, às vezes `+55`).
+   Corrigido com `sanitizePhoneNumber` na fronteira com a Efí, sem mudar
+   a validação de cadastro.
+2. **`juridical_person` fica dentro de `customer`, não ao lado.** Minha
+   primeira tentativa colocou como irmão de `customer` dentro de
+   `banking_billet`; a Efí respondeu "Propriedade desconhecida".
+3. **A resposta de `POST /v1/charge/one-step` vem embrulhada**
+   (`{"code": 200, "data": {"charge_id": ..., ...}}`), não "crua" como eu
+   assumi — por isso `charge_id` vinha `undefined` e a URL de consulta
+   virava `/v1/charge/undefined` (erro "Tipo inválido: string, esperado
+   integer" na propriedade `/id`). `unwrapChargeResponse` aceita os dois
+   formatos (cru ou embrulhado) em vez de travar num só.
+4. **Consequência do bug 3:** a fatura testada ficou com
+   `external_charge_id = "undefined"` (string literal) gravado — precisou
+   de um `update` manual no Supabase pra liberar gerar de novo. Isso e o
+   ajuste do link do boleto (acima) foram corrigidos juntos.
+
+Depois dos 4 ajustes, o fluxo completo funcionou de ponta a ponta em
+homologação: boleto criado, link salvo, "Ver boleto" abrindo.
 
 ## Validação
 
@@ -90,23 +121,25 @@ expira.
   muda nada; `"paid"` marca como paga com auditoria; cobrança
   desconhecida dá erro; contexto `anon` só chama a função, não lê
   `invoice` direto; revert limpo.
-- `npm run lint`, `typecheck`, `test` (57 testes) e `build` sem erro.
-- **Não testado contra a API real da Efí** — o acesso de rede direto a
-  `cobrancas-h.api.efipay.com.br` está bloqueado nesta sessão (mesmo
-  bloqueio que o ZapSign teve). Fica pro dono do produto testar em
-  produção (Vercel), como fizemos nas etapas anteriores.
+- `npm run lint`, `typecheck`, `test` (65 testes, incluindo
+  `sanitizePhoneNumber` e `unwrapChargeResponse`) e `build` sem erro.
+- **Testado de ponta a ponta contra a API real da Efí** (ambiente de
+  homologação, sem validade jurídica) pelo dono do produto: autenticação
+  mTLS funcionou de primeira; os 4 bugs acima foram achados e corrigidos
+  nesse teste; boleto gerado com sucesso, link acessível pela tela.
+- **Ainda não testado:** confirmação de pagamento via webhook (fluxo
+  completo até `update_invoice_payment_status`), cliente pessoa física
+  (CPF).
 
 ## Consequências
 
-- **Vários detalhes vieram de busca, não da documentação oficial lida
-  direto** — mais que o ZapSign, porque a Efí é uma integração bem mais
-  complexa (mTLS, notificação indireta, pessoa física x jurídica). Espero
-  achar mais de 1 bug no teste real; primeiros lugares a suspeitar:
-  formato da resposta de `/v1/notification/:token`, nome exato do campo
-  de telefone/e-mail esperado pelo `customer`, e se falta `birth` pra
-  CPF.
+- Webhook (confirmação de pagamento) segue sem validar de verdade contra
+  a Efí — só o fluxo de criação do boleto foi confirmado. Formato da
+  resposta de `/v1/notification/:token` continua sem confirmação; se o
+  pagamento de teste não atualizar a fatura sozinho, é o primeiro lugar a
+  conferir.
 - Pix e qualquer regra de juros/multa por atraso ficam de fora desta
   etapa (registrar no backlog se o dono do produto quiser depois).
-- Depende de `APP_BASE_URL`, `EFI_CLIENT_ID`, `EFI_CLIENT_SECRET`,
-  `EFI_CERTIFICATE_BASE64`, `EFI_SANDBOX`, `EFI_WEBHOOK_SECRET`
-  configurados na Vercel antes do teste real.
+- Testado só em **homologação** (sem validade jurídica) — trocar pra
+  produção é decisão separada do dono do produto (`EFI_CLIENT_ID_PROD`/
+  `EFI_CLIENT_SECRET_PROD` já guardados, aguardando).

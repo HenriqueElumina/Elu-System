@@ -245,22 +245,21 @@ Etapas da Onda 0, uma por vez, cada uma com minha aprovação antes da seguinte:
 > produto: PDF com vigência certa, fatura com vencimento certo em
 > `/financeiro`.
 >
-> **Etapa 1.8 — Boleto via Efí:** código pronto em 2026-09-27 (só boleto
-> nesta etapa, Pix fica pra depois) — autenticação OAuth2 + certificado
-> mTLS (`lib/efi/client.ts`), botões "Gerar boleto"/"Ver boleto" na
-> fatura, webhook `/api/webhooks/efi/[secret]` (segredo na URL, mesmo
-> padrão do ZapSign) — ver `docs/decisions/0011-boleto-efi.md`. Essa
-> integração é bem mais complexa que o ZapSign (mTLS, notificação
-> indireta por token) e vários detalhes vieram só de busca — espero achar
-> bugs no teste real, mesmo padrão da Etapa 1.5. Credenciais de
-> homologação e certificado já em mãos (testados localmente, formato
-> válido); chaves de produção também já em mãos, guardadas à parte pra
-> quando for a hora de trocar. **Pendência:** configurar as variáveis
-> `EFI_*`/`APP_BASE_URL` na Vercel e testar de verdade contra a API da
-> Efí (bloqueada nesta sessão de desenvolvimento). Etapa 1.9 (contas a
-> pagar + fluxo de caixa, com conciliação futura via OFX —
-> `docs/backlog.md`) e NFSe (pendente de confirmação com o contador)
-> seguem depois.
+> **Etapa 1.8 — Boleto via Efí:** concluída e validada em produção
+> (ambiente de homologação da Efí) em 2026-09-27 — só boleto nesta etapa,
+> Pix fica pra depois. Autenticação OAuth2 + certificado mTLS
+> (`lib/efi/client.ts`), botão "Gerar boleto" → "Ver boleto" na fatura,
+> webhook `/api/webhooks/efi/[secret]` (segredo na URL, mesmo padrão do
+> ZapSign). Teste de ponta a ponta do dono do produto (credenciais e
+> certificado próprios) achou e corrigiu 4 bugs só visíveis contra a API
+> real — formato do telefone, aninhamento de `juridical_person`, resposta
+> embrulhada em `{code, data}`, e por consequência o link do boleto
+> passou a ser guardado na criação em vez de buscado de novo — ver
+> `docs/decisions/0011-boleto-efi.md`. **Ainda não testado:** confirmação
+> de pagamento via webhook, cliente pessoa física (CPF — risco conhecido:
+> pode faltar data de nascimento no cadastro). Etapa 1.9 (contas a pagar +
+> fluxo de caixa, com conciliação futura via OFX — `docs/backlog.md`) e
+> NFSe (pendente de confirmação com o contador) seguem depois.
 >
 > **Decisão do dono do produto:** trocar o ZapSign de sandbox pra
 > produção fica pra só no final do projeto base (não antes) — sem data

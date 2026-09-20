@@ -321,7 +321,7 @@ Aprovada e validada em produção em 2026-09-25 pelo dono do produto.
 
 Aprovada e validada em produção em 2026-09-26 pelo dono do produto.
 
-### Etapa 1.8 — Boleto via Efí (código pronto em 2026-09-27, aguardando configurar variáveis na Vercel + teste real)
+### Etapa 1.8 — Boleto via Efí (concluída e validada em produção — homologação — em 2026-09-27)
 
 - Escopo confirmado com o dono do produto: só boleto nesta etapa (Pix
   fica pra depois). Credenciais de homologação e certificado (`.p12`)
@@ -338,22 +338,35 @@ Aprovada e validada em produção em 2026-09-26 pelo dono do produto.
   resolve o token de notificação, reconsulta cada cobrança na API antes
   de confiar no status, atualiza a fatura via
   `update_invoice_payment_status` (`SECURITY DEFINER`).
-- Migration `supabase/migrations/20260927090000_boleto_efi.sql`.
-- Decisões e riscos conhecidos (vários detalhes não confirmados contra a
-  API real — mTLS é bem mais complexo que o ZapSign) em
-  `docs/decisions/0011-boleto-efi.md`.
+- Migrations `supabase/migrations/20260927090000_boleto_efi.sql` e
+  `20260927120000_boleto_url_armazenada.sql` (correção — guardar o link
+  do boleto na criação, ver abaixo).
 - Pequeno refactor: `isAuthorizedWebhook` (segredo de webhook na URL)
   virou compartilhado (`lib/webhooks/shared-secret.ts`) entre ZapSign e
   Efí, em vez de duplicado.
+- **Teste de ponta a ponta em produção, ambiente de homologação da Efí**
+  (dono do produto, credenciais e certificado próprios) — 4 bugs achados
+  e corrigidos ao longo do teste, todos só visíveis contra a API real:
+  1. Telefone precisa vir só com dígitos, sem código de país — corrigido
+     com `sanitizePhoneNumber` na fronteira com a Efí.
+  2. `juridical_person` (cliente CNPJ) fica dentro de `customer`, não ao
+     lado — a Efí respondia "Propriedade desconhecida".
+  3. A resposta de criação da cobrança vem embrulhada
+     (`{"code", "data": {...}}`), não crua — `charge_id` vinha
+     `undefined`. `unwrapChargeResponse` aceita os dois formatos.
+  4. Consequência do bug 3: precisou limpar manualmente o
+     `external_charge_id` corrompido de uma fatura de teste. Aproveitado
+     pra simplificar "Ver boleto": o link agora é guardado na criação
+     (nova coluna `boleto_url`), sem depender do formato da resposta de
+     "detalhar cobrança" (que não bateu com o da criação).
+- Decisões e os 4 bugs documentados em
+  `docs/decisions/0011-boleto-efi.md`.
 - Testes: migration testada localmente (mapeamento defensivo de status,
   auditoria, contexto anon, revert limpo); Vitest
-  (`extractNotificationToken`, 57 testes no total); `npm run lint`,
-  `typecheck` e `build` sem erro.
-- **Não testado contra a API real da Efí** — acesso de rede bloqueado
-  nesta sessão (mesma situação do ZapSign).
+  (`sanitizePhoneNumber`, `unwrapChargeResponse`, `extractNotificationToken`,
+  65 testes no total); `npm run lint`, `typecheck` e `build` sem erro.
 - **Fora do escopo:** Pix, juros/multa por atraso automáticos, cancelar
-  boleto quando a fatura é cancelada.
-- **Pendências:** configurar `APP_BASE_URL`, `EFI_CLIENT_ID`,
-  `EFI_CLIENT_SECRET`, `EFI_CERTIFICATE_BASE64`, `EFI_SANDBOX=true`,
-  `EFI_WEBHOOK_SECRET` na Vercel; dono do produto testar gerando um
-  boleto de teste em homologação.
+  boleto quando a fatura é cancelada, cliente pessoa física (CPF, não
+  testado — risco conhecido: pode faltar data de nascimento no cadastro).
+- **Ainda não testado:** confirmação de pagamento via webhook (só a
+  criação do boleto foi validada contra a API real).
