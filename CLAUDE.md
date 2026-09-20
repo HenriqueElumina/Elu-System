@@ -243,9 +243,25 @@ Etapas da Onda 0, uma por vez, cada uma com minha aprovação antes da seguinte:
 > do contrato vence dia 10 do mês seguinte, dia 16–31 vence dia 25 — ver
 > ADRs 0008 e 0010. Teste de ponta a ponta confirmado pelo dono do
 > produto: PDF com vigência certa, fatura com vencimento certo em
-> `/financeiro`. Próximas etapas do Financeiro: 1.8 (boleto/Pix via Efí)
-> e 1.9 (contas a pagar + fluxo de caixa, com conciliação futura via OFX —
-> `docs/backlog.md`); NFSe segue pendente de confirmação com o contador.
+> `/financeiro`.
+>
+> **Etapa 1.8 — Boleto via Efí:** código pronto em 2026-09-27 (só boleto
+> nesta etapa, Pix fica pra depois) — autenticação OAuth2 + certificado
+> mTLS (`lib/efi/client.ts`), botões "Gerar boleto"/"Ver boleto" na
+> fatura, webhook `/api/webhooks/efi/[secret]` (segredo na URL, mesmo
+> padrão do ZapSign) — ver `docs/decisions/0011-boleto-efi.md`. Essa
+> integração é bem mais complexa que o ZapSign (mTLS, notificação
+> indireta por token) e vários detalhes vieram só de busca — espero achar
+> bugs no teste real, mesmo padrão da Etapa 1.5. Credenciais de
+> homologação e certificado já em mãos (testados localmente, formato
+> válido); chaves de produção também já em mãos, guardadas à parte pra
+> quando for a hora de trocar. **Pendência:** configurar as variáveis
+> `EFI_*`/`APP_BASE_URL` na Vercel e testar de verdade contra a API da
+> Efí (bloqueada nesta sessão de desenvolvimento). Etapa 1.9 (contas a
+> pagar + fluxo de caixa, com conciliação futura via OFX —
+> `docs/backlog.md`) e NFSe (pendente de confirmação com o contador)
+> seguem depois.
+>
 > **Decisão do dono do produto:** trocar o ZapSign de sandbox pra
 > produção fica pra só no final do projeto base (não antes) — sem data
 > definida.

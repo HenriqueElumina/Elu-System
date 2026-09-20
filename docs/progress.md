@@ -320,3 +320,40 @@ Aprovada e validada em produção em 2026-09-25 pelo dono do produto.
   certo (dia 10 ou 25, conforme a regra), visível em `/financeiro`.
 
 Aprovada e validada em produção em 2026-09-26 pelo dono do produto.
+
+### Etapa 1.8 — Boleto via Efí (código pronto em 2026-09-27, aguardando configurar variáveis na Vercel + teste real)
+
+- Escopo confirmado com o dono do produto: só boleto nesta etapa (Pix
+  fica pra depois). Credenciais de homologação e certificado (`.p12`)
+  já fornecidos e testados localmente (formato válido, sem senha);
+  chaves de produção guardadas à parte, aguardando a troca no futuro.
+- `lib/efi/client.ts`: autenticação OAuth2 + certificado mTLS (via
+  `node:https`, não `fetch` — precisa de controle direto do agente TLS),
+  criar boleto (`/v1/charge/one-step`), consultar cobrança, resolver
+  notificação de webhook.
+- `invoice` ganha `external_charge_id`/`boleto_barcode`. Botões "Gerar
+  boleto"/"Ver boleto" na seção "Faturas" do contrato.
+- Webhook `/api/webhooks/efi/[secret]` (mesmo padrão do ZapSign — segredo
+  na URL, não a assinatura nativa da Efí, que não confirmei direito) —
+  resolve o token de notificação, reconsulta cada cobrança na API antes
+  de confiar no status, atualiza a fatura via
+  `update_invoice_payment_status` (`SECURITY DEFINER`).
+- Migration `supabase/migrations/20260927090000_boleto_efi.sql`.
+- Decisões e riscos conhecidos (vários detalhes não confirmados contra a
+  API real — mTLS é bem mais complexo que o ZapSign) em
+  `docs/decisions/0011-boleto-efi.md`.
+- Pequeno refactor: `isAuthorizedWebhook` (segredo de webhook na URL)
+  virou compartilhado (`lib/webhooks/shared-secret.ts`) entre ZapSign e
+  Efí, em vez de duplicado.
+- Testes: migration testada localmente (mapeamento defensivo de status,
+  auditoria, contexto anon, revert limpo); Vitest
+  (`extractNotificationToken`, 57 testes no total); `npm run lint`,
+  `typecheck` e `build` sem erro.
+- **Não testado contra a API real da Efí** — acesso de rede bloqueado
+  nesta sessão (mesma situação do ZapSign).
+- **Fora do escopo:** Pix, juros/multa por atraso automáticos, cancelar
+  boleto quando a fatura é cancelada.
+- **Pendências:** configurar `APP_BASE_URL`, `EFI_CLIENT_ID`,
+  `EFI_CLIENT_SECRET`, `EFI_CERTIFICATE_BASE64`, `EFI_SANDBOX=true`,
+  `EFI_WEBHOOK_SECRET` na Vercel; dono do produto testar gerando um
+  boleto de teste em homologação.

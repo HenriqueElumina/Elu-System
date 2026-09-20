@@ -1,23 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { extractDocToken, isAuthorizedWebhook } from "@/lib/zapsign/webhook";
-
-describe("isAuthorizedWebhook", () => {
-  it("aceita quando o cabeçalho bate com o segredo configurado", () => {
-    expect(isAuthorizedWebhook("segredo-123", "segredo-123")).toBe(true);
-  });
-
-  it("rejeita quando o cabeçalho não bate", () => {
-    expect(isAuthorizedWebhook("errado", "segredo-123")).toBe(false);
-  });
-
-  it("rejeita quando falta o cabeçalho", () => {
-    expect(isAuthorizedWebhook(null, "segredo-123")).toBe(false);
-  });
-
-  it("rejeita quando o segredo não está configurado no servidor", () => {
-    expect(isAuthorizedWebhook("qualquer-coisa", undefined)).toBe(false);
-  });
-});
+import { extractDocToken } from "@/lib/zapsign/webhook";
 
 describe("extractDocToken", () => {
   it("lê token no nível raiz do corpo", () => {

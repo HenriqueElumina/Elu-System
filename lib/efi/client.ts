@@ -187,3 +187,23 @@ export async function getCharge(chargeId: string): Promise<EfiChargeResponse> {
     token,
   );
 }
+
+// A notificação que chega no webhook só traz um token -- este endpoint
+// resolve quais cobranças mudaram de status. Formato exato da resposta
+// não confirmado contra a API real ainda (ver ADR 0011); tenta os nomes
+// de campo mais prováveis em vez de travar num só.
+export async function resolveNotification(token: string): Promise<string[]> {
+  const accessToken = await getAccessToken();
+  const data = await efiRequest<Record<string, unknown>>(
+    "GET",
+    `/v1/notification/${token}`,
+    undefined,
+    accessToken,
+  );
+
+  const identifiers = data.identifiers ?? data.data ?? data.charge_ids;
+  if (Array.isArray(identifiers)) {
+    return identifiers.map(String);
+  }
+  return [];
+}

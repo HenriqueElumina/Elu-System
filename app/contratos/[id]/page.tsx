@@ -6,6 +6,7 @@ import { ContratoStatusChanger } from "./contrato-status-changer";
 import { EnviarAssinatura } from "./enviar-assinatura";
 import { BaixarPdfAssinado } from "./baixar-pdf-assinado";
 import { MarcarFaturaPaga } from "./marcar-fatura-paga";
+import { BoletoActions } from "./boleto-actions";
 import { INVOICE_STATUS_LABELS } from "@/lib/billing/receivable";
 
 export default async function ContratoDetailPage({
@@ -53,7 +54,7 @@ export default async function ContratoDetailPage({
 
   const { data: invoices } = await supabase
     .from("invoice")
-    .select("id, due_date, amount_cents, status")
+    .select("id, due_date, amount_cents, status, external_charge_id")
     .eq("contract_id", contract.id)
     .order("due_date");
 
@@ -198,12 +199,19 @@ export default async function ContratoDetailPage({
                     {INVOICE_STATUS_LABELS[invoice.status] ?? invoice.status}
                   </td>
                   {canManageFinance && (
-                    <td className="py-2">
+                    <td className="space-y-1 py-2">
                       {invoice.status === "pending" && (
-                        <MarcarFaturaPaga
-                          invoiceId={invoice.id}
-                          contractId={contract.id}
-                        />
+                        <>
+                          <BoletoActions
+                            invoiceId={invoice.id}
+                            contractId={contract.id}
+                            hasCharge={Boolean(invoice.external_charge_id)}
+                          />
+                          <MarcarFaturaPaga
+                            invoiceId={invoice.id}
+                            contractId={contract.id}
+                          />
+                        </>
                       )}
                     </td>
                   )}

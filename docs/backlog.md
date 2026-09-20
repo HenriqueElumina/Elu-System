@@ -95,3 +95,18 @@
   precisam ser atualizadas juntas — considerar unificar (ex.: o app
   consultar o banco em vez de recalcular) se isso já tiver dado problema
   na prática. Ver ADR 0010.
+- **Efí — Pix, juros/multa por atraso, cancelar boleto:** a Etapa 1.8 só
+  cobre boleto simples. Pix (se fizer sentido no futuro), configuração
+  de juros/multa por atraso na cobrança, e cancelar o boleto na Efí
+  quando a fatura é cancelada manualmente ficam de fora. Ver ADR 0011.
+- **Efí — cliente pessoa física pode exigir data de nascimento:** o
+  `client` não guarda data de nascimento; se a Efí exigir esse campo
+  (`birth`) pra pagador CPF, gerar boleto pra esses clientes vai falhar
+  até o cadastro ganhar esse campo. Só vamos saber com um teste real.
+  Ver ADR 0011.
+- **Efí — assinatura nativa do webhook (X-Hub-Signature) não
+  implementada:** o webhook da Etapa 1.8 usa segredo próprio na URL
+  (mesmo padrão do ZapSign), não o esquema de assinatura HMAC nativo da
+  Efí — não consegui confirmar com certeza de onde vem a chave desse
+  HMAC. Segurança real hoje vem de sempre reconsultar a cobrança na API
+  antes de confiar no webhook. Ver ADR 0011.
