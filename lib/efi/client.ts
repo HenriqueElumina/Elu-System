@@ -22,6 +22,7 @@ export type EfiChargeResponse = {
   expire_at: string;
   barcode?: string;
   link?: string;
+  billet_link?: string;
   pdf?: { charge?: string };
 };
 

@@ -2,16 +2,16 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { generateBoleto, getBoletoUrl } from "../actions";
+import { generateBoleto } from "../actions";
 
 export function BoletoActions({
   invoiceId,
   contractId,
-  hasCharge,
+  boletoUrl,
 }: {
   invoiceId: string;
   contractId: string;
-  hasCharge: boolean;
+  boletoUrl: string | null;
 }) {
   const router = useRouter();
   const [busy, setBusy] = useState(false);
@@ -29,26 +29,27 @@ export function BoletoActions({
     router.refresh();
   }
 
-  async function handleView() {
-    setBusy(true);
-    setError(null);
-    const result = await getBoletoUrl(invoiceId);
-    setBusy(false);
-    if (!result.ok) {
-      setError(result.message);
-      return;
-    }
-    window.open(result.url, "_blank", "noopener,noreferrer");
+  if (boletoUrl) {
+    return (
+      <a
+        href={boletoUrl}
+        target="_blank"
+        rel="noreferrer"
+        className="inline-block rounded-md border border-gray-300 px-2 py-1 text-xs font-medium"
+      >
+        Ver boleto
+      </a>
+    );
   }
 
   return (
     <div>
       <button
-        onClick={hasCharge ? handleView : handleGenerate}
+        onClick={handleGenerate}
         disabled={busy}
         className="rounded-md border border-gray-300 px-2 py-1 text-xs font-medium disabled:opacity-50"
       >
-        {busy ? "Aguarde..." : hasCharge ? "Ver boleto" : "Gerar boleto"}
+        {busy ? "Aguarde..." : "Gerar boleto"}
       </button>
       {error && <p className="mt-1 text-xs text-red-600">{error}</p>}
     </div>

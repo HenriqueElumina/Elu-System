@@ -54,7 +54,7 @@ export default async function ContratoDetailPage({
 
   const { data: invoices } = await supabase
     .from("invoice")
-    .select("id, due_date, amount_cents, status, external_charge_id")
+    .select("id, due_date, amount_cents, status, boleto_url")
     .eq("contract_id", contract.id)
     .order("due_date");
 
@@ -205,7 +205,7 @@ export default async function ContratoDetailPage({
                           <BoletoActions
                             invoiceId={invoice.id}
                             contractId={contract.id}
-                            hasCharge={Boolean(invoice.external_charge_id)}
+                            boletoUrl={invoice.boleto_url}
                           />
                           <MarcarFaturaPaga
                             invoiceId={invoice.id}

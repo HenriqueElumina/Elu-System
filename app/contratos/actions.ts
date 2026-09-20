@@ -12,7 +12,7 @@ import { CONTRACT_SIGNER } from "@/lib/config";
 import { createDocument, getDocument } from "@/lib/zapsign/client";
 import { renderContractPdfBase64 } from "@/lib/pdf/render-contract-pdf";
 import type { ContractPdfItem } from "@/lib/pdf/contract-document";
-import { createBoleto, getCharge } from "@/lib/efi/client";
+import { createBoleto } from "@/lib/efi/client";
 
 type ActionResult<T = undefined> =
   | ({ ok: true } & (T extends undefined ? object : T))
@@ -373,11 +373,14 @@ export async function generateBoleto(
     };
   }
 
+  const boletoUrl = charge.pdf?.charge ?? charge.billet_link ?? charge.link ?? null;
+
   const { error: updateError } = await supabase
     .from("invoice")
     .update({
       external_charge_id: String(charge.charge_id),
       boleto_barcode: charge.barcode ?? null,
+      boleto_url: boletoUrl,
     })
     .eq("id", invoiceId);
 
@@ -388,40 +391,4 @@ export async function generateBoleto(
   revalidatePath("/financeiro");
   revalidatePath(`/contratos/${contractId}`);
   return { ok: true };
-}
-
-export async function getBoletoUrl(
-  invoiceId: string,
-): Promise<ActionResult<{ url: string }>> {
-  const supabase = await createClient();
-
-  const { data: invoice, error: invoiceError } = await supabase
-    .from("invoice")
-    .select("external_charge_id")
-    .eq("id", invoiceId)
-    .single();
-
-  if (invoiceError || !invoice) {
-    return { ok: false, message: "Fatura não encontrada." };
-  }
-  if (!invoice.external_charge_id) {
-    return { ok: false, message: "Esta fatura ainda não tem boleto gerado." };
-  }
-
-  let charge;
-  try {
-    charge = await getCharge(invoice.external_charge_id);
-  } catch (err) {
-    return {
-      ok: false,
-      message: err instanceof Error ? err.message : "Erro ao consultar boleto na Efí.",
-    };
-  }
-
-  const url = charge.pdf?.charge ?? charge.link;
-  if (!url) {
-    return { ok: false, message: "Efí não devolveu um link pro boleto." };
-  }
-
-  return { ok: true, url };
 }
