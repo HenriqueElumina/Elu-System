@@ -135,6 +135,19 @@ async function getAccessToken(): Promise<string> {
   return data.access_token;
 }
 
+// A Efí exige telefone só com dígitos, sem código de país, no formato
+// DDD (2) + 9 opcional + número (8): ^[1-9]{2}9?[0-9]{8}$. O cadastro de
+// cliente (Etapa 1.1) guarda o telefone como texto livre (com
+// parênteses/traço, às vezes com +55), então precisa limpar aqui.
+export function sanitizePhoneNumber(phone: string | null): string | undefined {
+  if (!phone) return undefined;
+  let digits = phone.replace(/\D/g, "");
+  if (digits.length > 11 && digits.startsWith("55")) {
+    digits = digits.slice(2);
+  }
+  return /^[1-9]{2}9?[0-9]{8}$/.test(digits) ? digits : undefined;
+}
+
 export async function createBoleto(
   input: CreateBoletoInput,
 ): Promise<EfiChargeResponse> {
@@ -145,7 +158,7 @@ export async function createBoleto(
     customer: {
       name: input.customer.name,
       email: input.customer.email ?? undefined,
-      phone_number: input.customer.phone ?? undefined,
+      phone_number: sanitizePhoneNumber(input.customer.phone),
       ...(input.customer.documentType === "cpf"
         ? { cpf: input.customer.document }
         : {}),
