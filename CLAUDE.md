@@ -223,11 +223,14 @@ Etapas da Onda 0, uma por vez, cada uma com minha aprovação antes da seguinte:
 > Vercel de sandbox pra produção e recadastrar o webhook lá (contratar
 > plano de API de produção é decisão do dono do produto, registrada no
 > backlog). Etapa 1.6 (handoff parcial: criar projeto ao assinar)
-> concluída em 2026-09-25 — trigger no banco cria `project` sozinho
-> quando o contrato vira assinado (webhook ou manual), tela `/projetos`
-> nova (lista, sem edição), link na página do contrato — ver
-> `docs/decisions/0009-handoff-parcial-projeto.md`. **Pendência:** aplicar
-> a migration no Supabase real e o dono do produto validar em produção.
-> Handoff completo (tarefas do playbook + cobrança recorrente) continua
-> fora de alcance até os módulos de Tarefas (Onda 2) e Financeiro (Onda 1)
-> existirem.
+> concluída e validada em produção em 2026-09-25 — trigger no banco cria
+> `project` sozinho quando o contrato vira assinado (webhook ou manual),
+> tela `/projetos` nova (lista, sem edição), link na página do contrato —
+> ver `docs/decisions/0009-handoff-parcial-projeto.md`. Handoff completo
+> (tarefas do playbook + cobrança recorrente) continua fora de alcance até
+> os módulos de Tarefas (Onda 2) e Financeiro (Onda 1) existirem.
+>
+> **Onda 1 essencialmente completa — falta o módulo Financeiro** (contas
+> a receber, boleto/Pix, NFSe) pra fechar de vez. Próxima decisão: seguir
+> pro Financeiro, ou primeiro trocar o ZapSign de sandbox pra produção
+> (pendência registrada acima e em `docs/backlog.md`).

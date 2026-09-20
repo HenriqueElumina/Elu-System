@@ -263,6 +263,8 @@ dono do produto.
 - **Fora do escopo** (fica pro backlog/Onda 2): handoff completo (tarefas
   do playbook, cobrança recorrente), tela de edição de projeto, tela de
   projeto dedicada.
-- **Pendência:** aplicar a migration no Supabase real e o dono do
-  produto validar em produção (assinar um contrato de teste e conferir
-  se o projeto nasce sozinho em `/projetos`).
+- Migration aplicada pelo dono do produto no Supabase real e fluxo
+  validado em produção (contrato assinado gerou o projeto sozinho,
+  visível em `/projetos`).
+
+Aprovada e validada em produção em 2026-09-25 pelo dono do produto.
