@@ -286,8 +286,21 @@ Etapas da Onda 0, uma por vez, cada uma com minha aprovação antes da seguinte:
 > dono do produto em 2026-09-30** — precisa pensar melhor, não é
 > urgente agora. Retomar quando ele trouxer o assunto de volta (ver
 > `docs/backlog.md`). Com isso, o resto do MVP do módulo Financeiro
-> (Onda 1) está completo e validado em produção; próximo passo a
-> combinar com o dono do produto.
+> (Onda 1) está completo e validado em produção.
+>
+> **Onda 2 — Operação, iniciada em 2026-09-30 com aprovação explícita
+> do dono do produto.** Etapa 2.1 (Tarefas nascendo do playbook do
+> projeto): código pronto em 2026-09-30 — nova tabela `task`;
+> `handle_contract_signed()` gera uma tarefa por etapa do playbook de
+> cada serviço vendido, na mesma transação que já cria o `project`
+> (Etapa 1.6); `update_task_status()` deixa `colaborador` avançar/reabrir
+> status sem escrita direta na tabela; tela nova `/projetos/[id]` (dados
+> do projeto + lista de tarefas) — ver
+> `docs/decisions/0014-tarefas-do-playbook.md`. Sem atribuição de
+> responsável, Kanban ou registro de tempo ainda (próximas fatias).
+> Contratos assinados antes desta etapa não ganham tarefas
+> retroativamente (decisão do dono do produto). **Pendência:** aplicar a
+> migration no Supabase real e validar em produção.
 >
 > **Decisão do dono do produto:** trocar o ZapSign de sandbox pra
 > produção fica pra só no final do projeto base (não antes) — sem data

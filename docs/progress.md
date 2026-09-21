@@ -439,3 +439,36 @@ Aprovada e validada em produção em 2026-09-26 pelo dono do produto.
 - **Fora do escopo:** editar/desativar conta bancária cadastrada errada.
 - Migration aplicada no Supabase real e validada em produção pelo dono
   do produto em 2026-09-30.
+
+## Onda 2 — Operação
+
+### Etapa 2.1 — Tarefas nascendo do playbook do projeto (código pronto em 2026-09-30)
+
+- Nova tabela `task` (título/descrição copiados do `playbook_step` no
+  momento da criação, status `pending`/`in_progress`/`done`, prazo
+  calculado a partir do início do projeto + SLA da etapa do playbook).
+- `handle_contract_signed()` (Etapas 1.6/1.7) ganhou um laço a mais, na
+  mesma transação que já cria o `project`: gera uma `task` por
+  `playbook_step` de cada serviço vendido no contrato.
+- `update_task_status(task_id, status)` (`SECURITY DEFINER`, mesmo
+  padrão da Etapa 1.10): permite `colaborador` avançar/reabrir status
+  mesmo sem `UPDATE` direto liberado na tabela `task` pela RLS.
+- Tela nova `/projetos/[id]`: dados do projeto + lista de tarefas com
+  botões "Iniciar"/"Concluir"/"Reabrir". Link a partir da lista
+  `/projetos`.
+- Sem atribuição de responsável, Kanban, registro de tempo ou
+  Definition of Done nesta etapa — próximas fatias do módulo de
+  Tarefas.
+- Migration `supabase/migrations/20260930090000_tarefas_do_playbook.sql`.
+- Decisões em `docs/decisions/0014-tarefas-do-playbook.md`.
+- Testes: migration testada localmente (assinar contrato gera
+  projeto+tarefas com prazo certo; `financeiro` sem acesso; `colaborador`
+  lê mas `UPDATE` direto na tabela é bloqueado pela RLS — só
+  `update_task_status` funciona; `gestor` também; id inexistente dá erro
+  controlado; revert limpo); Playwright novo pra `/projetos/[id]`;
+  `npm run lint`, `typecheck` e `build` sem erro.
+- **Fora do escopo:** contratos assinados antes desta etapa não ganham
+  tarefas retroativamente (decisão do dono do produto: só vale daqui pra
+  frente).
+- **Pendência:** aplicar a migration no Supabase real e o dono do
+  produto validar em produção.

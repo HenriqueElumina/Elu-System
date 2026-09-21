@@ -71,7 +71,14 @@ export default async function ProjetosPage() {
               } | null;
               return (
                 <tr key={project.id} className="border-b border-gray-100">
-                  <td className="py-2 pr-4">{project.name}</td>
+                  <td className="py-2 pr-4">
+                    <Link
+                      href={`/projetos/${project.id}`}
+                      className="text-gray-900 underline-offset-2 hover:underline"
+                    >
+                      {project.name}
+                    </Link>
+                  </td>
                   <td className="py-2 pr-4">
                     {client ? (
                       <Link

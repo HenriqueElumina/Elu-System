@@ -64,10 +64,10 @@
   partir do playbook e cobrança recorrente automática, que dependem dos
   módulos de Tarefas (Onda 2) e Financeiro (Onda 1, ainda não
   construído). Ver ADR 0007.
-- **Tela de projeto dedicada e edição:** hoje `/projetos` é só lista
-  (leitura) e o projeto nasce automático sem tela de criação/edição
-  manual. Uma página de projeto de verdade (Kanban, tarefas, prazos)
-  fica pro módulo de Tarefas (Onda 2) — ver ADR 0009.
+- **Tela de projeto:** desde a Etapa 2.1 existe `/projetos/[id]` com a
+  lista de tarefas do projeto. Ainda falta: Kanban visual/drag-and-drop,
+  edição manual dos dados do projeto (nome, status, datas) — hoje só
+  nasce automático e não tem tela de editar.
 - **Criação manual de contrato:** hoje só dá pra gerar contrato a partir
   de uma proposta aceita. Um fluxo de contrato manual (sem proposta) fica
   de fora por enquanto — ninguém pediu ainda.
@@ -126,3 +126,17 @@
   assinatura) — testar de verdade só quando um boleto real for pago, ou
   abrindo chamado com o suporte deles passando o `charge_id`. Ver ADR
   0011.
+- **Tarefas — sem atribuição de responsável ainda:** desde a Etapa 2.1,
+  qualquer `socio`/`gestor`/`colaborador` pode avançar o status de
+  qualquer tarefa de qualquer projeto — não tem "dono" da tarefa nem
+  filtro de "minhas tarefas". Fica pra próxima fatia do módulo de
+  Tarefas, junto com Kanban visual e registro de tempo. Ver ADR 0014.
+- **Tarefas — sem Definition of Done nem alerta de SLA atrasado:** hoje
+  o status é só pending/in_progress/done da tarefa inteira, sem
+  checklist interno; prazo (`due_date`) existe mas nada avisa quando
+  passou. Alerta de atraso é rentabilidade/capacidade (módulo 10). Ver
+  ADR 0014.
+- **Tarefas — contratos assinados antes da Etapa 2.1 não têm tarefas:**
+  a geração automática só vale pra contratos assinados a partir de
+  2026-09-30 (transição de status é o gatilho). Projetos mais antigos
+  ficam sem tarefas a menos que alguém gere manualmente. Ver ADR 0014.
