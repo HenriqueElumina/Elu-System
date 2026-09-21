@@ -315,6 +315,17 @@ Etapas da Onda 0, uma por vez, cada uma com minha aprovação antes da seguinte:
 > `colaborador` até alguém atribuir. Migration aplicada e validada em
 > produção em 2026-10-01.
 >
+> **Etapa 2.3 — Registro de tempo:** código pronto em 2026-10-02 — nova
+> tabela `time_entry` (lançamento manual: data, horas, nota; sem timer
+> ao vivo); mesma regra de permissão da Etapa 2.2 (só responsável ou
+> `socio`/`gestor` lançam, sempre em nome de si mesmo); corrigir = apagar
+> (soft-delete, só `socio`/`gestor`) e lançar de novo, sem edição em
+> linha; `/projetos/[id]` mostra "lançado Xh" ao lado da estimativa — ver
+> `docs/decisions/0016-registro-de-tempo.md`. Sem uso do dado em nenhum
+> cálculo de capacidade/rentabilidade ainda (módulo 10, mais adiante).
+> **Pendência:** aplicar a migration no Supabase real e validar em
+> produção.
+>
 > **Decisão do dono do produto:** trocar o ZapSign de sandbox pra
 > produção fica pra só no final do projeto base (não antes) — sem data
 > definida.

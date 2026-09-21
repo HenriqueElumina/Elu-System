@@ -6,6 +6,9 @@ import { TASK_STATUS_LABELS } from "@/lib/validation/task";
 import { formatRelativeTime } from "@/lib/format/relative-time";
 import { TaskStatusActions } from "./task-status-actions";
 import { TaskAssignmentEditor } from "./task-assignment-editor";
+import { TimeEntryForm } from "./time-entry-form";
+import { DeleteTimeEntryButton } from "./delete-time-entry-button";
+import { sumLoggedHours } from "@/lib/tasks/time";
 
 export default async function ProjetoDetailPage({
   params,
@@ -56,7 +59,7 @@ export default async function ProjetoDetailPage({
 
   const taskIds = (tasks ?? []).map((task) => task.id);
 
-  const [{ data: history }, { data: assignees }] = await Promise.all([
+  const [{ data: history }, { data: assignees }, { data: timeEntries }] = await Promise.all([
     taskIds.length > 0
       ? supabase
           .from("task_status_history")
@@ -72,6 +75,14 @@ export default async function ProjetoDetailPage({
           .eq("active", true)
           .order("full_name")
       : Promise.resolve({ data: null }),
+    taskIds.length > 0
+      ? supabase
+          .from("time_entry")
+          .select("id, task_id, work_date, hours, note, logger:profile_id(full_name)")
+          .in("task_id", taskIds)
+          .is("deleted_at", null)
+          .order("work_date")
+      : Promise.resolve({ data: [] }),
   ]);
 
   const client = project.client as unknown as {
@@ -115,6 +126,10 @@ export default async function ProjetoDetailPage({
               const taskHistory = (history ?? []).filter(
                 (entry) => entry.task_id === task.id,
               );
+              const taskTimeEntries = (timeEntries ?? []).filter(
+                (entry) => entry.task_id === task.id,
+              );
+              const loggedHours = sumLoggedHours(taskTimeEntries);
 
               return (
                 <li
@@ -132,6 +147,7 @@ export default async function ProjetoDetailPage({
                         {task.due_date &&
                           ` — prazo ${new Date(task.due_date).toLocaleDateString("pt-BR")}`}
                         {task.estimated_hours != null && ` — estimativa ${task.estimated_hours}h`}
+                        {loggedHours > 0 && ` — lançado ${loggedHours}h`}
                         {" — "}
                         atualizado {formatRelativeTime(new Date(task.updated_at))}
                       </p>
@@ -156,6 +172,43 @@ export default async function ProjetoDetailPage({
                       estimatedHours={task.estimated_hours}
                       assignees={assignees ?? []}
                     />
+                  )}
+
+                  {canAct && (
+                    <TimeEntryForm taskId={task.id} projectId={project.id} />
+                  )}
+
+                  {taskTimeEntries.length > 0 && (
+                    <details className="mt-2 text-xs text-gray-500">
+                      <summary className="cursor-pointer">
+                        Lançamentos de tempo ({loggedHours}h)
+                      </summary>
+                      <ul className="mt-1 space-y-1">
+                        {taskTimeEntries.map((entry) => {
+                          const logger = entry.logger as unknown as {
+                            full_name: string;
+                          } | null;
+                          return (
+                            <li key={entry.id}>
+                              {new Date(entry.work_date).toLocaleDateString("pt-BR")} —{" "}
+                              {entry.hours}h por {logger?.full_name ?? "-"}
+                              {entry.note && ` — ${entry.note}`}
+                              {canManage && (
+                                <>
+                                  {" "}
+                                  (
+                                  <DeleteTimeEntryButton
+                                    timeEntryId={entry.id}
+                                    projectId={project.id}
+                                  />
+                                  )
+                                </>
+                              )}
+                            </li>
+                          );
+                        })}
+                      </ul>
+                    </details>
                   )}
 
                   {taskHistory.length > 0 && (

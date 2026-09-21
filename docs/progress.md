@@ -509,3 +509,30 @@ Aprovada e validada em produção em 2026-09-26 pelo dono do produto.
   cálculo.
 - Migration aplicada no Supabase real e validada em produção pelo dono
   do produto em 2026-10-01.
+
+### Etapa 2.3 — Registro de tempo (código pronto em 2026-10-02)
+
+- Nova tabela `time_entry` (tarefa, quem lançou, data trabalhada, horas,
+  nota opcional, soft delete). Lançamento manual, não timer ao vivo.
+- RLS: só o responsável da tarefa ou `socio`/`gestor` lançam (sempre em
+  nome de si mesmo — `profile_id = auth.uid()`); editar/apagar (soft
+  delete) só `socio`/`gestor`. Checagem inteira na policy (`WITH CHECK`),
+  sem precisar de função `SECURITY DEFINER` como o status da tarefa.
+- `/projetos/[id]`: cada tarefa mostra "lançado Xh" ao lado da
+  estimativa; formulário inline pra quem pode agir; lista de
+  lançamentos num `<details>`, com "apagar" pra `socio`/`gestor`.
+- `sumLoggedHours` (`lib/tasks/time.ts`) — função pura testada, mesmo
+  padrão de `computeCashFlowSummary`/`computeReceivableSummary`.
+- Migration `supabase/migrations/20261002090000_registro_de_tempo.sql`.
+- Decisões em `docs/decisions/0016-registro-de-tempo.md`.
+- Testes: migration testada localmente (`colaborador` lança só na
+  própria tarefa atribuída e só em nome de si mesmo, bloqueado nos dois
+  outros casos; `gestor` lança em qualquer tarefa; `colaborador` não
+  consegue soft-delete; `socio` consegue; `financeiro` sem acesso;
+  revert limpo); Vitest (`sumLoggedHours`, 79 testes no total);
+  `npm run lint`, `typecheck`, `build` e Playwright completo sem erro.
+- **Fora do escopo:** edição em linha do valor lançado (corrigir = apagar
+  e relançar); uso da soma de horas em cálculo de capacidade/
+  rentabilidade; timer ao vivo.
+- **Pendência:** aplicar a migration no Supabase real e o dono do
+  produto validar em produção.

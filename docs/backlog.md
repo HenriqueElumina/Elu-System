@@ -145,6 +145,19 @@
 - **Tarefas — reatribuição/estimativa não ficam no histórico:**
   `task_status_history` (Etapa 2.2) só grava mudança de *status*, não
   troca de responsável nem de estimativa. Ver ADR 0015.
+- **Registro de tempo — sem edição em linha:** desde a Etapa 2.3,
+  corrigir um lançamento errado é apagar (soft-delete, só
+  `socio`/`gestor`) e lançar de novo — sem editar o valor direto. Se
+  isso incomodar no uso real, é candidato a próxima fatia. Ver ADR 0016.
+- **Registro de tempo — sem uso em capacidade/rentabilidade ainda:**
+  `time_entry` (Etapa 2.3) só mostra a soma ao lado da estimativa da
+  tarefa; nenhum cálculo de capacidade, custo/hora ou margem usa esse
+  dado ainda — isso é módulo 10. Ver ADR 0016.
+- **Registro de tempo — sem timer ao vivo:** a Etapa 2.3 implementou só
+  lançamento manual (data + horas + nota). Cronômetro
+  iniciar/pausar, se um dia fizer sentido, é uma fatia à parte (mais
+  complexa: timer esquecido rodando, sessão entre dispositivos). Ver
+  ADR 0016.
 - **Tarefas — contratos assinados antes da Etapa 2.1 não têm tarefas:**
   a geração automática só vale pra contratos assinados a partir de
   2026-09-30 (transição de status é o gatilho). Projetos mais antigos
