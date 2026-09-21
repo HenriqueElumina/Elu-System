@@ -6,6 +6,7 @@ import { ContratoStatusChanger } from "./contrato-status-changer";
 import { EnviarAssinatura } from "./enviar-assinatura";
 import { BaixarPdfAssinado } from "./baixar-pdf-assinado";
 import { MarcarFaturaPaga } from "./marcar-fatura-paga";
+import { ReverterFaturaPagamento } from "./reverter-fatura-pagamento";
 import { BoletoActions } from "./boleto-actions";
 import { INVOICE_STATUS_LABELS } from "@/lib/billing/receivable";
 
@@ -54,13 +55,23 @@ export default async function ContratoDetailPage({
 
   const { data: invoices } = await supabase
     .from("invoice")
-    .select("id, due_date, amount_cents, status, boleto_url")
+    .select(
+      "id, due_date, amount_cents, status, boleto_url, bank_account:bank_account_id(name)",
+    )
     .eq("contract_id", contract.id)
     .order("due_date");
 
   const canManage = profile.role === "socio" || profile.role === "gestor";
   const canManageFinance =
     profile.role === "socio" || profile.role === "financeiro";
+
+  const { data: bankAccounts } = canManageFinance
+    ? await supabase
+        .from("bank_account")
+        .select("id, name")
+        .eq("active", true)
+        .order("name")
+    : { data: null };
   const client = contract.client as unknown as {
     id: string;
     legal_name: string;
@@ -180,43 +191,57 @@ export default async function ContratoDetailPage({
                 <th className="py-2 pr-4">Vencimento</th>
                 <th className="py-2 pr-4">Valor</th>
                 <th className="py-2 pr-4">Status</th>
+                <th className="py-2 pr-4">Conta bancária</th>
                 {canManageFinance && <th className="py-2"></th>}
               </tr>
             </thead>
             <tbody>
-              {invoices.map((invoice) => (
-                <tr key={invoice.id} className="border-b border-gray-100">
-                  <td className="py-2 pr-4">
-                    {new Date(invoice.due_date).toLocaleDateString("pt-BR")}
-                  </td>
-                  <td className="py-2 pr-4">
-                    {centsToReais(invoice.amount_cents).toLocaleString("pt-BR", {
-                      style: "currency",
-                      currency: "BRL",
-                    })}
-                  </td>
-                  <td className="py-2 pr-4">
-                    {INVOICE_STATUS_LABELS[invoice.status] ?? invoice.status}
-                  </td>
-                  {canManageFinance && (
-                    <td className="space-y-1 py-2">
-                      {invoice.status === "pending" && (
-                        <>
-                          <BoletoActions
-                            invoiceId={invoice.id}
-                            contractId={contract.id}
-                            boletoUrl={invoice.boleto_url}
-                          />
-                          <MarcarFaturaPaga
-                            invoiceId={invoice.id}
-                            contractId={contract.id}
-                          />
-                        </>
-                      )}
+              {invoices.map((invoice) => {
+                const bankAccount = invoice.bank_account as unknown as {
+                  name: string;
+                } | null;
+                return (
+                  <tr key={invoice.id} className="border-b border-gray-100">
+                    <td className="py-2 pr-4">
+                      {new Date(invoice.due_date).toLocaleDateString("pt-BR")}
                     </td>
-                  )}
-                </tr>
-              ))}
+                    <td className="py-2 pr-4">
+                      {centsToReais(invoice.amount_cents).toLocaleString("pt-BR", {
+                        style: "currency",
+                        currency: "BRL",
+                      })}
+                    </td>
+                    <td className="py-2 pr-4">
+                      {INVOICE_STATUS_LABELS[invoice.status] ?? invoice.status}
+                    </td>
+                    <td className="py-2 pr-4">{bankAccount?.name ?? "-"}</td>
+                    {canManageFinance && (
+                      <td className="space-y-1 py-2">
+                        {invoice.status === "pending" && (
+                          <>
+                            <BoletoActions
+                              invoiceId={invoice.id}
+                              contractId={contract.id}
+                              boletoUrl={invoice.boleto_url}
+                            />
+                            <MarcarFaturaPaga
+                              invoiceId={invoice.id}
+                              contractId={contract.id}
+                              bankAccounts={bankAccounts ?? []}
+                            />
+                          </>
+                        )}
+                        {invoice.status === "paid" && (
+                          <ReverterFaturaPagamento
+                            invoiceId={invoice.id}
+                            contractId={contract.id}
+                          />
+                        )}
+                      </td>
+                    )}
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </section>

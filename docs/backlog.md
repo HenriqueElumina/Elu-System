@@ -68,7 +68,12 @@
   de fora por enquanto — ninguém pediu ainda.
 - **Auditoria de troca manual de status do contrato:** `updateContractStatus`
   (Etapa 1.4) ainda não grava em `audit_log`; só a atualização via webhook
-  do ZapSign (Etapa 1.5) grava. Padronizar quando fizer sentido.
+  do ZapSign (Etapa 1.5) e, desde a Etapa 1.10, marcar/reverter pagamento
+  de fatura e conta a pagar gravam. Padronizar quando fizer sentido.
+- **Conta bancária — sem edição/desativação:** a Etapa 1.10 criou a
+  tabela `bank_account` com campo `active`, mas só a tela de cadastro
+  existe (lista + criar). Editar dado errado ou desativar uma conta
+  antiga fica pra quando isso incomodar no uso real.
 - **Contas a pagar — conciliação bancária via OFX:** dono do produto
   confirmou (durante o planejamento da Etapa 1.9) que lançamento manual
   serve por enquanto, mas a conciliação de verdade precisa ser feita

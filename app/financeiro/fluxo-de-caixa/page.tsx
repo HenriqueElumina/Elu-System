@@ -50,13 +50,17 @@ export default async function FluxoDeCaixaPage({
   const [{ data: invoices }, { data: payables }] = await Promise.all([
     supabase
       .from("invoice")
-      .select("id, amount_cents, paid_at, client:client_id(legal_name, trade_name)")
+      .select(
+        "id, amount_cents, paid_at, client:client_id(legal_name, trade_name), bank_account:bank_account_id(name)",
+      )
       .eq("status", "paid")
       .gte("paid_at", start)
       .lte("paid_at", `${end}T23:59:59`),
     supabase
       .from("payable")
-      .select("id, description, amount_cents, paid_at")
+      .select(
+        "id, description, amount_cents, paid_at, bank_account:bank_account_id(name)",
+      )
       .eq("status", "paid")
       .gte("paid_at", start)
       .lte("paid_at", `${end}T23:59:59`),
@@ -68,21 +72,31 @@ export default async function FluxoDeCaixaPage({
         legal_name: string;
         trade_name: string | null;
       } | null;
+      const bankAccount = invoice.bank_account as unknown as {
+        name: string;
+      } | null;
       return {
         id: invoice.id,
         description: client?.trade_name ?? client?.legal_name ?? "Fatura",
         amountCents: invoice.amount_cents,
         date: invoice.paid_at as string,
         kind: "in" as const,
+        bankAccountName: bankAccount?.name ?? null,
       };
     }),
-    ...(payables ?? []).map((payable) => ({
-      id: payable.id,
-      description: payable.description,
-      amountCents: payable.amount_cents,
-      date: payable.paid_at as string,
-      kind: "out" as const,
-    })),
+    ...(payables ?? []).map((payable) => {
+      const bankAccount = payable.bank_account as unknown as {
+        name: string;
+      } | null;
+      return {
+        id: payable.id,
+        description: payable.description,
+        amountCents: payable.amount_cents,
+        date: payable.paid_at as string,
+        kind: "out" as const,
+        bankAccountName: bankAccount?.name ?? null,
+      };
+    }),
   ].sort((a, b) => a.date.localeCompare(b.date));
 
   const summary = computeCashFlowSummary(transactions);
@@ -97,6 +111,9 @@ export default async function FluxoDeCaixaPage({
           </Link>
           <Link href="/financeiro/contas-a-pagar" className="hover:underline">
             Contas a pagar →
+          </Link>
+          <Link href="/financeiro/contas-bancarias" className="hover:underline">
+            Contas bancárias →
           </Link>
         </div>
       </div>
@@ -152,6 +169,7 @@ export default async function FluxoDeCaixaPage({
               <th className="py-2 pr-4">Data</th>
               <th className="py-2 pr-4">Descrição</th>
               <th className="py-2 pr-4">Tipo</th>
+              <th className="py-2 pr-4">Conta bancária</th>
               <th className="py-2">Valor</th>
             </tr>
           </thead>
@@ -163,6 +181,7 @@ export default async function FluxoDeCaixaPage({
                 </td>
                 <td className="py-2 pr-4">{t.description}</td>
                 <td className="py-2 pr-4">{t.kind === "in" ? "Entrada" : "Saída"}</td>
+                <td className="py-2 pr-4">{t.bankAccountName ?? "-"}</td>
                 <td className={`py-2 ${t.kind === "out" ? "text-red-600" : ""}`}>
                   {t.kind === "out" ? "-" : ""}
                   {formatCents(t.amountCents)}

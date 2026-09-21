@@ -4,6 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import { centsToReais } from "@/lib/validation/service";
 import { PAYABLE_STATUS_LABELS } from "@/lib/validation/payable";
 import { MarcarPayablePaga } from "./marcar-payable-paga";
+import { ReverterPayablePagamento } from "./reverter-payable-pagamento";
 
 export default async function ContasAPagarPage() {
   const supabase = await createClient();
@@ -32,9 +33,19 @@ export default async function ContasAPagarPage() {
 
   const { data: payables, error } = await supabase
     .from("payable")
-    .select("id, description, amount_cents, due_date, status")
+    .select(
+      "id, description, amount_cents, due_date, status, bank_account:bank_account_id(name)",
+    )
     .is("deleted_at", null)
     .order("due_date");
+
+  const { data: bankAccounts } = canManageFinance
+    ? await supabase
+        .from("bank_account")
+        .select("id, name")
+        .eq("active", true)
+        .order("name")
+    : { data: null };
 
   return (
     <main className="mx-auto max-w-3xl px-4 py-12">
@@ -47,6 +58,9 @@ export default async function ContasAPagarPage() {
             </Link>
             <Link href="/financeiro/fluxo-de-caixa" className="hover:underline">
               Fluxo de caixa →
+            </Link>
+            <Link href="/financeiro/contas-bancarias" className="hover:underline">
+              Contas bancárias →
             </Link>
           </div>
         </div>
@@ -78,34 +92,47 @@ export default async function ContasAPagarPage() {
               <th className="py-2 pr-4">Vencimento</th>
               <th className="py-2 pr-4">Valor</th>
               <th className="py-2 pr-4">Status</th>
+              <th className="py-2 pr-4">Conta bancária</th>
               {canManageFinance && <th className="py-2"></th>}
             </tr>
           </thead>
           <tbody>
-            {payables.map((payable) => (
-              <tr key={payable.id} className="border-b border-gray-100">
-                <td className="py-2 pr-4">{payable.description}</td>
-                <td className="py-2 pr-4">
-                  {new Date(payable.due_date).toLocaleDateString("pt-BR")}
-                </td>
-                <td className="py-2 pr-4">
-                  {centsToReais(payable.amount_cents).toLocaleString("pt-BR", {
-                    style: "currency",
-                    currency: "BRL",
-                  })}
-                </td>
-                <td className="py-2 pr-4">
-                  {PAYABLE_STATUS_LABELS[payable.status] ?? payable.status}
-                </td>
-                {canManageFinance && (
-                  <td className="py-2">
-                    {payable.status === "pending" && (
-                      <MarcarPayablePaga payableId={payable.id} />
-                    )}
+            {payables.map((payable) => {
+              const bankAccount = payable.bank_account as unknown as {
+                name: string;
+              } | null;
+              return (
+                <tr key={payable.id} className="border-b border-gray-100">
+                  <td className="py-2 pr-4">{payable.description}</td>
+                  <td className="py-2 pr-4">
+                    {new Date(payable.due_date).toLocaleDateString("pt-BR")}
                   </td>
-                )}
-              </tr>
-            ))}
+                  <td className="py-2 pr-4">
+                    {centsToReais(payable.amount_cents).toLocaleString("pt-BR", {
+                      style: "currency",
+                      currency: "BRL",
+                    })}
+                  </td>
+                  <td className="py-2 pr-4">
+                    {PAYABLE_STATUS_LABELS[payable.status] ?? payable.status}
+                  </td>
+                  <td className="py-2 pr-4">{bankAccount?.name ?? "-"}</td>
+                  {canManageFinance && (
+                    <td className="py-2">
+                      {payable.status === "pending" && (
+                        <MarcarPayablePaga
+                          payableId={payable.id}
+                          bankAccounts={bankAccounts ?? []}
+                        />
+                      )}
+                      {payable.status === "paid" && (
+                        <ReverterPayablePagamento payableId={payable.id} />
+                      )}
+                    </td>
+                  )}
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       )}

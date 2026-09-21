@@ -397,3 +397,45 @@ Aprovada e validada em produção em 2026-09-26 pelo dono do produto.
   exceto NFSe (pendente do contador).
 - **Pendência:** aplicar a migration no Supabase real e o dono do
   produto validar em produção.
+
+### Etapa 1.10 — Conta bancária, baixa vinculada e reversão de pagamento (código pronto em 2026-09-29)
+
+- Nova tabela `bank_account` (nome/apelido, banco, agência, número da
+  conta, `active`), mesmo padrão de acesso do `invoice`/`payable`.
+  `invoice` e `payable` ganham `bank_account_id`.
+- "Marcar como paga" (fatura e conta a pagar) deixou de ser um clique só
+  — agora é um formulário que exige escolher a conta bancária usada.
+  Novo botão "Reverter pagamento" nas faturas/contas já pagas (com
+  confirmação), pra corrigir uma baixa errada — volta pro status
+  pendente, limpa `paid_at` e `bank_account_id`.
+- Baixa e reversão passam por funções SQL (`mark_invoice_paid`,
+  `revert_invoice_payment`, `mark_payable_paid`,
+  `revert_payable_payment`), `SECURITY INVOKER` (diferente do webhook da
+  Efí — aqui sempre tem um usuário autenticado de verdade por trás, então
+  a RLS de quem chama já resolve a permissão). Cada uma grava em
+  `audit_log` quem fez, quando, com qual conta — fecha (parcialmente) a
+  pendência de auditoria que estava no backlog.
+- Tela nova `/financeiro/contas-bancarias`: lista + cadastrar conta
+  (só `socio`/`financeiro`; sem edição/desativação ainda). Conta bancária
+  usada passou a aparecer nas listagens de contas a pagar, faturas do
+  contrato e fluxo de caixa.
+- Migration
+  `supabase/migrations/20260929090000_conta_bancaria_reversao_pagamento.sql`.
+- Decisões em
+  `docs/decisions/0013-conta-bancaria-reversao-pagamento.md`.
+- Testes: migration testada localmente (RLS por perfil com `SET ROLE
+  authenticated` de verdade — `financeiro` marca/reverte, `gestor` só lê,
+  `colaborador` sem acesso; trava contra marcar pago duas vezes ou
+  reverter o que não está pago; `audit_log` grava certo; revert limpo).
+  Achado no teste local (não é bug da migration): faltava
+  `grant usage on schema auth to authenticated` no stub local do schema
+  `auth` — as funções anteriores eram todas `SECURITY DEFINER` e nunca
+  precisaram chamar `auth.uid()` como o próprio autenticado; corrigido só
+  no ambiente de teste, o Supabase real já tem esse grant de fábrica.
+  `CashFlowTransaction` ganhou `bankAccountName` (Vitest ajustado, 71
+  testes continuam passando); Playwright novo pra
+  `/financeiro/contas-bancarias` e `/nova`; `npm run lint`, `typecheck` e
+  `build` sem erro.
+- **Fora do escopo:** editar/desativar conta bancária cadastrada errada.
+- **Pendência:** aplicar a migration no Supabase real e o dono do
+  produto validar em produção.

@@ -293,12 +293,33 @@ export async function updateContractStatus(
 export async function markInvoiceAsPaid(
   invoiceId: string,
   contractId: string,
+  bankAccountId: string,
+): Promise<ActionResult> {
+  if (!bankAccountId) {
+    return { ok: false, message: "Selecione a conta bancária." };
+  }
+
+  const supabase = await createClient();
+  const { error } = await supabase.rpc("mark_invoice_paid", {
+    p_invoice_id: invoiceId,
+    p_bank_account_id: bankAccountId,
+  });
+
+  if (error) return { ok: false, message: error.message };
+
+  revalidatePath("/financeiro");
+  revalidatePath(`/contratos/${contractId}`);
+  return { ok: true };
+}
+
+export async function revertInvoicePayment(
+  invoiceId: string,
+  contractId: string,
 ): Promise<ActionResult> {
   const supabase = await createClient();
-  const { error } = await supabase
-    .from("invoice")
-    .update({ status: "paid", paid_at: new Date().toISOString() })
-    .eq("id", invoiceId);
+  const { error } = await supabase.rpc("revert_invoice_payment", {
+    p_invoice_id: invoiceId,
+  });
 
   if (error) return { ok: false, message: error.message };
 

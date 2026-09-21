@@ -8,9 +8,9 @@ import {
 describe("computeCashFlowSummary", () => {
   it("soma entradas e saídas e calcula o saldo", () => {
     const transactions: CashFlowTransaction[] = [
-      { id: "1", description: "Fatura Cliente A", amountCents: 500_000, date: "2026-09-10", kind: "in" },
-      { id: "2", description: "Fatura Cliente B", amountCents: 300_000, date: "2026-09-15", kind: "in" },
-      { id: "3", description: "Aluguel", amountCents: 250_000, date: "2026-09-05", kind: "out" },
+      { id: "1", description: "Fatura Cliente A", amountCents: 500_000, date: "2026-09-10", kind: "in", bankAccountName: "Conta principal" },
+      { id: "2", description: "Fatura Cliente B", amountCents: 300_000, date: "2026-09-15", kind: "in", bankAccountName: "Conta principal" },
+      { id: "3", description: "Aluguel", amountCents: 250_000, date: "2026-09-05", kind: "out", bankAccountName: null },
     ];
 
     const summary = computeCashFlowSummary(transactions);
@@ -31,8 +31,8 @@ describe("computeCashFlowSummary", () => {
 
   it("saldo pode ficar negativo (mais saída que entrada)", () => {
     const transactions: CashFlowTransaction[] = [
-      { id: "1", description: "Fatura", amountCents: 100_000, date: "2026-09-10", kind: "in" },
-      { id: "2", description: "Despesa", amountCents: 400_000, date: "2026-09-05", kind: "out" },
+      { id: "1", description: "Fatura", amountCents: 100_000, date: "2026-09-10", kind: "in", bankAccountName: "Conta principal" },
+      { id: "2", description: "Despesa", amountCents: 400_000, date: "2026-09-05", kind: "out", bankAccountName: null },
     ];
     expect(computeCashFlowSummary(transactions).balanceCents).toBe(-300_000);
   });

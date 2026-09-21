@@ -273,6 +273,17 @@ Etapas da Onda 0, uma por vez, cada uma com minha aprovação antes da seguinte:
 > 0.1). **Pendência:** aplicar a migration no Supabase real e validar em
 > produção.
 >
+> **Etapa 1.10 — Conta bancária, baixa vinculada e reversão de
+> pagamento:** código pronto em 2026-09-29 — nova tabela `bank_account`
+> (nome, banco, agência, número da conta); `invoice`/`payable` ganham
+> `bank_account_id`; "Marcar como paga" virou formulário que exige
+> escolher a conta bancária; novo botão "Reverter pagamento" nas
+> faturas/contas já pagas; tela `/financeiro/contas-bancarias` (lista +
+> cadastrar). Baixa/reversão gravam em `audit_log` (quem, quando, qual
+> conta) — ver `docs/decisions/0013-conta-bancaria-reversao-pagamento.md`.
+> **Pendência:** aplicar a migration no Supabase real e validar em
+> produção.
+>
 > **Decisão do dono do produto:** trocar o ZapSign de sandbox pra
 > produção fica pra só no final do projeto base (não antes) — sem data
 > definida.

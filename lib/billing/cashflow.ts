@@ -4,6 +4,7 @@ export type CashFlowTransaction = {
   amountCents: number;
   date: string;
   kind: "in" | "out";
+  bankAccountName: string | null;
 };
 
 export type CashFlowSummary = {

@@ -54,6 +54,9 @@ export default async function FinanceiroPage() {
           <Link href="/financeiro/fluxo-de-caixa" className="hover:underline">
             Fluxo de caixa →
           </Link>
+          <Link href="/financeiro/contas-bancarias" className="hover:underline">
+            Contas bancárias →
+          </Link>
         </div>
       </div>
 
