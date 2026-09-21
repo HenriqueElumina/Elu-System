@@ -2,7 +2,12 @@
 
 - **NFSe:** validar com o contador o provedor final (Focus NFe / PlugNotas /
   eNotas) considerando Simples Nacional + Bragança Paulista/SP. Bloqueante
-  para o módulo Financeiro na Onda 1.
+  para o módulo Financeiro na Onda 1. **Decisão do dono do produto
+  (2026-09-30): adiado de propósito** — precisa pensar melhor antes de
+  decidir, e não é urgente agora. Retomar quando ele trouxer o assunto de
+  volta; até lá, o resto do MVP do Financeiro (contas a receber, boleto,
+  contas a pagar, fluxo de caixa, conta bancária) já está completo e
+  validado em produção.
 - **Audiovisual — player de revisão:** decidir e testar a solução de player
   com comentário por timecode para vídeos em revisão ativa (spec do módulo,
   Onda 2).

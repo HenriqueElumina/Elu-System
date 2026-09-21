@@ -282,9 +282,12 @@ Etapas da Onda 0, uma por vez, cada uma com minha aprovação antes da seguinte:
 > gravam em `audit_log` (quem, quando, qual conta) — ver
 > `docs/decisions/0013-conta-bancaria-reversao-pagamento.md`.
 >
-> **Próximo: NFSe.** Único item restante do MVP do módulo Financeiro,
-> bloqueado desde a Etapa 0.1 esperando confirmação de município de
-> emissão, regime tributário e retenção de impostos com o contador.
+> **NFSe (único item restante do MVP do Financeiro) adiado a pedido do
+> dono do produto em 2026-09-30** — precisa pensar melhor, não é
+> urgente agora. Retomar quando ele trouxer o assunto de volta (ver
+> `docs/backlog.md`). Com isso, o resto do MVP do módulo Financeiro
+> (Onda 1) está completo e validado em produção; próximo passo a
+> combinar com o dono do produto.
 >
 > **Decisão do dono do produto:** trocar o ZapSign de sandbox pra
 > produção fica pra só no final do projeto base (não antes) — sem data
