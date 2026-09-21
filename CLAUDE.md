@@ -256,10 +256,22 @@ Etapas da Onda 0, uma por vez, cada uma com minha aprovação antes da seguinte:
 > embrulhada em `{code, data}`, e por consequência o link do boleto
 > passou a ser guardado na criação em vez de buscado de novo — ver
 > `docs/decisions/0011-boleto-efi.md`. **Ainda não testado:** confirmação
-> de pagamento via webhook, cliente pessoa física (CPF — risco conhecido:
-> pode faltar data de nascimento no cadastro). Etapa 1.9 (contas a pagar +
-> fluxo de caixa, com conciliação futura via OFX — `docs/backlog.md`) e
-> NFSe (pendente de confirmação com o contador) seguem depois.
+> de pagamento via webhook (a Efí não tem simulação de boleto avulso
+> self-service em homologação — só pra assinatura; fica pendente até um
+> boleto real ser pago ou abrir chamado com o suporte deles), cliente
+> pessoa física (CPF — risco conhecido: pode faltar data de nascimento no
+> cadastro).
+>
+> **Etapa 1.9 — Contas a pagar e fluxo de caixa:** código pronto em
+> 2026-09-28 — nova tabela `payable` (lançamento manual, sem automação);
+> tela `/financeiro/contas-a-pagar` (lista + lançar + marcar como paga);
+> tela `/financeiro/fluxo-de-caixa` (resumo do mês + lista de
+> lançamentos, com seletor de mês) — ver
+> `docs/decisions/0012-contas-a-pagar-fluxo-caixa.md`. Com isso, o
+> recorte do MVP do módulo Financeiro está completo, exceto NFSe
+> (pendente de confirmação com o contador — bloqueante desde a Etapa
+> 0.1). **Pendência:** aplicar a migration no Supabase real e validar em
+> produção.
 >
 > **Decisão do dono do produto:** trocar o ZapSign de sandbox pra
 > produção fica pra só no final do projeto base (não antes) — sem data

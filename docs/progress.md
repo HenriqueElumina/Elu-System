@@ -368,5 +368,32 @@ Aprovada e validada em produção em 2026-09-26 pelo dono do produto.
 - **Fora do escopo:** Pix, juros/multa por atraso automáticos, cancelar
   boleto quando a fatura é cancelada, cliente pessoa física (CPF, não
   testado — risco conhecido: pode faltar data de nascimento no cadastro).
-- **Ainda não testado:** confirmação de pagamento via webhook (só a
-  criação do boleto foi validada contra a API real).
+- **Ainda não testado:** confirmação de pagamento via webhook (a Efí não
+  tem simulação de boleto avulso self-service em homologação — só pra
+  assinatura; teste real fica pra quando um boleto de verdade for pago,
+  ou se o dono do produto abrir chamado com o suporte deles).
+
+### Etapa 1.9 — Contas a pagar e fluxo de caixa (concluída em 2026-09-28)
+
+- Nova tabela `payable`: lançamento manual (descrição, valor,
+  vencimento, status), sem automação — diferente do `invoice`, não tem
+  contrato gerando sozinho.
+- Tela `/financeiro/contas-a-pagar`: lista + "Lançar conta" +
+  "Marcar como paga" (`socio`/`financeiro`).
+- Tela `/financeiro/fluxo-de-caixa`: resumo do mês (entrada − saída =
+  saldo) + lista de lançamentos pagos no período (faturas pagas +
+  contas a pagar pagas), com seletor de mês.
+- Migration
+  `supabase/migrations/20260928090000_contas_a_pagar_fluxo_caixa.sql`.
+- Decisões em `docs/decisions/0012-contas-a-pagar-fluxo-caixa.md`.
+- Testes: migration testada localmente (RLS por perfil com `SET ROLE
+  authenticated` de verdade, revert limpo); Vitest
+  (`computeCashFlowSummary`, `monthRange`, 71 testes no total);
+  Playwright (`/financeiro/contas-a-pagar` e `/financeiro/fluxo-de-caixa`
+  exigem login); `npm run lint`, `typecheck` e `build` sem erro.
+- **Fora do escopo:** conciliação via OFX, categorias de despesa,
+  reajuste, DRE, contas a pagar recorrentes automáticas.
+- Com esta etapa, o recorte do MVP do módulo Financeiro está completo,
+  exceto NFSe (pendente do contador).
+- **Pendência:** aplicar a migration no Supabase real e o dono do
+  produto validar em produção.

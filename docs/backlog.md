@@ -110,3 +110,9 @@
   Efí — não consegui confirmar com certeza de onde vem a chave desse
   HMAC. Segurança real hoje vem de sempre reconsultar a cobrança na API
   antes de confiar no webhook. Ver ADR 0011.
+- **Efí — webhook de confirmação de pagamento ainda não testado contra a
+  API real:** só a criação do boleto foi validada. A Efí não tem
+  simulação de boleto avulso self-service em homologação (só pra
+  assinatura) — testar de verdade só quando um boleto real for pago, ou
+  abrindo chamado com o suporte deles passando o `charge_id`. Ver ADR
+  0011.
