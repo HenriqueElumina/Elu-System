@@ -299,8 +299,8 @@ Etapas da Onda 0, uma por vez, cada uma com minha aprovação antes da seguinte:
 > `docs/decisions/0014-tarefas-do-playbook.md`. Sem atribuição de
 > responsável, Kanban ou registro de tempo ainda (próximas fatias).
 > Contratos assinados antes desta etapa não ganham tarefas
-> retroativamente (decisão do dono do produto). **Pendência:** aplicar a
-> migration no Supabase real e validar em produção.
+> retroativamente (decisão do dono do produto). Migration aplicada e
+> validada em produção em 2026-09-30.
 >
 > **Decisão do dono do produto:** trocar o ZapSign de sandbox pra
 > produção fica pra só no final do projeto base (não antes) — sem data

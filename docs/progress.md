@@ -470,5 +470,7 @@ Aprovada e validada em produção em 2026-09-26 pelo dono do produto.
 - **Fora do escopo:** contratos assinados antes desta etapa não ganham
   tarefas retroativamente (decisão do dono do produto: só vale daqui pra
   frente).
-- **Pendência:** aplicar a migration no Supabase real e o dono do
-  produto validar em produção.
+- Migration aplicada no Supabase real e validada em produção pelo dono
+  do produto em 2026-09-30 (contrato assinado com playbook cadastrado
+  gerou projeto com as tarefas certas; status avançado por "Iniciar"/
+  "Concluir" na tela `/projetos/[id]`).
