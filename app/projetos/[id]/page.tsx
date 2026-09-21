@@ -57,6 +57,7 @@ export default async function ProjetoDetailPage({
     )
     .eq("project_id", project.id)
     .is("deleted_at", null)
+    .order("due_date", { ascending: true, nullsFirst: false })
     .order("created_at");
 
   const taskIds = (tasks ?? []).map((task) => task.id);
