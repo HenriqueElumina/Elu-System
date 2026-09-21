@@ -302,6 +302,19 @@ Etapas da Onda 0, uma por vez, cada uma com minha aprovação antes da seguinte:
 > retroativamente (decisão do dono do produto). Migration aplicada e
 > validada em produção em 2026-09-30.
 >
+> **Etapa 2.2 — Responsável, estimativa de horas e histórico de
+> status:** código pronto em 2026-10-01 — `task` ganha `assigned_to` e
+> `estimated_hours`; `update_task_status()` passa a bloquear
+> `colaborador` fora da própria tarefa atribuída (`socio`/`gestor`
+> continuam livres); nova tabela `task_status_history` (histórico
+> expansível na tela); `/projetos/[id]` ganha reatribuição de
+> responsável, estimativa de horas e "atualizado há X" — ver
+> `docs/decisions/0015-responsavel-estimativa-historico-tarefa.md`.
+> **Efeito colateral esperado e confirmado com o dono do produto:**
+> tarefas da Etapa 2.1 (sem responsável) ficam bloqueadas pra
+> `colaborador` até alguém atribuir. **Pendência:** aplicar a migration
+> no Supabase real e validar em produção.
+>
 > **Decisão do dono do produto:** trocar o ZapSign de sandbox pra
 > produção fica pra só no final do projeto base (não antes) — sem data
 > definida.

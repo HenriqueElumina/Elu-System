@@ -474,3 +474,38 @@ Aprovada e validada em produção em 2026-09-26 pelo dono do produto.
   do produto em 2026-09-30 (contrato assinado com playbook cadastrado
   gerou projeto com as tarefas certas; status avançado por "Iniciar"/
   "Concluir" na tela `/projetos/[id]`).
+
+### Etapa 2.2 — Responsável, estimativa de horas e histórico de status (código pronto em 2026-10-01)
+
+- `task` ganha `assigned_to` (responsável, opcional) e
+  `estimated_hours` (estimativa de horas, opcional — só captura o dado,
+  sem cálculo de capacidade ainda).
+- `update_task_status()` agora bloqueia `colaborador` em tarefa que não
+  é dele (`assigned_to` diferente ou nulo); `socio`/`gestor` continuam
+  podendo mexer em qualquer uma. **Efeito colateral esperado e
+  confirmado com o dono do produto:** tarefas da Etapa 2.1 (sem
+  responsável ainda) ficam bloqueadas pra `colaborador` até alguém
+  atribuir.
+- Nova tabela `task_status_history` (de/para, quem, quando), gravada
+  automaticamente a cada chamada de `update_task_status`; tela mostra
+  num `<details>` expansível por tarefa.
+- Tela `/projetos/[id]`: cada tarefa mostra responsável, estimativa de
+  horas, "atualizado há X" (`formatRelativeTime`,
+  `lib/format/relative-time.ts`) e histórico; `socio`/`gestor` reatribuem
+  e ajustam estimativa por um formulário inline; botões de status só
+  aparecem pra quem pode agir (responsável, ou `socio`/`gestor`).
+- Migration
+  `supabase/migrations/20261001090000_responsavel_estimativa_historico_tarefa.sql`.
+- Decisões em `docs/decisions/0015-responsavel-estimativa-historico-tarefa.md`.
+- Testes: migration testada localmente (`colaborador` bloqueado sem
+  responsável ou responsável errado, liberado quando é o dele; `gestor`
+  sempre passa; histórico grava certo; `financeiro` sem acesso ao
+  histórico, `colaborador` com acesso; revert limpo); Vitest
+  (`formatRelativeTime`, 77 testes no total); `npm run lint`,
+  `typecheck`, `build` e Playwright completo sem erro.
+- **Fora do escopo:** responsável só entre `socio`/`gestor`/`colaborador`
+  (sem `freelancer` — acesso restrito dele ainda não existe no sistema);
+  sem filtro de "minhas tarefas"; sem uso da estimativa em nenhum
+  cálculo.
+- **Pendência:** aplicar a migration no Supabase real e o dono do
+  produto validar em produção.

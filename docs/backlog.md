@@ -126,16 +126,25 @@
   assinatura) — testar de verdade só quando um boleto real for pago, ou
   abrindo chamado com o suporte deles passando o `charge_id`. Ver ADR
   0011.
-- **Tarefas — sem atribuição de responsável ainda:** desde a Etapa 2.1,
-  qualquer `socio`/`gestor`/`colaborador` pode avançar o status de
-  qualquer tarefa de qualquer projeto — não tem "dono" da tarefa nem
-  filtro de "minhas tarefas". Fica pra próxima fatia do módulo de
-  Tarefas, junto com Kanban visual e registro de tempo. Ver ADR 0014.
+- **Tarefas — responsável só entre perfis internos:** desde a Etapa 2.2,
+  só `socio`/`gestor`/`colaborador` podem ser atribuídos a uma tarefa.
+  `freelancer` (acesso restrito a jobs atribuídos, `CLAUDE.md` seção 5)
+  ainda não tem esse modelo de acesso restrito desenhado no sistema —
+  fica pra quando isso existir. Sem filtro de "minhas tarefas" (uma
+  lista só com o que é meu, em vez de olhar projeto por projeto) e sem
+  Kanban visual ainda. Ver ADR 0015.
 - **Tarefas — sem Definition of Done nem alerta de SLA atrasado:** hoje
   o status é só pending/in_progress/done da tarefa inteira, sem
   checklist interno; prazo (`due_date`) existe mas nada avisa quando
   passou. Alerta de atraso é rentabilidade/capacidade (módulo 10). Ver
   ADR 0014.
+- **Tarefas — estimativa de horas sem uso ainda:** `estimated_hours`
+  (Etapa 2.2) é só captura de dado — não alimenta nenhum cálculo de
+  capacidade/rentabilidade (módulo 10) nem registro de tempo de verdade
+  (`time_entry`, que ainda não existe). Ver ADR 0015.
+- **Tarefas — reatribuição/estimativa não ficam no histórico:**
+  `task_status_history` (Etapa 2.2) só grava mudança de *status*, não
+  troca de responsável nem de estimativa. Ver ADR 0015.
 - **Tarefas — contratos assinados antes da Etapa 2.1 não têm tarefas:**
   a geração automática só vale pra contratos assinados a partir de
   2026-09-30 (transição de status é o gatilho). Projetos mais antigos
