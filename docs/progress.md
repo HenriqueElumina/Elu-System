@@ -507,5 +507,5 @@ Aprovada e validada em produção em 2026-09-26 pelo dono do produto.
   (sem `freelancer` — acesso restrito dele ainda não existe no sistema);
   sem filtro de "minhas tarefas"; sem uso da estimativa em nenhum
   cálculo.
-- **Pendência:** aplicar a migration no Supabase real e o dono do
-  produto validar em produção.
+- Migration aplicada no Supabase real e validada em produção pelo dono
+  do produto em 2026-10-01.

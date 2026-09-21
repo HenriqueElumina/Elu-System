@@ -312,8 +312,8 @@ Etapas da Onda 0, uma por vez, cada uma com minha aprovação antes da seguinte:
 > `docs/decisions/0015-responsavel-estimativa-historico-tarefa.md`.
 > **Efeito colateral esperado e confirmado com o dono do produto:**
 > tarefas da Etapa 2.1 (sem responsável) ficam bloqueadas pra
-> `colaborador` até alguém atribuir. **Pendência:** aplicar a migration
-> no Supabase real e validar em produção.
+> `colaborador` até alguém atribuir. Migration aplicada e validada em
+> produção em 2026-10-01.
 >
 > **Decisão do dono do produto:** trocar o ZapSign de sandbox pra
 > produção fica pra só no final do projeto base (não antes) — sem data
