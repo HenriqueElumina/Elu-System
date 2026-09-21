@@ -8,6 +8,8 @@ import { TaskStatusActions } from "./task-status-actions";
 import { TaskAssignmentEditor } from "./task-assignment-editor";
 import { TimeEntryForm } from "./time-entry-form";
 import { DeleteTimeEntryButton } from "./delete-time-entry-button";
+import { NewTaskForm } from "./new-task-form";
+import { DuplicateTaskButton } from "./duplicate-task-button";
 import { sumLoggedHours } from "@/lib/tasks/time";
 
 export default async function ProjetoDetailPage({
@@ -107,12 +109,15 @@ export default async function ProjetoDetailPage({
       </p>
 
       <section>
-        <h2 className="mb-3 text-sm font-semibold text-gray-700">Tarefas</h2>
+        <div className="mb-3 flex items-center justify-between">
+          <h2 className="text-sm font-semibold text-gray-700">Tarefas</h2>
+          {canManage && <NewTaskForm projectId={project.id} />}
+        </div>
 
         {(!tasks || tasks.length === 0) && (
           <p className="text-sm text-gray-500">
             Nenhuma tarefa ainda — nasce sozinha do playbook do serviço quando
-            o contrato é assinado.
+            o contrato é assinado, ou crie uma manualmente acima.
           </p>
         )}
 
@@ -155,13 +160,18 @@ export default async function ProjetoDetailPage({
                         Responsável: {assignee?.full_name ?? "sem responsável"}
                       </p>
                     </div>
-                    {canAct && (
-                      <TaskStatusActions
-                        taskId={task.id}
-                        projectId={project.id}
-                        status={task.status}
-                      />
-                    )}
+                    <div className="flex flex-col items-end gap-1">
+                      {canAct && (
+                        <TaskStatusActions
+                          taskId={task.id}
+                          projectId={project.id}
+                          status={task.status}
+                        />
+                      )}
+                      {canManage && (
+                        <DuplicateTaskButton taskId={task.id} projectId={project.id} />
+                      )}
+                    </div>
                   </div>
 
                   {canManage && (

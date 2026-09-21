@@ -536,3 +536,22 @@ Aprovada e validada em produção em 2026-09-26 pelo dono do produto.
   rentabilidade; timer ao vivo.
 - **Pendência:** aplicar a migration no Supabase real e o dono do
   produto validar em produção.
+
+### Etapa 2.4 — Criar tarefa manual e duplicar tarefa existente (concluída em 2026-10-02)
+
+- **Sem migration** — a RLS de `task` da Etapa 2.1 já permitia
+  `socio`/`gestor` inserirem tarefas; só faltava a tela. Confirmado com
+  teste direto no banco antes de codar (colaborador bloqueado, socio
+  consegue).
+- `/projetos/[id]`: botão "+ Nova tarefa" (formulário: título obrigatório,
+  descrição/prazo/estimativa opcionais) e botão "Duplicar" em cada
+  tarefa (só `socio`/`gestor`). Duplicar copia título/descrição/prazo/
+  estimativa, mas reseta status pra "Pendente" e limpa responsável.
+- Tarefa manual/duplicada nasce sem `playbook_step_id` (é avulsa, não
+  finge vir de um template).
+- Decisões em `docs/decisions/0017-criar-e-duplicar-tarefa.md`.
+- Testes: `npm run lint`, `typecheck`, `build` e Playwright completo sem
+  erro. Sem teste de unidade novo (CRUD simples sob RLS já testada).
+- **Fora do escopo:** reordenação manual da lista de tarefas.
+- **Pendência:** sem migration pra aplicar desta vez — só esperar o
+  deploy (Vercel) e o dono do produto validar em produção.

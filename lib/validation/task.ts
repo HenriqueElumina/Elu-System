@@ -15,3 +15,12 @@ export const taskDetailsSchema = z.object({
 
 export type TaskDetailsInput = z.output<typeof taskDetailsSchema>;
 
+export const createTaskSchema = z.object({
+  title: z.string().trim().min(3, "Informe um título"),
+  description: z.string().trim().max(1000).optional(),
+  dueDate: z.string().trim().optional(),
+  estimatedHours: z.coerce.number().nonnegative().optional(),
+});
+
+export type CreateTaskInput = z.output<typeof createTaskSchema>;
+

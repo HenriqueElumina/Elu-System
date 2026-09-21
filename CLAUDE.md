@@ -326,6 +326,14 @@ Etapas da Onda 0, uma por vez, cada uma com minha aprovação antes da seguinte:
 > **Pendência:** aplicar a migration no Supabase real e validar em
 > produção.
 >
+> **Etapa 2.4 — Criar tarefa manual e duplicar tarefa existente:**
+> concluída em 2026-10-02, **sem migration** (a RLS de `task` da Etapa
+> 2.1 já cobria `socio`/`gestor` inserindo tarefas). Botão "+ Nova
+> tarefa" e "Duplicar" em `/projetos/[id]`; duplicar copia dados mas
+> reseta status e responsável — ver
+> `docs/decisions/0017-criar-e-duplicar-tarefa.md`. **Pendência:** só
+> aguardar deploy e o dono do produto validar em produção.
+>
 > **Decisão do dono do produto:** trocar o ZapSign de sandbox pra
 > produção fica pra só no final do projeto base (não antes) — sem data
 > definida.

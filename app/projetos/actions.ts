@@ -2,7 +2,12 @@
 
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
-import { taskDetailsSchema, type TaskStatus } from "@/lib/validation/task";
+import {
+  createTaskSchema,
+  taskDetailsSchema,
+  type CreateTaskInput,
+  type TaskStatus,
+} from "@/lib/validation/task";
 import { timeEntrySchema, type TimeEntryInput } from "@/lib/validation/time-entry";
 
 type ActionResult<T = undefined> =
@@ -64,6 +69,73 @@ export async function deleteTimeEntry(
     .from("time_entry")
     .update({ deleted_at: new Date().toISOString() })
     .eq("id", timeEntryId);
+
+  if (error) return { ok: false, message: error.message };
+
+  revalidatePath(`/projetos/${projectId}`);
+  return { ok: true };
+}
+
+export async function createTask(
+  projectId: string,
+  input: CreateTaskInput,
+): Promise<ActionResult> {
+  const parsed = createTaskSchema.safeParse(input);
+  if (!parsed.success) return { ok: false, message: "Dados inválidos." };
+  const data = parsed.data;
+
+  const supabase = await createClient();
+  const { count } = await supabase
+    .from("task")
+    .select("id", { count: "exact", head: true })
+    .eq("project_id", projectId)
+    .is("deleted_at", null);
+
+  const { error } = await supabase.from("task").insert({
+    project_id: projectId,
+    title: data.title,
+    description: data.description || null,
+    due_date: data.dueDate || null,
+    estimated_hours: data.estimatedHours ?? null,
+    position: (count ?? 0) + 1,
+  });
+
+  if (error) return { ok: false, message: error.message };
+
+  revalidatePath(`/projetos/${projectId}`);
+  return { ok: true };
+}
+
+export async function duplicateTask(
+  taskId: string,
+  projectId: string,
+): Promise<ActionResult> {
+  const supabase = await createClient();
+
+  const { data: original, error: fetchError } = await supabase
+    .from("task")
+    .select("title, description, due_date, estimated_hours")
+    .eq("id", taskId)
+    .single();
+
+  if (fetchError || !original) {
+    return { ok: false, message: "Tarefa não encontrada." };
+  }
+
+  const { count } = await supabase
+    .from("task")
+    .select("id", { count: "exact", head: true })
+    .eq("project_id", projectId)
+    .is("deleted_at", null);
+
+  const { error } = await supabase.from("task").insert({
+    project_id: projectId,
+    title: original.title,
+    description: original.description,
+    due_date: original.due_date,
+    estimated_hours: original.estimated_hours,
+    position: (count ?? 0) + 1,
+  });
 
   if (error) return { ok: false, message: error.message };
 
