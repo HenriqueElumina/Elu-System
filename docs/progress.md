@@ -553,5 +553,11 @@ Aprovada e validada em produção em 2026-09-26 pelo dono do produto.
 - Testes: `npm run lint`, `typecheck`, `build` e Playwright completo sem
   erro. Sem teste de unidade novo (CRUD simples sob RLS já testada).
 - **Fora do escopo:** reordenação manual da lista de tarefas.
+- **Correção no mesmo dia** (feedback do dono do produto testando):
+  lista de tarefas passou a ordenar por prazo (mais próximo primeiro,
+  sem prazo no fim) em vez de por data de criação.
+- **Extensão no mesmo dia** (pedido do dono do produto): botão "Editar"
+  (só `socio`/`gestor`) em cada tarefa — título/descrição/prazo, mesma
+  RLS de escrita, sem migration nova. ADR 0017 renomeado e atualizado.
 - **Pendência:** sem migration pra aplicar desta vez — só esperar o
   deploy (Vercel) e o dono do produto validar em produção.

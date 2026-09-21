@@ -24,3 +24,7 @@ export const createTaskSchema = z.object({
 
 export type CreateTaskInput = z.output<typeof createTaskSchema>;
 
+export const editTaskSchema = createTaskSchema.omit({ estimatedHours: true });
+
+export type EditTaskInput = z.output<typeof editTaskSchema>;
+

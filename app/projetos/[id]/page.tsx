@@ -10,6 +10,7 @@ import { TimeEntryForm } from "./time-entry-form";
 import { DeleteTimeEntryButton } from "./delete-time-entry-button";
 import { NewTaskForm } from "./new-task-form";
 import { DuplicateTaskButton } from "./duplicate-task-button";
+import { EditTaskForm } from "./edit-task-form";
 import { sumLoggedHours } from "@/lib/tasks/time";
 
 export default async function ProjetoDetailPage({
@@ -174,6 +175,16 @@ export default async function ProjetoDetailPage({
                       )}
                     </div>
                   </div>
+
+                  {canManage && (
+                    <EditTaskForm
+                      taskId={task.id}
+                      projectId={project.id}
+                      title={task.title}
+                      description={task.description}
+                      dueDate={task.due_date}
+                    />
+                  )}
 
                   {canManage && (
                     <TaskAssignmentEditor

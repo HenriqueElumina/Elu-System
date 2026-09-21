@@ -4,8 +4,10 @@ import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import {
   createTaskSchema,
+  editTaskSchema,
   taskDetailsSchema,
   type CreateTaskInput,
+  type EditTaskInput,
   type TaskStatus,
 } from "@/lib/validation/task";
 import { timeEntrySchema, type TimeEntryInput } from "@/lib/validation/time-entry";
@@ -136,6 +138,31 @@ export async function duplicateTask(
     estimated_hours: original.estimated_hours,
     position: (count ?? 0) + 1,
   });
+
+  if (error) return { ok: false, message: error.message };
+
+  revalidatePath(`/projetos/${projectId}`);
+  return { ok: true };
+}
+
+export async function updateTask(
+  taskId: string,
+  projectId: string,
+  input: EditTaskInput,
+): Promise<ActionResult> {
+  const parsed = editTaskSchema.safeParse(input);
+  if (!parsed.success) return { ok: false, message: "Dados inválidos." };
+  const data = parsed.data;
+
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from("task")
+    .update({
+      title: data.title,
+      description: data.description || null,
+      due_date: data.dueDate || null,
+    })
+    .eq("id", taskId);
 
   if (error) return { ok: false, message: error.message };
 

@@ -326,11 +326,12 @@ Etapas da Onda 0, uma por vez, cada uma com minha aprovação antes da seguinte:
 > **Pendência:** aplicar a migration no Supabase real e validar em
 > produção.
 >
-> **Etapa 2.4 — Criar tarefa manual e duplicar tarefa existente:**
-> concluída em 2026-10-02, **sem migration** (a RLS de `task` da Etapa
-> 2.1 já cobria `socio`/`gestor` inserindo tarefas). Botão "+ Nova
-> tarefa" e "Duplicar" em `/projetos/[id]`; duplicar copia dados mas
-> reseta status e responsável — ver
+> **Etapa 2.4 — Criar, editar e duplicar tarefa:** concluída em
+> 2026-10-02, **sem migration** (a RLS de `task` da Etapa 2.1 já cobria
+> `socio`/`gestor` inserindo/editando tarefas). Botões "+ Nova tarefa",
+> "Editar" e "Duplicar" em `/projetos/[id]`; duplicar copia dados mas
+> reseta status e responsável; lista ordena por prazo (mais próximo
+> primeiro, sem prazo no fim) em vez de por criação — ver
 > `docs/decisions/0017-criar-e-duplicar-tarefa.md`. **Pendência:** só
 > aguardar deploy e o dono do produto validar em produção.
 >

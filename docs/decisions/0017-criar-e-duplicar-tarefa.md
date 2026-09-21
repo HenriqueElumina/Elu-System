@@ -1,4 +1,4 @@
-# ADR 0017 — Criar tarefa manual e duplicar tarefa existente
+# ADR 0017 — Criar, editar e duplicar tarefa
 
 **Status:** Aceito — 2026-10-02
 
@@ -57,3 +57,21 @@ significado além de satisfazer a coluna `not null`.
   sentido — é uma tarefa nova, começando do zero).
 - Sem reordenação manual da lista de tarefas (arrastar/soltar) — não foi
   pedido, e a lista já é cronológica.
+
+## Correções/extensões no mesmo dia (2026-10-02)
+
+### Ordenação por prazo, não por criação
+
+O dono do produto notou que tarefas novas apareciam no fim da lista por
+ordem de criação, mesmo tendo prazo mais próximo que outras já
+existentes. Trocado pra `order by due_date asc nulls last, created_at`
+— tarefa sem prazo definido fica no fim.
+
+### Editar tarefa já criada
+
+Faltava editar título/descrição/prazo depois de criada (responsável e
+estimativa já eram editáveis desde a Etapa 2.2). Botão "Editar" (só
+`socio`/`gestor`) abre um formulário pré-preenchido — mesma RLS de
+escrita, sem migration nova. `editTaskSchema` reaproveita
+`createTaskSchema` (`.omit({ estimatedHours: true })`) pra não duplicar
+a validação.
