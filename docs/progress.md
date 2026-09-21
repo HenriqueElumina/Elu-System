@@ -395,8 +395,8 @@ Aprovada e validada em produção em 2026-09-26 pelo dono do produto.
   reajuste, DRE, contas a pagar recorrentes automáticas.
 - Com esta etapa, o recorte do MVP do módulo Financeiro está completo,
   exceto NFSe (pendente do contador).
-- **Pendência:** aplicar a migration no Supabase real e o dono do
-  produto validar em produção.
+- Migration aplicada no Supabase real e validada em produção pelo dono
+  do produto em 2026-09-30.
 
 ### Etapa 1.10 — Conta bancária, baixa vinculada e reversão de pagamento (código pronto em 2026-09-29)
 
@@ -437,5 +437,5 @@ Aprovada e validada em produção em 2026-09-26 pelo dono do produto.
   `/financeiro/contas-bancarias` e `/nova`; `npm run lint`, `typecheck` e
   `build` sem erro.
 - **Fora do escopo:** editar/desativar conta bancária cadastrada errada.
-- **Pendência:** aplicar a migration no Supabase real e o dono do
-  produto validar em produção.
+- Migration aplicada no Supabase real e validada em produção pelo dono
+  do produto em 2026-09-30.

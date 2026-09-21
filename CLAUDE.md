@@ -270,19 +270,21 @@ Etapas da Onda 0, uma por vez, cada uma com minha aprovação antes da seguinte:
 > `docs/decisions/0012-contas-a-pagar-fluxo-caixa.md`. Com isso, o
 > recorte do MVP do módulo Financeiro está completo, exceto NFSe
 > (pendente de confirmação com o contador — bloqueante desde a Etapa
-> 0.1). **Pendência:** aplicar a migration no Supabase real e validar em
-> produção.
+> 0.1). Migration aplicada e validada em produção em 2026-09-30.
 >
 > **Etapa 1.10 — Conta bancária, baixa vinculada e reversão de
-> pagamento:** código pronto em 2026-09-29 — nova tabela `bank_account`
-> (nome, banco, agência, número da conta); `invoice`/`payable` ganham
-> `bank_account_id`; "Marcar como paga" virou formulário que exige
-> escolher a conta bancária; novo botão "Reverter pagamento" nas
-> faturas/contas já pagas; tela `/financeiro/contas-bancarias` (lista +
-> cadastrar). Baixa/reversão gravam em `audit_log` (quem, quando, qual
-> conta) — ver `docs/decisions/0013-conta-bancaria-reversao-pagamento.md`.
-> **Pendência:** aplicar a migration no Supabase real e validar em
-> produção.
+> pagamento:** concluída e validada em produção em 2026-09-30 — nova
+> tabela `bank_account` (nome, banco, agência, número da conta);
+> `invoice`/`payable` ganham `bank_account_id`; "Marcar como paga" virou
+> formulário que exige escolher a conta bancária; novo botão "Reverter
+> pagamento" nas faturas/contas já pagas; tela
+> `/financeiro/contas-bancarias` (lista + cadastrar). Baixa/reversão
+> gravam em `audit_log` (quem, quando, qual conta) — ver
+> `docs/decisions/0013-conta-bancaria-reversao-pagamento.md`.
+>
+> **Próximo: NFSe.** Único item restante do MVP do módulo Financeiro,
+> bloqueado desde a Etapa 0.1 esperando confirmação de município de
+> emissão, regime tributário e retenção de impostos com o contador.
 >
 > **Decisão do dono do produto:** trocar o ZapSign de sandbox pra
 > produção fica pra só no final do projeto base (não antes) — sem data
