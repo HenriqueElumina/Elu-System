@@ -534,8 +534,8 @@ Aprovada e validada em produção em 2026-09-26 pelo dono do produto.
 - **Fora do escopo:** edição em linha do valor lançado (corrigir = apagar
   e relançar); uso da soma de horas em cálculo de capacidade/
   rentabilidade; timer ao vivo.
-- **Pendência:** aplicar a migration no Supabase real e o dono do
-  produto validar em produção.
+- Migration aplicada no Supabase real e validada em produção pelo dono
+  do produto em 2026-10-03.
 
 ### Etapa 2.4 — Criar tarefa manual e duplicar tarefa existente (concluída em 2026-10-02)
 
@@ -559,5 +559,4 @@ Aprovada e validada em produção em 2026-09-26 pelo dono do produto.
 - **Extensão no mesmo dia** (pedido do dono do produto): botão "Editar"
   (só `socio`/`gestor`) em cada tarefa — título/descrição/prazo, mesma
   RLS de escrita, sem migration nova. ADR 0017 renomeado e atualizado.
-- **Pendência:** sem migration pra aplicar desta vez — só esperar o
-  deploy (Vercel) e o dono do produto validar em produção.
+- Deploy validado em produção pelo dono do produto em 2026-10-03.

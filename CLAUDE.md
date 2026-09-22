@@ -323,8 +323,7 @@ Etapas da Onda 0, uma por vez, cada uma com minha aprovação antes da seguinte:
 > linha; `/projetos/[id]` mostra "lançado Xh" ao lado da estimativa — ver
 > `docs/decisions/0016-registro-de-tempo.md`. Sem uso do dado em nenhum
 > cálculo de capacidade/rentabilidade ainda (módulo 10, mais adiante).
-> **Pendência:** aplicar a migration no Supabase real e validar em
-> produção.
+> Migration aplicada e validada em produção em 2026-10-03.
 >
 > **Etapa 2.4 — Criar, editar e duplicar tarefa:** concluída em
 > 2026-10-02, **sem migration** (a RLS de `task` da Etapa 2.1 já cobria
@@ -332,8 +331,8 @@ Etapas da Onda 0, uma por vez, cada uma com minha aprovação antes da seguinte:
 > "Editar" e "Duplicar" em `/projetos/[id]`; duplicar copia dados mas
 > reseta status e responsável; lista ordena por prazo (mais próximo
 > primeiro, sem prazo no fim) em vez de por criação — ver
-> `docs/decisions/0017-criar-e-duplicar-tarefa.md`. **Pendência:** só
-> aguardar deploy e o dono do produto validar em produção.
+> `docs/decisions/0017-criar-e-duplicar-tarefa.md`. Validado em
+> produção em 2026-10-03.
 >
 > **Decisão do dono do produto:** trocar o ZapSign de sandbox pra
 > produção fica pra só no final do projeto base (não antes) — sem data
