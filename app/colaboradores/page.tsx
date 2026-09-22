@@ -2,6 +2,8 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { centsToReais } from "@/lib/validation/service";
+import { EditEmployeeForm } from "./edit-employee-form";
+import { DeactivateEmployeeButton } from "./deactivate-employee-button";
 
 export default async function ColaboradoresPage() {
   const supabase = await createClient();
@@ -30,6 +32,9 @@ export default async function ColaboradoresPage() {
 
   const canSeeCost = profile.role === "socio" || profile.role === "financeiro";
   const canInvite = canSeeCost;
+  const canEditRole = profile.role === "socio";
+  const canDeactivate = profile.role === "socio";
+  const canManageRow = canEditRole || canSeeCost || canDeactivate;
 
   const { data: employees, error } = await supabase
     .from("employee")
@@ -71,7 +76,8 @@ export default async function ColaboradoresPage() {
               <th className="py-2 pr-4">Cargo</th>
               <th className="py-2 pr-4">Admissão</th>
               <th className="py-2 pr-4">Status</th>
-              {canSeeCost && <th className="py-2">Custo/hora</th>}
+              {canSeeCost && <th className="py-2 pr-4">Custo/hora</th>}
+              {canManageRow && <th className="py-2"></th>}
             </tr>
           </thead>
           <tbody>
@@ -84,7 +90,7 @@ export default async function ColaboradoresPage() {
                 hourly_cost_cents: number | null;
               } | null;
               return (
-                <tr key={employee.id} className="border-b border-gray-100">
+                <tr key={employee.id} className="border-b border-gray-100 align-top">
                   <td className="py-2 pr-4">
                     {empProfile?.full_name ?? "-"}
                   </td>
@@ -96,13 +102,36 @@ export default async function ColaboradoresPage() {
                   </td>
                   <td className="py-2 pr-4">{employee.active ? "Ativo" : "Inativo"}</td>
                   {canSeeCost && (
-                    <td className="py-2">
+                    <td className="py-2 pr-4">
                       {compensation?.hourly_cost_cents != null
                         ? centsToReais(compensation.hourly_cost_cents).toLocaleString(
                             "pt-BR",
                             { style: "currency", currency: "BRL" },
                           )
                         : "-"}
+                    </td>
+                  )}
+                  {canManageRow && (
+                    <td className="space-y-1 py-2">
+                      <div className="flex gap-1">
+                        <EditEmployeeForm
+                          employeeId={employee.id}
+                          roleTitle={employee.role_title}
+                          hourlyCostReais={
+                            compensation?.hourly_cost_cents != null
+                              ? centsToReais(compensation.hourly_cost_cents)
+                              : null
+                          }
+                          canEditRole={canEditRole}
+                          canEditCost={canSeeCost}
+                        />
+                        {canDeactivate && (
+                          <DeactivateEmployeeButton
+                            employeeId={employee.id}
+                            active={employee.active}
+                          />
+                        )}
+                      </div>
                     </td>
                   )}
                 </tr>

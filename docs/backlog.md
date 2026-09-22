@@ -158,10 +158,20 @@
   iniciar/pausar, se um dia fizer sentido, é uma fatia à parte (mais
   complexa: timer esquecido rodando, sessão entre dispositivos). Ver
   ADR 0016.
-- **Colaboradores — sem editar depois de convidado:** a Etapa 9.1 só
-  cria `employee`/`employee_compensation` pelo fluxo de convite; não tem
-  tela pra corrigir cargo/custo-hora ou desativar colaborador depois.
-  Ver ADR 0018.
+- **Colaboradores — editar/desativar sem auditoria:** a Etapa 9.3
+  (editar cargo/custo-hora, desativar/reativar) não grava em
+  `audit_log` quem fez o quê — mesmo padrão de outras ações
+  administrativas que ainda não auditam (`updateContractStatus`, por
+  exemplo). Ver ADR 0020.
+- **Colaboradores — desativar não apaga o login técnico:** a Etapa 9.3
+  bloqueia todo acesso de um perfil desativado (via `auth_role()`), mas
+  a conta em si continua existindo no Supabase Auth — não é exclusão de
+  dados pessoais (LGPD). Se um dia pedirem isso, é etapa própria. Ver
+  ADR 0020.
+- **Colaboradores — trava de "não desativar a si mesmo" só no app:** a
+  Etapa 9.3 impede um sócio de desativar a própria conta pela tela, mas
+  não há trava no banco (RLS) contra isso — alguém mexendo direto no
+  SQL Editor do Supabase ainda consegue. Ver ADR 0020.
 - **Colaboradores — sem reenviar convite expirado/perdido:** se o link
   expirar (7 dias) ou a pessoa perder o e-mail, o jeito hoje é gerar um
   convite novo do zero. Ver ADR 0018.

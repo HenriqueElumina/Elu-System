@@ -43,3 +43,20 @@ export const completeEmployeeSignupSchema = z
   .merge(employeeOnboardingSchema);
 
 export type CompleteEmployeeSignupInput = z.output<typeof completeEmployeeSignupSchema>;
+
+// Etapa 9.3 -- editar cargo (socio) e custo/hora (socio/financeiro) de
+// um colaborador já cadastrado. Duas ações/schemas separados porque
+// cada campo é escrito numa tabela com RLS diferente.
+export const updateEmployeeRoleTitleSchema = z.object({
+  roleTitle: z.string().trim().max(200).optional(),
+});
+
+export type UpdateEmployeeRoleTitleInput = z.output<typeof updateEmployeeRoleTitleSchema>;
+
+export const updateEmployeeCompensationSchema = z.object({
+  hourlyCostReais: z.coerce.number().nonnegative().optional(),
+});
+
+export type UpdateEmployeeCompensationInput = z.output<
+  typeof updateEmployeeCompensationSchema
+>;

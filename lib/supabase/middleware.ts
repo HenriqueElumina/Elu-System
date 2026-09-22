@@ -44,6 +44,24 @@ export async function updateSession(request: NextRequest) {
     return NextResponse.redirect(url);
   }
 
+  // Perfil desativado (Etapa 9.3): auth_role() já bloqueia tudo via RLS,
+  // mas sem isso a pessoa cai numa tela quebrada em vez de um aviso claro.
+  if (user && !isPublicPage) {
+    const { data: profile } = await supabase
+      .from("profile")
+      .select("active")
+      .eq("id", user.id)
+      .single();
+
+    if (profile && !profile.active) {
+      await supabase.auth.signOut();
+      const url = request.nextUrl.clone();
+      url.pathname = "/login";
+      url.searchParams.set("desativado", "1");
+      return NextResponse.redirect(url);
+    }
+  }
+
   if (user && isLoginPage) {
     const url = request.nextUrl.clone();
     url.pathname = "/clientes";

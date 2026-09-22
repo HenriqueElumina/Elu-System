@@ -662,3 +662,31 @@ Aprovada e validada em produção em 2026-09-26 pelo dono do produto.
   na Etapa 9.1; máscara de CPF/CEP/telefone.
 - **Pendência:** aplicar a migration no Supabase real e o dono do
   produto validar o fluxo completo em produção.
+
+### Etapa 9.3 — Editar e desativar colaborador (código pronto em 2026-10-05)
+
+- **"Excluir" virou "desativar"** — apagar o login de verdade exigiria a
+  `service_role key`, nunca usada neste projeto. Desativar (reversível)
+  resolve o problema real: a pessoa perde todo acesso ao sistema.
+- `auth_role()` (usada por praticamente toda policy do sistema) passa a
+  exigir `profile.active = true` — perfil desativado não tem role
+  nenhum, o que bloqueia automaticamente tudo, não só o módulo de RH.
+  Um lugar só muda, nenhuma tabela nem policy existente foi tocada.
+- `/colaboradores`: "Editar" (cargo — só `socio`; custo/hora —
+  `socio`/`financeiro`) e "Desativar"/"Reativar" (só `socio`, com
+  confirmação). Sócio não pode desativar a própria conta (trava na
+  `server action`).
+- Middleware: perfil desativado é deslogado e mandado pro login com
+  aviso claro (a RLS já bloqueava tudo, isso só evita uma tela
+  quebrada).
+- Decisões em `docs/decisions/0020-editar-e-desativar-colaborador.md`.
+- Testes: migration testada localmente (perfil ativo lê `employee`
+  normalmente; desativado perde acesso a `employee` **e também a
+  `client`**, confirmando que a trava é do sistema inteiro; reativado
+  volta a funcionar; revert limpo); `npm run lint`, `typecheck`,
+  `build` e Playwright completo sem erro (18 testes).
+- **Fora do escopo:** auditoria de quem editou/desativou; exclusão real
+  de dados pessoais (LGPD); trava de autodesativação no banco (só no
+  app).
+- **Pendência:** aplicar a migration no Supabase real e o dono do
+  produto validar em produção.

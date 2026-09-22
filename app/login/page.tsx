@@ -1,11 +1,21 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
-import { useRouter } from "next/navigation";
+import { Suspense, useState, type FormEvent } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
 export default function LoginPage() {
+  return (
+    <Suspense fallback={null}>
+      <LoginPageInner />
+    </Suspense>
+  );
+}
+
+function LoginPageInner() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const deactivatedNotice = searchParams.get("desativado") === "1";
   const [mode, setMode] = useState<"login" | "forgot">("login");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -132,6 +142,13 @@ export default function LoginPage() {
             Entre com sua conta da Elumina Partners.
           </p>
         </div>
+
+        {deactivatedNotice && (
+          <p className="rounded-md bg-amber-50 px-3 py-2 text-sm text-amber-800">
+            Sua conta foi desativada. Fale com um sócio se isso não fizer
+            sentido.
+          </p>
+        )}
 
         <div className="space-y-1">
           <label htmlFor="email" className="text-sm font-medium">

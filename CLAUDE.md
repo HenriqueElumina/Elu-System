@@ -374,6 +374,18 @@ Etapas da Onda 0, uma por vez, cada uma com minha aprovação antes da seguinte:
 > aplicar a migration no Supabase real e validar o fluxo completo em
 > produção.
 >
+> **Etapa 9.3 — Editar e desativar colaborador:** código pronto em
+> 2026-10-05 — "excluir" virou "desativar" (apagar de verdade exigiria
+> `service_role`, nunca usada neste projeto); `auth_role()` passa a
+> exigir `profile.active = true`, o que bloqueia automaticamente **todo
+> o sistema** pra um perfil desativado (não só RH) com uma mudança só;
+> `/colaboradores` ganha "Editar" (cargo — `socio`; custo/hora —
+> `socio`/`financeiro`) e "Desativar"/"Reativar" (`socio`, sócio não
+> desativa a si mesmo); middleware desloga perfil desativado com aviso
+> — ver `docs/decisions/0020-editar-e-desativar-colaborador.md`.
+> **Pendência:** aplicar a migration no Supabase real e validar em
+> produção.
+>
 > **Decisão do dono do produto:** trocar o ZapSign de sandbox pra
 > produção fica pra só no final do projeto base (não antes) — sem data
 > definida.
