@@ -560,3 +560,39 @@ Aprovada e validada em produção em 2026-09-26 pelo dono do produto.
   (só `socio`/`gestor`) em cada tarefa — título/descrição/prazo, mesma
   RLS de escrita, sem migration nova. ADR 0017 renomeado e atualizado.
 - Deploy validado em produção pelo dono do produto em 2026-10-03.
+
+## Onda 2 — Colaboradores (RH)
+
+### Etapa 9.1 — Convite e cadastro básico de colaborador (código pronto em 2026-10-03)
+
+- **Correção de segurança:** `handle_new_user()` (Etapa 0.4) confiava no
+  `role` vindo do próprio cadastro (`raw_user_meta_data`, controlado
+  pelo cliente) — nunca explorável até esta etapa expor o primeiro
+  formulário público de auto-cadastro do app. Travado: todo auto-cadastro
+  nasce `colaborador`, sem exceção; promoção continua manual, só por
+  `socio`.
+- Colaborador ganha login de verdade pelo próprio `auth.signUp`
+  (chave anônima, sem `service_role`) — e-mail travado do convite,
+  senha definida pela própria pessoa.
+- Novas tabelas: `employee_invite` (convite: e-mail, cargo, custo/hora,
+  admissão — só `socio`/`financeiro`) e `employee_compensation`
+  (custo/hora separado de `employee`, RLS só `socio`/`financeiro` —
+  `employee` continua de leitura ampla pra nome/cargo/admissão).
+  `employee` ganha `role_title` (cargo).
+- Funções públicas `get_employee_invite`/`submit_employee_invite`
+  (`SECURITY DEFINER`, mesmo padrão do convite de cliente).
+- Telas: `/colaboradores` (lista; custo só `socio`/`financeiro`),
+  `/colaboradores/convidar` (só `socio`/`financeiro`),
+  `/convite-colaborador/[token]` (pública — cria conta).
+- Decisões em `docs/decisions/0018-convite-e-cadastro-colaborador.md`.
+- Testes: migration testada localmente (cadastro com `role` forjado
+  nasce `colaborador`; RLS de `employee_invite`/`employee_compensation`
+  por perfil; fluxo de convite ponta a ponta incluindo e-mail
+  divergente e submissão duplicada; revert limpo); `npm run lint`,
+  `typecheck`, `build` e Playwright completo sem erro (16 testes).
+- **Fora do escopo:** editar colaborador depois de convidado; reenviar
+  convite expirado; formulário de onboarding com dados pessoais (Etapa
+  9.2).
+- **Pendência:** aplicar a migration no Supabase real e o dono do
+  produto validar em produção — incluindo testar o fluxo de convite
+  ponta a ponta com um e-mail de verdade.

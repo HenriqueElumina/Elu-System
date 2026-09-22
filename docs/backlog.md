@@ -158,6 +158,28 @@
   iniciar/pausar, se um dia fizer sentido, é uma fatia à parte (mais
   complexa: timer esquecido rodando, sessão entre dispositivos). Ver
   ADR 0016.
+- **Colaboradores — sem editar depois de convidado:** a Etapa 9.1 só
+  cria `employee`/`employee_compensation` pelo fluxo de convite; não tem
+  tela pra corrigir cargo/custo-hora ou desativar colaborador depois.
+  Ver ADR 0018.
+- **Colaboradores — sem reenviar convite expirado/perdido:** se o link
+  expirar (7 dias) ou a pessoa perder o e-mail, o jeito hoje é gerar um
+  convite novo do zero. Ver ADR 0018.
+- **Colaboradores — só `socio`/`financeiro` convidam:** `gestor` só
+  enxerga a lista (sem custo), não convida — decisão da Etapa 9.1 porque
+  o formulário de convite já inclui custo/hora. Rever se isso atrapalhar
+  o uso real (ex.: gestor de time querendo convidar sem depender de
+  sócio/financeiro). Ver ADR 0018.
+- **Colaboradores — risco de `profile` órfão sem `employee`:** o fluxo de
+  convite chama `auth.signUp` e `submit_employee_invite` em duas
+  chamadas separadas (não há transação única entre o Supabase Auth e o
+  Postgres). Se a segunda falhar depois da primeira ter funcionado
+  (caso raro — ex.: convite expira nos segundos entre uma chamada e
+  outra), sobra um `profile` sem `employee` correspondente, exigindo
+  conserto manual. Ver ADR 0018.
+- **Colaboradores — onboarding com dados pessoais (Etapa 9.2):** contato
+  de emergência, restrição alimentar, objetivos de carreira etc. — campos
+  exatos ainda não definidos, fica pra quando desenharmos essa etapa.
 - **Tarefas — contratos assinados antes da Etapa 2.1 não têm tarefas:**
   a geração automática só vale pra contratos assinados a partir de
   2026-09-30 (transição de status é o gatilho). Projetos mais antigos

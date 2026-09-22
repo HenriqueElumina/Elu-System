@@ -334,6 +334,21 @@ Etapas da Onda 0, uma por vez, cada uma com minha aprovação antes da seguinte:
 > `docs/decisions/0017-criar-e-duplicar-tarefa.md`. Validado em
 > produção em 2026-10-03.
 >
+> **Módulo 9 (Colaboradores/RH), Etapa 9.1 — Convite e cadastro básico
+> de colaborador:** código pronto em 2026-10-03 — colaborador ganha
+> login de verdade pelo próprio `auth.signUp` (sem `service_role`),
+> e-mail travado do convite; novas tabelas `employee_invite` e
+> `employee_compensation` (custo/hora separado de `employee`, RLS só
+> `socio`/`financeiro`); telas `/colaboradores`,
+> `/colaboradores/convidar`, `/convite-colaborador/[token]` — ver
+> `docs/decisions/0018-convite-e-cadastro-colaborador.md`.
+> **Correção de segurança no caminho:** `handle_new_user()` (Etapa 0.4)
+> confiava no `role` vindo do próprio cadastro — travado pra sempre
+> nascer `colaborador`, já que esta etapa expõe o primeiro auto-cadastro
+> público do app. **Pendência:** aplicar a migration no Supabase real e
+> validar em produção (incluindo o fluxo de convite ponta a ponta com
+> e-mail de verdade).
+>
 > **Decisão do dono do produto:** trocar o ZapSign de sandbox pra
 > produção fica pra só no final do projeto base (não antes) — sem data
 > definida.
