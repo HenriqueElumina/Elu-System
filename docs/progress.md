@@ -596,3 +596,30 @@ Aprovada e validada em produção em 2026-09-26 pelo dono do produto.
 - **Pendência:** aplicar a migration no Supabase real e o dono do
   produto validar em produção — incluindo testar o fluxo de convite
   ponta a ponta com um e-mail de verdade.
+- **Correção no mesmo dia** (achada testando o convite em produção):
+  `signUp()` não passava `emailRedirectTo`, então o link de confirmação
+  de e-mail usava a "Site URL" configurada no painel do Supabase (ainda
+  em `localhost:3000`) — corrigido pra sempre usar a origem de onde a
+  pessoa está acessando. Ajuste de configuração (fora do código) também
+  necessário no painel do Supabase: Site URL e Redirect URLs pro domínio
+  de produção.
+
+### Redefinir senha (pedido do dono do produto, sem migration, 2026-10-03)
+
+- `/login` ganha "Esqueci minha senha" → formulário de e-mail →
+  `resetPasswordForEmail`. Nova página pública `/redefinir-senha`
+  (troca o código do link por sessão via `exchangeCodeForSession`,
+  mesmo ajuste de PKCE do convite, antes de deixar definir a senha
+  nova).
+- Middleware (`lib/supabase/middleware.ts`) precisou entrar
+  `/redefinir-senha` na lista de páginas públicas (sem isso, redirecionava
+  pro login antes de trocar o código).
+- `useSearchParams()` exigiu separar em `page.tsx` (só o `<Suspense>`)
+  + `redefinir-senha-client.tsx` (a lógica) — sem isso o build falha
+  (Next.js exige Suspense ao redor de `useSearchParams`).
+- Testes: `npm run lint`, `typecheck`, `build` e Playwright completo
+  sem erro (18 testes). Sem migration — mecanismo nativo do Supabase
+  Auth.
+- **Pendência:** o dono do produto testar o fluxo completo em produção
+  depois do deploy (e depois de ajustar Site URL/Redirect URLs no painel
+  do Supabase, mesma pendência da Etapa 9.1).

@@ -345,9 +345,20 @@ Etapas da Onda 0, uma por vez, cada uma com minha aprovação antes da seguinte:
 > **Correção de segurança no caminho:** `handle_new_user()` (Etapa 0.4)
 > confiava no `role` vindo do próprio cadastro — travado pra sempre
 > nascer `colaborador`, já que esta etapa expõe o primeiro auto-cadastro
-> público do app. **Pendência:** aplicar a migration no Supabase real e
-> validar em produção (incluindo o fluxo de convite ponta a ponta com
-> e-mail de verdade).
+> público do app. **Correção no mesmo dia:** `signUp()` não passava
+> `emailRedirectTo` — link de confirmação usava a Site URL do painel do
+> Supabase (ainda em `localhost:3000`); corrigido pra usar sempre a
+> origem de onde a pessoa acessa. **Pendência:** aplicar a migration no
+> Supabase real, ajustar Site URL/Redirect URLs no painel do Supabase
+> pro domínio de produção, e validar o convite ponta a ponta com e-mail
+> de verdade.
+>
+> **Redefinir senha** (pedido do dono do produto, sem migration):
+> `/login` ganha "Esqueci minha senha"; nova página pública
+> `/redefinir-senha` usa o mesmo padrão de troca de código (PKCE) do
+> convite. Middleware precisou liberar a rota como pública.
+> **Pendência:** validar em produção (mesmo ajuste de Site URL/Redirect
+> URLs do Supabase acima).
 >
 > **Decisão do dono do produto:** trocar o ZapSign de sandbox pra
 > produção fica pra só no final do projeto base (não antes) — sem data

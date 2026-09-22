@@ -30,8 +30,13 @@ export async function updateSession(request: NextRequest) {
   } = await supabase.auth.getUser();
 
   const isLoginPage = request.nextUrl.pathname.startsWith("/login");
-  // /convite/[token]: página pública que o cliente preenche sem login.
-  const isPublicPage = isLoginPage || request.nextUrl.pathname.startsWith("/convite");
+  // /convite/[token] e /convite-colaborador/[token]: páginas públicas que
+  // cliente/colaborador preenchem sem login. /redefinir-senha: chega com
+  // um código de recuperação, também antes de ter sessão.
+  const isPublicPage =
+    isLoginPage ||
+    request.nextUrl.pathname.startsWith("/convite") ||
+    request.nextUrl.pathname.startsWith("/redefinir-senha");
 
   if (!user && !isPublicPage) {
     const url = request.nextUrl.clone();
