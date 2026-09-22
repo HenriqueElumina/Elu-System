@@ -77,7 +77,10 @@ export function ConviteColaboradorClient({ token }: { token: string }) {
     const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
       email: state.email,
       password,
-      options: { data: { full_name: fullName } },
+      options: {
+        data: { full_name: fullName },
+        emailRedirectTo: `${window.location.origin}/login`,
+      },
     });
 
     if (signUpError || !signUpData.user) {
