@@ -177,9 +177,18 @@
   (caso raro — ex.: convite expira nos segundos entre uma chamada e
   outra), sobra um `profile` sem `employee` correspondente, exigindo
   conserto manual. Ver ADR 0018.
-- **Colaboradores — onboarding com dados pessoais (Etapa 9.2):** contato
-  de emergência, restrição alimentar, objetivos de carreira etc. — campos
-  exatos ainda não definidos, fica pra quando desenharmos essa etapa.
+- **Colaboradores — ficha de onboarding sem tela de consulta:** desde a
+  Etapa 9.2, `socio`/`financeiro` conseguem ler `employee_onboarding`
+  (RLS já permite), mas não tem tela nenhuma mostrando isso ainda — só
+  existe no banco. Ver ADR 0019.
+- **Colaboradores — ficha não preenchida retroativamente:** quem foi
+  convidado na Etapa 9.1 (antes da 9.2 existir) não tem
+  `employee_onboarding`. Ninguém pediu preenchimento retroativo. Ver
+  ADR 0019.
+- **Colaboradores — sem máscara de CPF/CEP/telefone na ficha de
+  onboarding:** mesma simplificação já registrada pro cadastro de
+  cliente — campos de texto livre, validados só no formato/dígito
+  verificador (CPF). Ver ADR 0019.
 - **Tarefas — contratos assinados antes da Etapa 2.1 não têm tarefas:**
   a geração automática só vale pra contratos assinados a partir de
   2026-09-30 (transição de status é o gatilho). Projetos mais antigos

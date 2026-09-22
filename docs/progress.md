@@ -623,3 +623,42 @@ Aprovada e validada em produção em 2026-09-26 pelo dono do produto.
 - **Pendência:** o dono do produto testar o fluxo completo em produção
   depois do deploy (e depois de ajustar Site URL/Redirect URLs no painel
   do Supabase, mesma pendência da Etapa 9.1).
+- **Correção no mesmo dia** (achada testando em produção): o link de
+  "esqueci minha senha" não chega com `?code=` (isso é só do fluxo de
+  confirmação de cadastro) — o Supabase verifica a recuperação de senha
+  no servidor deles antes de redirecionar, e o jeito oficial de detectar
+  isso no navegador é escutar o evento `PASSWORD_RECOVERY`
+  (`onAuthStateChange`). Corrigido; `?code=` mantido como fallback caso
+  o formato do link mude no futuro. Confirmado funcionando pelo dono do
+  produto.
+
+### Etapa 9.2 — Ficha de onboarding do colaborador (código pronto em 2026-10-04)
+
+- Continuação direta da Etapa 9.1: o mesmo formulário de
+  `/convite-colaborador/[token]` que cria a conta agora também coleta a
+  ficha — contato de emergência (nome, telefone, parentesco), saúde
+  básica (restrições/alergias), objetivos de carreira, dados pessoais
+  (nascimento, CPF, endereço completo). Um passo só, obrigatório pra
+  concluir o cadastro; cada campo individual dentro da ficha é opcional.
+- Nova tabela `employee_onboarding` (1:1 com `employee`). RLS:
+  `socio`/`financeiro` veem/editam qualquer ficha; o próprio colaborador
+  só a dele (pode corrigir depois). `gestor` fica de fora, mesmo padrão
+  de `employee_compensation`.
+- `submit_employee_invite` trocou de assinatura (2 → 16 parâmetros) pra
+  gravar `employee`/`employee_compensation`/`employee_onboarding` na
+  mesma chamada `SECURITY DEFINER`.
+- CPF validado com `isValidCPF` (já existente, reaproveitado do cadastro
+  de cliente); endereço usa os mesmos nomes de campo do endereço de
+  `client`.
+- Decisões em `docs/decisions/0019-ficha-onboarding-colaborador.md`.
+- Testes: migration testada localmente (fluxo completo grava a ficha
+  certo; próprio colaborador lê/corrige só a própria; outro colaborador
+  e `gestor` bloqueados; `socio`/`financeiro` veem; revert limpo — teve
+  que corrigir a contagem de parâmetros do `grant execute` na primeira
+  tentativa); `npm run lint`, `typecheck`, `build` e Playwright completo
+  sem erro (18 testes).
+- **Fora do escopo:** tela pra `socio`/`financeiro` consultarem a ficha
+  (só existe no banco); preenchimento retroativo pra quem foi convidado
+  na Etapa 9.1; máscara de CPF/CEP/telefone.
+- **Pendência:** aplicar a migration no Supabase real e o dono do
+  produto validar o fluxo completo em produção.

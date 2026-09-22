@@ -357,8 +357,22 @@ Etapas da Onda 0, uma por vez, cada uma com minha aprovação antes da seguinte:
 > `/login` ganha "Esqueci minha senha"; nova página pública
 > `/redefinir-senha` usa o mesmo padrão de troca de código (PKCE) do
 > convite. Middleware precisou liberar a rota como pública.
-> **Pendência:** validar em produção (mesmo ajuste de Site URL/Redirect
-> URLs do Supabase acima).
+> **Correção no mesmo dia:** o link de recuperação de senha não chega
+> com `?code=` (só o de confirmação de cadastro chega) — trocado pra
+> escutar o evento oficial `PASSWORD_RECOVERY`. **Confirmado funcionando
+> em produção pelo dono do produto.**
+>
+> **Etapa 9.2 — Ficha de onboarding do colaborador:** código pronto em
+> 2026-10-04 — o mesmo formulário de `/convite-colaborador/[token]` que
+> cria a conta (Etapa 9.1) agora também coleta contato de emergência,
+> saúde básica, objetivos de carreira e dados pessoais (nascimento, CPF,
+> endereço) — um passo só, obrigatório, mas cada campo individual é
+> opcional. Nova tabela `employee_onboarding` (RLS: `socio`/`financeiro`
+> ou o próprio colaborador); `submit_employee_invite` passou de 2 pra 16
+> parâmetros — ver
+> `docs/decisions/0019-ficha-onboarding-colaborador.md`. **Pendência:**
+> aplicar a migration no Supabase real e validar o fluxo completo em
+> produção.
 >
 > **Decisão do dono do produto:** trocar o ZapSign de sandbox pra
 > produção fica pra só no final do projeto base (não antes) — sem data
