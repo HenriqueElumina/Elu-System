@@ -20,31 +20,42 @@ export function RedefinirSenhaClient() {
   const [busy, setBusy] = useState(false);
 
   useEffect(() => {
-    let cancelled = false;
-    const code = searchParams.get("code");
+    let settled = false;
+    const supabase = createClient();
 
-    async function exchange() {
-      if (!code) {
-        if (!cancelled) setState({ status: "invalid" });
-        return;
+    // O link de "esqueci minha senha" do Supabase é verificado no
+    // servidor deles antes de redirecionar pra cá -- não chega com
+    // ?code= (isso é só pro fluxo de confirmação de cadastro). O jeito
+    // oficial de detectar recuperação de senha é este evento.
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((event) => {
+      if (event === "PASSWORD_RECOVERY") {
+        settled = true;
+        setState({ status: "ready" });
       }
+    });
 
-      const supabase = createClient();
+    // Mantido por segurança, caso o link algum dia venha no formato
+    // ?code= (fluxo PKCE) em vez do formato padrão acima.
+    async function tryCodeExchange() {
+      const code = searchParams.get("code");
+      if (!code) return;
       const { error: exchangeError } = await supabase.auth.exchangeCodeForSession(code);
-
-      if (cancelled) return;
-
-      if (exchangeError) {
-        setState({ status: "invalid" });
-        return;
+      if (!exchangeError) {
+        settled = true;
+        setState({ status: "ready" });
       }
-
-      setState({ status: "ready" });
     }
+    tryCodeExchange();
 
-    exchange();
+    const timeout = setTimeout(() => {
+      if (!settled) setState({ status: "invalid" });
+    }, 2500);
+
     return () => {
-      cancelled = true;
+      subscription.unsubscribe();
+      clearTimeout(timeout);
     };
   }, [searchParams]);
 
