@@ -21,6 +21,12 @@ function isActive(pathname: string, href: string) {
   return href === "/" ? pathname === "/" : pathname.startsWith(href);
 }
 
+function isChildActive(pathname: string, childHref: string, parentHref: string) {
+  return childHref === parentHref
+    ? pathname === childHref
+    : pathname.startsWith(childHref);
+}
+
 function SidebarContent({
   userName,
   userRole,
@@ -63,6 +69,32 @@ function SidebarContent({
               >
                 {link.label}
               </Link>
+
+              {link.children && active && (
+                <div className="ml-3 mt-1 space-y-1 border-l border-white/10 pl-3">
+                  {link.children.map((child) => {
+                    const childActive = isChildActive(
+                      pathname,
+                      child.href,
+                      link.href,
+                    );
+                    return (
+                      <Link
+                        key={child.href}
+                        href={child.href}
+                        onClick={onNavigate}
+                        className={`block rounded-md px-2 py-1.5 text-sm transition-colors ${
+                          childActive
+                            ? "bg-brand-cream text-brand-charcoal"
+                            : "text-brand-cream/60 hover:bg-white/5 hover:text-brand-cream"
+                        }`}
+                      >
+                        {child.label}
+                      </Link>
+                    );
+                  })}
+                </div>
+              )}
             </div>
           );
         })}

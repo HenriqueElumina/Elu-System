@@ -46,17 +46,6 @@ export default async function FinanceiroPage() {
       <div className="mx-auto max-w-4xl px-4 py-10 sm:px-6 lg:px-10">
       <div className="mb-8">
         <h1 className="text-xl font-semibold">Financeiro — Contas a receber</h1>
-        <div className="flex gap-3 text-sm text-gray-500">
-          <Link href="/financeiro/contas-a-pagar" className="hover:underline">
-            Contas a pagar →
-          </Link>
-          <Link href="/financeiro/fluxo-de-caixa" className="hover:underline">
-            Fluxo de caixa →
-          </Link>
-          <Link href="/financeiro/contas-bancarias" className="hover:underline">
-            Contas bancárias →
-          </Link>
-        </div>
       </div>
 
       {error && (

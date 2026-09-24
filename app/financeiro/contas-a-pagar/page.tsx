@@ -52,20 +52,7 @@ export default async function ContasAPagarPage() {
     <AppShell userName={profile.full_name} userRole={profile.role}>
       <div className="mx-auto max-w-3xl px-4 py-10 sm:px-6 lg:px-10">
       <div className="mb-8 flex items-center justify-between">
-        <div>
-          <h1 className="text-xl font-semibold">Contas a pagar</h1>
-          <div className="flex gap-3 text-sm text-gray-500">
-            <Link href="/financeiro" className="hover:underline">
-              ← Financeiro
-            </Link>
-            <Link href="/financeiro/fluxo-de-caixa" className="hover:underline">
-              Fluxo de caixa →
-            </Link>
-            <Link href="/financeiro/contas-bancarias" className="hover:underline">
-              Contas bancárias →
-            </Link>
-          </div>
-        </div>
+        <h1 className="text-xl font-semibold">Contas a pagar</h1>
         {canManageFinance && (
           <Link
             href="/financeiro/contas-a-pagar/novo"

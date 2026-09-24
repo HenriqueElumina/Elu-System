@@ -37,12 +37,7 @@ export default async function ContasBancariasPage() {
     <AppShell userName={profile.full_name} userRole={profile.role}>
       <div className="mx-auto max-w-3xl px-4 py-10 sm:px-6 lg:px-10">
       <div className="mb-8 flex items-center justify-between">
-        <div>
-          <h1 className="text-xl font-semibold">Contas bancárias</h1>
-          <Link href="/financeiro" className="text-sm text-gray-500 hover:underline">
-            ← Financeiro
-          </Link>
-        </div>
+        <h1 className="text-xl font-semibold">Contas bancárias</h1>
         {canManageFinance && (
           <Link
             href="/financeiro/contas-bancarias/nova"

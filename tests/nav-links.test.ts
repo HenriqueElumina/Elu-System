@@ -30,4 +30,23 @@ describe("navLinksForRole", () => {
     expect(hrefs).not.toContain("/projetos");
     expect(hrefs).toContain("/financeiro");
   });
+
+  it("Financeiro tem as 4 subcategorias, na ordem certa", () => {
+    const financeiro = navLinksForRole("socio").find(
+      (link) => link.href === "/financeiro",
+    );
+    expect(financeiro?.children?.map((child) => child.href)).toEqual([
+      "/financeiro",
+      "/financeiro/contas-a-pagar",
+      "/financeiro/fluxo-de-caixa",
+      "/financeiro/contas-bancarias",
+    ]);
+  });
+
+  it("nenhum outro módulo tem subcategorias", () => {
+    const others = navLinksForRole("socio").filter(
+      (link) => link.href !== "/financeiro",
+    );
+    expect(others.every((link) => !link.children)).toBe(true);
+  });
 });

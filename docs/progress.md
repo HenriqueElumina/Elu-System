@@ -797,3 +797,20 @@ Aprovada e validada em produção em 2026-09-26 pelo dono do produto.
   e dados de exemplo, removida antes do commit.
 - **Fora do escopo:** auditoria; máquina de estados travando transições
   de status (registrado no backlog).
+
+### Financeiro como categoria com subcategorias na sidebar (código pronto em 2026-09-24)
+
+- Pedido do dono do produto, com print de referência (ERP da Olist) —
+  adaptado o conceito (categoria expande subcategorias), não o layout
+  de duas colunas. `NavLink` ganha `children` opcional
+  (`lib/nav/links.ts`); "Financeiro" agora lista Contas a receber,
+  Contas a pagar, Fluxo de caixa e Contas bancárias indentados embaixo,
+  só quando você está em alguma tela do módulo (sem clique extra pra
+  abrir). Removidos os links repetidos que existiam no topo de cada
+  tela do Financeiro (redundantes com o menu novo).
+- Decisões em
+  `docs/decisions/0025-financeiro-categoria-subcategoria.md`.
+- Testes: `npm run lint`, `typecheck`, `test` (89 testes, 2 novos pra
+  garantir que só Financeiro tem subcategorias) e `build` sem erro;
+  Playwright completo sem erro (18 testes). Verificação visual com uma
+  prop temporária de preview, removida antes do commit.

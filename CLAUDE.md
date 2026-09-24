@@ -436,3 +436,12 @@ Etapas da Onda 0, uma por vez, cada uma com minha aprovação antes da seguinte:
 > status compacto em cada linha de `/contratos` (dá pra trocar o
 > estágio sem abrir o contrato) — ver
 > `docs/decisions/0024-excluir-arquivados-status-inline-contratos.md`.
+>
+> **Financeiro como categoria com subcategorias na sidebar:** código
+> pronto em 2026-09-24 — a partir de um print de referência (ERP da
+> Olist), "Financeiro" na sidebar passa a expandir 4 subitens (Contas a
+> receber, Contas a pagar, Fluxo de caixa, Contas bancárias) quando você
+> está em alguma tela do módulo; `NavLink` ganha `children` opcional.
+> Removidos os links repetidos que cada tela do Financeiro tinha no
+> topo (redundantes com o menu novo) — ver
+> `docs/decisions/0025-financeiro-categoria-subcategoria.md`.
