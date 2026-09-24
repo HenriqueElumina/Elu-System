@@ -111,3 +111,9 @@ Projetos/Colaboradores). O `AppShell` desenha uma linha fina
 item visível pra aquele perfil (evita linha "solta" no topo quando um
 perfil não vê os itens antes dela). Sem nome de categoria, sem ícone —
 só a linha, como pedido.
+
+**Correção no mesmo dia:** o dono do produto pediu a linha entre
+**todos** os itens, não só entre os blocos. Simplificado — removido
+`groupBreakBefore` (não fazia mais sentido, já que agora é sempre
+`true`) e o `AppShell` passou a desenhar a linha antes de todo item
+menos o primeiro visível, sem exceção.

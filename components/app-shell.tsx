@@ -51,9 +51,7 @@ function SidebarContent({
           const active = isActive(pathname, link.href);
           return (
             <div key={link.href}>
-              {link.groupBreakBefore && index > 0 && (
-                <hr className="my-2 border-white/10" />
-              )}
+              {index > 0 && <hr className="my-2 border-white/10" />}
               <Link
                 href={link.href}
                 onClick={onNavigate}

@@ -725,8 +725,7 @@ Aprovada e validada em produção em 2026-09-26 pelo dono do produto.
   sem tocar em nenhuma tela. Ver atualização no
   `docs/decisions/0021-identidade-visual-navegacao.md`.
 - **Atualização (mesmo dia):** linhas finas separando visualmente os
-  módulos da sidebar (Clientes/Serviços · Leads/Contratos/Financeiro ·
-  Projetos/Colaboradores) — só separação visual, sem nome de categoria
-  nem ícone (confirmado com o dono do produto). `lib/nav/links.ts` e
-  `components/app-shell.tsx`; teste novo em `tests/nav-links.test.ts`
-  (83 testes no total agora).
+  módulos da sidebar — inicialmente só nos blocos, depois ajustado a
+  pedido do dono do produto pra separar **todos** os itens entre si.
+  Sem nome de categoria, sem ícone. `lib/nav/links.ts` e
+  `components/app-shell.tsx`.
