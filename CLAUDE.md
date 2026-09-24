@@ -472,6 +472,20 @@ Etapas da Onda 0, uma por vez, cada uma com minha aprovação antes da seguinte:
 > `briefing`/link de mídia/tags (dono do produto não conseguia abrir o
 > link do Drive de uma demanda real) — nova tela
 > `/projetos/workflow/[id]` (só leitura, mostra tudo) + título do card
-> virou link, mesmo padrão das outras listas. Sem migration. **Próxima
-> etapa (Workflow.2):** login de cliente de verdade (não existe hoje)
-> pra aprovar demandas direto pelo sistema.
+> virou link, mesmo padrão das outras listas. Sem migration.
+>
+> **Atualização no mesmo dia — cores por estágio no Workflow:** código
+> pronto em 2026-09-24 — pedido do dono do produto, cores discretas e
+> próximas da marca por estágio (cinza-ardósia, dourado queimado,
+> azul-acinzentado, verde-oliva, carvão da marca no estágio final),
+> como acento (barra no topo da coluna, ponto ao lado do nome, borda
+> esquerda no card) — nunca preenchendo o card inteiro. Cores
+> centralizadas em `CONTENT_DEMAND_STATUS_ACCENTS`
+> (`lib/validation/content-demand.ts`), reaproveitadas em
+> `/projetos/workflow` e `/projetos/workflow/[id]`. **Bug achado e
+> corrigido na verificação visual:** `tailwind.config.ts` não varria
+> `lib/**`, então o Tailwind purgava as classes novas; corrigido
+> adicionando `lib/**` ao `content`. Sem migration — ver atualização no
+> mesmo ADR (`docs/decisions/0027-workflow-demandas-conteudo.md`).
+> **Próxima etapa (Workflow.2):** login de cliente de verdade (não
+> existe hoje) pra aprovar demandas direto pelo sistema.

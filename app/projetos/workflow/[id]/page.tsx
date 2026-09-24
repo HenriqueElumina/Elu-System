@@ -4,6 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import { AppShell } from "@/components/app-shell";
 import {
   CONTENT_DEMAND_STATUS_LABELS,
+  CONTENT_DEMAND_STATUS_ACCENTS,
   CONTENT_CHANNELS,
 } from "@/lib/validation/content-demand";
 import { StatusSelect } from "../status-select";
@@ -86,9 +87,19 @@ export default async function DemandaDetailPage({
 
         <dl className="space-y-3 text-sm">
           <Field label="Status">
-            {CONTENT_DEMAND_STATUS_LABELS[
-              demand.status as keyof typeof CONTENT_DEMAND_STATUS_LABELS
-            ] ?? demand.status}
+            <span className="inline-flex items-center gap-1.5">
+              <span
+                className={`h-2 w-2 shrink-0 rounded-full ${
+                  CONTENT_DEMAND_STATUS_ACCENTS[
+                    demand.status as keyof typeof CONTENT_DEMAND_STATUS_ACCENTS
+                  ]?.dot ?? "bg-gray-300"
+                }`}
+                aria-hidden
+              />
+              {CONTENT_DEMAND_STATUS_LABELS[
+                demand.status as keyof typeof CONTENT_DEMAND_STATUS_LABELS
+              ] ?? demand.status}
+            </span>
           </Field>
           <Field label="Cliente">{client?.legal_name ?? "-"}</Field>
           <Field label="Responsável">

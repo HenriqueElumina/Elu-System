@@ -115,3 +115,35 @@ Corrigido com uma tela nova, só leitura, `/projetos/workflow/[id]`
 link da mídia clicável, quem/quando aprovou) — e o título do card no
 quadro virou link pra ela, mesmo padrão das outras listas. Sem
 migration (os campos já existiam, só não eram consultados/exibidos).
+
+## Atualização no mesmo dia — cores por estágio
+
+Pedido do dono do produto: diferenciar visualmente os 5 estágios do
+quadro, sem fugir da identidade visual da Elumina (ADR 0021). Cor por
+estágio, em tons discretos e próximos da marca — não preenchendo o
+card inteiro, só como acento:
+
+- Rascunho — cinza-ardósia
+- Em produção — dourado queimado (dialoga com o bege da marca)
+- Aguardando aprovação — azul-acinzentado
+- Aprovado/Agendado — verde-oliva
+- Concluído — o próprio carvão da marca (`#20232a`)
+
+Aplicado como uma barra fina no topo de cada coluna, um ponto ao lado
+do nome do estágio, e uma borda esquerda discreta nos cards — em
+`app/projetos/workflow/page.tsx` e, pro mesmo status, um ponto ao lado
+do campo "Status" em `app/projetos/workflow/[id]/page.tsx`. Cores
+centralizadas em `CONTENT_DEMAND_STATUS_ACCENTS`
+(`lib/validation/content-demand.ts`), reaproveitadas nas duas telas.
+
+**Bug encontrado e corrigido na verificação visual:** as cores não
+apareciam (exceto "Concluído", que já usa uma cor de marca existente
+em outro lugar do app). Causa: `tailwind.config.ts` só varria
+`app/**` e `components/**` em busca de classes a gerar — as classes
+novas vivem em `lib/validation/content-demand.ts`, fora desse
+escopo, e o Tailwind (JIT) purga qualquer classe que não apareça
+literalmente nos arquivos varridos. Corrigido adicionando
+`./lib/**/*.{ts,tsx}` ao `content` do Tailwind.
+
+Sem migration (só frontend). Verificado visualmente com rota
+temporária e dados de exemplo, removida antes do commit.

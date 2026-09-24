@@ -883,6 +883,21 @@ Aprovada e validada em produção em 2026-09-26 pelo dono do produto.
   clicável) + título do card virou link, mesmo padrão das outras
   listas. Sem migration. Ver atualização no mesmo ADR
   (`docs/decisions/0027-workflow-demandas-conteudo.md`).
+- **Atualização no mesmo dia — cores por estágio:** pedido do dono do
+  produto pra diferenciar visualmente as 5 colunas do quadro sem fugir
+  da identidade visual (ADR 0021). Cores discretas e próximas da marca
+  (cinza-ardósia, dourado queimado, azul-acinzentado, verde-oliva, e o
+  carvão da marca no estágio final), aplicadas como acento (barra fina
+  no topo da coluna, ponto ao lado do nome do estágio, borda esquerda
+  no card) — nunca preenchendo o card inteiro. Mesmo padrão de cor
+  reaproveitado na tela de detalhe (`/projetos/workflow/[id]`), no
+  campo Status. **Bug achado e corrigido na verificação visual:**
+  `tailwind.config.ts` não varria `lib/**`, onde as cores novas foram
+  centralizadas (`CONTENT_DEMAND_STATUS_ACCENTS`) — o Tailwind (JIT)
+  purgava as classes por não aparecerem em nenhum arquivo varrido;
+  corrigido adicionando `lib/**` ao `content`. Sem migration. Ver
+  atualização no mesmo ADR
+  (`docs/decisions/0027-workflow-demandas-conteudo.md`).
 - **Próxima etapa (Workflow.2, ainda não iniciada):** login de cliente
   de verdade (não existe nenhuma infraestrutura disso hoje —
   `client_invite` é só formulário de cadastro), isolado por

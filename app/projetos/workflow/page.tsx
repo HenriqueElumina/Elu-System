@@ -5,6 +5,7 @@ import { AppShell } from "@/components/app-shell";
 import {
   CONTENT_DEMAND_STATUSES,
   CONTENT_DEMAND_STATUS_LABELS,
+  CONTENT_DEMAND_STATUS_ACCENTS,
   CONTENT_CHANNELS,
 } from "@/lib/validation/content-demand";
 import { StatusSelect } from "./status-select";
@@ -83,9 +84,16 @@ export default async function WorkflowPage() {
                 (demand) => demand.status === status,
               );
 
+              const accent = CONTENT_DEMAND_STATUS_ACCENTS[status];
+
               return (
                 <div key={status}>
-                  <h2 className="mb-2 text-sm font-semibold text-gray-700">
+                  <div className={`mb-2 h-1 rounded-full ${accent.bar}`} />
+                  <h2 className="mb-2 flex items-center gap-1.5 text-sm font-semibold text-gray-700">
+                    <span
+                      className={`h-2 w-2 shrink-0 rounded-full ${accent.dot}`}
+                      aria-hidden
+                    />
                     {CONTENT_DEMAND_STATUS_LABELS[status]}{" "}
                     <span className="font-normal text-gray-400">
                       ({columnDemands.length})
@@ -105,7 +113,7 @@ export default async function WorkflowPage() {
                       return (
                         <li
                           key={demand.id}
-                          className="rounded-md border border-gray-200 p-3 text-sm"
+                          className={`rounded-md border border-gray-200 border-l-4 p-3 text-sm ${accent.border}`}
                         >
                           <Link
                             href={`/projetos/workflow/${demand.id}`}

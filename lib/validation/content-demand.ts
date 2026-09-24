@@ -54,6 +54,41 @@ export const createContentDemandSchema = z.object({
 export type CreateContentDemandInput = z.output<typeof createContentDemandSchema>;
 export type CreateContentDemandFormInput = z.input<typeof createContentDemandSchema>;
 
+// Cores discretas por estágio (identidade visual do Workflow) — tons
+// próximos da marca (cinza-ardósia, dourado, azul-acinzentado, verde-oliva
+// e o carvão da marca no estágio final), usadas como acento (barra, ponto,
+// borda), nunca preenchendo o card inteiro.
+export const CONTENT_DEMAND_STATUS_ACCENTS: Record<
+  (typeof CONTENT_DEMAND_STATUSES)[number],
+  { bar: string; dot: string; border: string }
+> = {
+  draft: {
+    bar: "bg-slate-400",
+    dot: "bg-slate-400",
+    border: "border-l-slate-400",
+  },
+  in_production: {
+    bar: "bg-[#b8860b]",
+    dot: "bg-[#b8860b]",
+    border: "border-l-[#b8860b]",
+  },
+  awaiting_approval: {
+    bar: "bg-[#6b84a0]",
+    dot: "bg-[#6b84a0]",
+    border: "border-l-[#6b84a0]",
+  },
+  approved_scheduled: {
+    bar: "bg-[#7d8f5f]",
+    dot: "bg-[#7d8f5f]",
+    border: "border-l-[#7d8f5f]",
+  },
+  completed: {
+    bar: "bg-brand-charcoal",
+    dot: "bg-brand-charcoal",
+    border: "border-l-brand-charcoal",
+  },
+};
+
 export function parseTags(tags: string | undefined): string[] {
   if (!tags) return [];
   return tags
