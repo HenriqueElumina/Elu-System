@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { AppShell } from "@/components/app-shell";
 import { NovaPropostaClient } from "./nova-proposta-client";
 
 export default async function NovaPropostaPage({
@@ -18,7 +19,7 @@ export default async function NovaPropostaPage({
 
   const { data: profile } = await supabase
     .from("profile")
-    .select("role")
+    .select("full_name, role")
     .eq("id", user.id)
     .single();
 
@@ -38,19 +39,21 @@ export default async function NovaPropostaPage({
     .order("name");
 
   return (
-    <main className="mx-auto max-w-2xl px-4 py-12">
-      <Link href={`/leads/${id}`} className="text-sm text-gray-500 hover:underline">
-        ← Voltar
-      </Link>
-      <h1 className="mb-8 mt-2 text-xl font-semibold">Nova proposta</h1>
-      {services && services.length === 0 ? (
-        <p className="text-sm text-amber-800">
-          Nenhum serviço ativo no catálogo ainda. Cadastre um serviço antes de
-          montar a proposta.
-        </p>
-      ) : (
-        <NovaPropostaClient leadId={id} services={services ?? []} />
-      )}
-    </main>
+    <AppShell userName={profile.full_name} userRole={profile.role}>
+      <div className="mx-auto max-w-2xl px-4 py-10 sm:px-6 lg:px-10">
+        <Link href={`/leads/${id}`} className="text-sm text-gray-500 hover:underline">
+          ← Voltar
+        </Link>
+        <h1 className="mb-8 mt-2 text-xl font-semibold">Nova proposta</h1>
+        {services && services.length === 0 ? (
+          <p className="text-sm text-amber-800">
+            Nenhum serviço ativo no catálogo ainda. Cadastre um serviço antes de
+            montar a proposta.
+          </p>
+        ) : (
+          <NovaPropostaClient leadId={id} services={services ?? []} />
+        )}
+      </div>
+    </AppShell>
   );
 }

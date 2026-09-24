@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { AppShell } from "@/components/app-shell";
 import { centsToReais } from "@/lib/validation/service";
 import {
   computeCashFlowSummary,
@@ -33,7 +34,7 @@ export default async function FluxoDeCaixaPage({
 
   const { data: profile } = await supabase
     .from("profile")
-    .select("role")
+    .select("full_name, role")
     .eq("id", user.id)
     .single();
 
@@ -102,7 +103,8 @@ export default async function FluxoDeCaixaPage({
   const summary = computeCashFlowSummary(transactions);
 
   return (
-    <main className="mx-auto max-w-3xl px-4 py-12">
+    <AppShell userName={profile.full_name} userRole={profile.role}>
+      <div className="mx-auto max-w-3xl px-4 py-10 sm:px-6 lg:px-10">
       <div className="mb-8">
         <h1 className="text-xl font-semibold">Fluxo de caixa</h1>
         <div className="flex gap-3 text-sm text-gray-500">
@@ -191,6 +193,7 @@ export default async function FluxoDeCaixaPage({
           </tbody>
         </table>
       )}
-    </main>
+      </div>
+    </AppShell>
   );
 }

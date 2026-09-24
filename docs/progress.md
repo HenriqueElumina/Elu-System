@@ -690,3 +690,32 @@ Aprovada e validada em produção em 2026-09-26 pelo dono do produto.
   app).
 - **Pendência:** aplicar a migration no Supabase real e o dono do
   produto validar em produção.
+
+### Etapa UX.1 — Identidade visual e navegação responsiva (código pronto em 2026-09-24)
+
+- **Sem migration** — só frontend. Cores e tipografia da marca aplicadas
+  (carvão `#20232a`, bege `#e6ddcc`, extraídas por amostragem direta do
+  logo enviado pelo dono do produto; fonte Poppins via `next/font/google`
+  — a fonte oficial dos títulos, NOAH, fica pendente até termos o
+  arquivo, já que é comercial).
+- Novo `components/app-shell.tsx`: sidebar fixa carvão no desktop com
+  logo, módulos filtrados por perfil e rodapé (nome/perfil/sair); vira
+  barra + gaveta com hambúrguer no mobile. Módulos e perfis em
+  `lib/nav/links.ts`, espelhando a checagem que cada tela já fazia (não
+  criou nenhuma regra de acesso nova).
+- As ~23 telas internas autenticadas trocaram o cabeçalho manual pelo
+  `AppShell`, mantendo tabelas/formulários/regras de cada tela como
+  estavam. Breadcrumbs pra outros módulos foram removidos (redundantes
+  com a sidebar); breadcrumbs dentro do mesmo módulo foram mantidos.
+  `/login` não muda (pública, sem sidebar).
+- Decisões em `docs/decisions/0021-identidade-visual-navegacao.md`.
+- Testes: `npm run lint`, `typecheck`, `test` (82 testes, incluindo um
+  novo pra `navLinksForRole`) e `build` sem erro; Playwright completo sem
+  erro (18 testes, só os fluxos públicos que já existiam — sem usuário
+  de teste seedado no Supabase real pra automatizar um login de
+  verdade). Verificação visual da sidebar/gaveta feita manualmente com
+  uma rota temporária removida antes do commit (sem vestígio no código).
+- **Fora do escopo:** redesenhar tabelas/formulários/botões internos
+  (polimento tela a tela, sob demanda); modo escuro; fonte NOAH real.
+- **Pendência:** dono do produto validar visualmente em produção (login
+  real, mobile de verdade, os diferentes perfis).

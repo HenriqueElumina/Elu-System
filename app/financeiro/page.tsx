@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { AppShell } from "@/components/app-shell";
 import { centsToReais } from "@/lib/validation/service";
 import { computeReceivableSummary } from "@/lib/billing/receivable";
 
@@ -21,7 +22,7 @@ export default async function FinanceiroPage() {
 
   const { data: profile } = await supabase
     .from("profile")
-    .select("role")
+    .select("full_name, role")
     .eq("id", user.id)
     .single();
 
@@ -41,13 +42,11 @@ export default async function FinanceiroPage() {
     .order("client_name");
 
   return (
-    <main className="mx-auto max-w-4xl px-4 py-12">
+    <AppShell userName={profile.full_name} userRole={profile.role}>
+      <div className="mx-auto max-w-4xl px-4 py-10 sm:px-6 lg:px-10">
       <div className="mb-8">
         <h1 className="text-xl font-semibold">Financeiro — Contas a receber</h1>
         <div className="flex gap-3 text-sm text-gray-500">
-          <Link href="/contratos" className="hover:underline">
-            ← Contratos
-          </Link>
           <Link href="/financeiro/contas-a-pagar" className="hover:underline">
             Contas a pagar →
           </Link>
@@ -125,6 +124,7 @@ export default async function FinanceiroPage() {
           </tbody>
         </table>
       )}
-    </main>
+      </div>
+    </AppShell>
   );
 }

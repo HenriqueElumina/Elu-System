@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { AppShell } from "@/components/app-shell";
 import { centsToReais } from "@/lib/validation/service";
 import { PROPOSAL_STATUS_LABELS } from "@/lib/validation/proposal";
 import { EditarLeadClient } from "./editar-lead-client";
@@ -22,7 +23,7 @@ export default async function LeadDetailPage({
 
   const { data: profile } = await supabase
     .from("profile")
-    .select("role")
+    .select("full_name, role")
     .eq("id", user.id)
     .single();
 
@@ -60,7 +61,8 @@ export default async function LeadDetailPage({
     .order("created_at", { ascending: false });
 
   return (
-    <main className="mx-auto max-w-2xl px-4 py-12">
+    <AppShell userName={profile.full_name} userRole={profile.role}>
+      <div className="mx-auto max-w-2xl px-4 py-10 sm:px-6 lg:px-10">
       <Link href="/leads" className="text-sm text-gray-500 hover:underline">
         ← Voltar
       </Link>
@@ -172,6 +174,7 @@ export default async function LeadDetailPage({
           </ul>
         )}
       </section>
-    </main>
+      </div>
+    </AppShell>
   );
 }

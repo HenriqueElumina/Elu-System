@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { AppShell } from "@/components/app-shell";
 import { NovaContaPagarClient } from "./nova-conta-pagar-client";
 
 export default async function NovaContaPagarPage() {
@@ -13,7 +14,7 @@ export default async function NovaContaPagarPage() {
 
   const { data: profile } = await supabase
     .from("profile")
-    .select("role")
+    .select("full_name, role")
     .eq("id", user.id)
     .single();
 
@@ -29,15 +30,17 @@ export default async function NovaContaPagarPage() {
   }
 
   return (
-    <main className="mx-auto max-w-2xl px-4 py-12">
-      <Link
-        href="/financeiro/contas-a-pagar"
-        className="text-sm text-gray-500 hover:underline"
-      >
-        ← Voltar
-      </Link>
-      <h1 className="mb-8 mt-2 text-xl font-semibold">Lançar conta a pagar</h1>
-      <NovaContaPagarClient />
-    </main>
+    <AppShell userName={profile.full_name} userRole={profile.role}>
+      <div className="mx-auto max-w-2xl px-4 py-10 sm:px-6 lg:px-10">
+        <Link
+          href="/financeiro/contas-a-pagar"
+          className="text-sm text-gray-500 hover:underline"
+        >
+          ← Voltar
+        </Link>
+        <h1 className="mb-8 mt-2 text-xl font-semibold">Lançar conta a pagar</h1>
+        <NovaContaPagarClient />
+      </div>
+    </AppShell>
   );
 }

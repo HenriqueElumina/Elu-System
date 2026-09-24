@@ -2,6 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { isInternalRole } from "@/lib/auth/roles";
+import { AppShell } from "@/components/app-shell";
 import {
   BILLING_TYPE_LABELS,
   SERVICE_LINE_LABELS,
@@ -18,7 +19,7 @@ export default async function ServicosPage() {
 
   const { data: profile } = await supabase
     .from("profile")
-    .select("role")
+    .select("full_name, role")
     .eq("id", user.id)
     .single();
 
@@ -37,19 +38,10 @@ export default async function ServicosPage() {
     .order("name");
 
   return (
-    <main className="mx-auto max-w-4xl px-4 py-12">
+    <AppShell userName={profile.full_name} userRole={profile.role}>
+      <div className="mx-auto max-w-4xl px-4 py-10 sm:px-6 lg:px-10">
       <div className="mb-8 flex items-center justify-between">
-        <div>
-          <h1 className="text-xl font-semibold">Catálogo de serviços</h1>
-          <div className="flex gap-3 text-sm text-gray-500">
-            <Link href="/clientes" className="hover:underline">
-              ← Clientes
-            </Link>
-            <Link href="/leads" className="hover:underline">
-              Comercial →
-            </Link>
-          </div>
-        </div>
+        <h1 className="text-xl font-semibold">Catálogo de serviços</h1>
         {profile.role === "socio" && (
           <Link
             href="/servicos/novo"
@@ -114,6 +106,7 @@ export default async function ServicosPage() {
           </tbody>
         </table>
       )}
-    </main>
+      </div>
+    </AppShell>
   );
 }

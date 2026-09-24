@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { AppShell } from "@/components/app-shell";
 import { centsToReais } from "@/lib/validation/service";
 import { EditarPropostaClient } from "./editar-proposta-client";
 import { PropostaStatusChanger } from "./proposta-status-changer";
@@ -21,7 +22,7 @@ export default async function PropostaDetailPage({
 
   const { data: profile } = await supabase
     .from("profile")
-    .select("role")
+    .select("full_name, role")
     .eq("id", user.id)
     .single();
 
@@ -61,7 +62,8 @@ export default async function PropostaDetailPage({
     .maybeSingle();
 
   return (
-    <main className="mx-auto max-w-2xl px-4 py-12">
+    <AppShell userName={profile.full_name} userRole={profile.role}>
+      <div className="mx-auto max-w-2xl px-4 py-10 sm:px-6 lg:px-10">
       <Link
         href={`/leads/${leadId}`}
         className="text-sm text-gray-500 hover:underline"
@@ -131,6 +133,7 @@ export default async function PropostaDetailPage({
           })}
         </ul>
       )}
-    </main>
+      </div>
+    </AppShell>
   );
 }

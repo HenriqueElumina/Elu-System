@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { AppShell } from "@/components/app-shell";
 import { centsToReais } from "@/lib/validation/service";
 import { PAYABLE_STATUS_LABELS } from "@/lib/validation/payable";
 import { MarcarPayablePaga } from "./marcar-payable-paga";
@@ -16,7 +17,7 @@ export default async function ContasAPagarPage() {
 
   const { data: profile } = await supabase
     .from("profile")
-    .select("role")
+    .select("full_name, role")
     .eq("id", user.id)
     .single();
 
@@ -48,7 +49,8 @@ export default async function ContasAPagarPage() {
     : { data: null };
 
   return (
-    <main className="mx-auto max-w-3xl px-4 py-12">
+    <AppShell userName={profile.full_name} userRole={profile.role}>
+      <div className="mx-auto max-w-3xl px-4 py-10 sm:px-6 lg:px-10">
       <div className="mb-8 flex items-center justify-between">
         <div>
           <h1 className="text-xl font-semibold">Contas a pagar</h1>
@@ -136,6 +138,7 @@ export default async function ContasAPagarPage() {
           </tbody>
         </table>
       )}
-    </main>
+      </div>
+    </AppShell>
   );
 }

@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { isInternalRole } from "@/lib/auth/roles";
+import { AppShell } from "@/components/app-shell";
 import {
   BILLING_TYPE_LABELS,
   SERVICE_LINE_LABELS,
@@ -25,7 +26,7 @@ export default async function ServicoDetailPage({
 
   const { data: profile } = await supabase
     .from("profile")
-    .select("role")
+    .select("full_name, role")
     .eq("id", user.id)
     .single();
 
@@ -54,7 +55,8 @@ export default async function ServicoDetailPage({
   const canEdit = profile.role === "socio";
 
   return (
-    <main className="mx-auto max-w-2xl px-4 py-12">
+    <AppShell userName={profile.full_name} userRole={profile.role}>
+      <div className="mx-auto max-w-2xl px-4 py-10 sm:px-6 lg:px-10">
       <Link href="/servicos" className="text-sm text-gray-500 hover:underline">
         ← Voltar
       </Link>
@@ -122,6 +124,7 @@ export default async function ServicoDetailPage({
           canEdit={canEdit}
         />
       </section>
-    </main>
+      </div>
+    </AppShell>
   );
 }

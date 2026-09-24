@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { AppShell } from "@/components/app-shell";
 import { centsToReais } from "@/lib/validation/service";
 import { EditEmployeeForm } from "./edit-employee-form";
 import { DeactivateEmployeeButton } from "./deactivate-employee-button";
@@ -15,7 +16,7 @@ export default async function ColaboradoresPage() {
 
   const { data: profile } = await supabase
     .from("profile")
-    .select("role")
+    .select("full_name, role")
     .eq("id", user.id)
     .single();
 
@@ -45,7 +46,8 @@ export default async function ColaboradoresPage() {
     .order("admission_date", { ascending: false });
 
   return (
-    <main className="mx-auto max-w-4xl px-4 py-12">
+    <AppShell userName={profile.full_name} userRole={profile.role}>
+      <div className="mx-auto max-w-4xl px-4 py-10 sm:px-6 lg:px-10">
       <div className="mb-8 flex items-center justify-between">
         <h1 className="text-xl font-semibold">Colaboradores</h1>
         {canInvite && (
@@ -140,6 +142,7 @@ export default async function ColaboradoresPage() {
           </tbody>
         </table>
       )}
-    </main>
+      </div>
+    </AppShell>
   );
 }

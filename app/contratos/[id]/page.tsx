@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { AppShell } from "@/components/app-shell";
 import { centsToReais } from "@/lib/validation/service";
 import { ContratoStatusChanger } from "./contrato-status-changer";
 import { EnviarAssinatura } from "./enviar-assinatura";
@@ -25,7 +26,7 @@ export default async function ContratoDetailPage({
 
   const { data: profile } = await supabase
     .from("profile")
-    .select("role")
+    .select("full_name, role")
     .eq("id", user.id)
     .single();
 
@@ -83,7 +84,8 @@ export default async function ContratoDetailPage({
   );
 
   return (
-    <main className="mx-auto max-w-2xl px-4 py-12">
+    <AppShell userName={profile.full_name} userRole={profile.role}>
+      <div className="mx-auto max-w-2xl px-4 py-10 sm:px-6 lg:px-10">
       <Link href="/contratos" className="text-sm text-gray-500 hover:underline">
         ← Voltar
       </Link>
@@ -246,6 +248,7 @@ export default async function ContratoDetailPage({
           </table>
         </section>
       )}
-    </main>
+      </div>
+    </AppShell>
   );
 }

@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { isInternalRole } from "@/lib/auth/roles";
+import { AppShell } from "@/components/app-shell";
 import { SOCIAL_PLATFORM_LABELS } from "@/lib/validation/client-intake";
 import { ApproveButton } from "./approve-button";
 
@@ -26,7 +27,7 @@ export default async function ClienteDetailPage({
 
   const { data: profile } = await supabase
     .from("profile")
-    .select("role")
+    .select("full_name, role")
     .eq("id", user.id)
     .single();
 
@@ -62,7 +63,8 @@ export default async function ClienteDetailPage({
     (profile.role === "socio" || profile.role === "gestor" || profile.role === "financeiro");
 
   return (
-    <main className="mx-auto max-w-3xl px-4 py-12">
+    <AppShell userName={profile.full_name} userRole={profile.role}>
+      <div className="mx-auto max-w-3xl px-4 py-10 sm:px-6 lg:px-10">
       <Link href="/clientes" className="text-sm text-gray-500 hover:underline">
         ← Voltar
       </Link>
@@ -140,7 +142,8 @@ export default async function ClienteDetailPage({
           <p className="text-sm text-gray-500">Nenhuma rede social informada.</p>
         )}
       </Section>
-    </main>
+      </div>
+    </AppShell>
   );
 }
 

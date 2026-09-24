@@ -2,7 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { isInternalRole } from "@/lib/auth/roles";
-import { LogoutButton } from "./logout-button";
+import { AppShell } from "@/components/app-shell";
 import { InviteButton } from "./invite-button";
 
 const ONBOARDING_STATUS_LABEL: Record<string, string> = {
@@ -57,18 +57,10 @@ export default async function ClientesPage() {
     : { data: null };
 
   return (
-    <main className="mx-auto max-w-4xl px-4 py-12">
-      <div className="mb-8 flex items-center justify-between">
-        <div>
-          <h1 className="text-xl font-semibold">Clientes</h1>
-          <p className="text-sm text-gray-500">
-            Logado como {profile.full_name} ({profile.role})
-          </p>
-          <Link href="/servicos" className="text-sm text-gray-500 hover:underline">
-            Catálogo de serviços →
-          </Link>
-        </div>
-        <LogoutButton />
+    <AppShell userName={profile.full_name} userRole={profile.role}>
+      <div className="mx-auto max-w-4xl px-4 py-10 sm:px-6 lg:px-10">
+      <div className="mb-8">
+        <h1 className="text-xl font-semibold">Clientes</h1>
       </div>
 
       {canManageInvites && (
@@ -141,6 +133,7 @@ export default async function ClientesPage() {
           </tbody>
         </table>
       )}
-    </main>
+      </div>
+    </AppShell>
   );
 }

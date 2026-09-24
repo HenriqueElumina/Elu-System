@@ -389,3 +389,16 @@ Etapas da Onda 0, uma por vez, cada uma com minha aprovação antes da seguinte:
 > **Decisão do dono do produto:** trocar o ZapSign de sandbox pra
 > produção fica pra só no final do projeto base (não antes) — sem data
 > definida.
+>
+> **Etapa UX.1 — Identidade visual e navegação responsiva:** código
+> pronto em 2026-09-24 — sem migration, só frontend. Cores (carvão
+> `#20232a`, bege `#e6ddcc`) e fonte Poppins aplicadas a partir do logo e
+> das fontes oficiais (NOAH + Poppins) enviados pelo dono do produto —
+> NOAH fica pendente por ser fonte comercial sem arquivo disponível
+> ainda. Sidebar fixa no desktop / gaveta no mobile
+> (`components/app-shell.tsx`, `lib/nav/links.ts`), aplicada nas ~23
+> telas internas autenticadas, substituindo o cabeçalho manual de cada
+> uma sem mudar tabelas, formulários ou regras de negócio — ver
+> `docs/decisions/0021-identidade-visual-navegacao.md`. **Pendência:**
+> dono do produto validar visualmente em produção (não foi possível
+> autenticar contra o Supabase real nesta sessão).
