@@ -83,3 +83,17 @@ A tela de login não entrou nessa troca — ela é pública, sem sidebar.
 - A validação de verdade (login real, perfis diferentes, mobile de
   verdade) depende do dono do produto testar em produção — não foi
   possível autenticar contra o Supabase real nesta sessão.
+
+## Atualização (mesmo dia) — fundo bege
+
+O dono do produto pediu fundo bege na área de conteúdo (exemplo:
+Clientes), pra todas as telas. Como o fundo da área de conteúdo é
+definido uma vez só dentro do `AppShell` (não em cada tela), a mudança
+ficou num lugar só: o `<main>` passou a usar `bg-brand-cream`, com o
+conteúdo de cada tela dentro de um "cartão" branco arredondado
+(`rounded-lg bg-white shadow-sm`, com margem crescente em telas
+maiores). Bege puro atrás de texto/tabela reduziria contraste; o cartão
+branco por cima resolve isso sem perder o efeito de cor de fundo.
+Verificado visualmente com a mesma técnica (rota temporária, removida
+antes do commit) — ver screenshots enviados ao dono do produto na
+conversa.

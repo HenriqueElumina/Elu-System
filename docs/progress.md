@@ -719,3 +719,8 @@ Aprovada e validada em produção em 2026-09-26 pelo dono do produto.
   (polimento tela a tela, sob demanda); modo escuro; fonte NOAH real.
 - **Pendência:** dono do produto validar visualmente em produção (login
   real, mobile de verdade, os diferentes perfis).
+- **Atualização (mesmo dia):** fundo bege atrás do conteúdo, em todas as
+  telas, com o conteúdo dentro de um cartão branco por cima (pra não
+  perder contraste em tabela/texto). Mudança num lugar só (`AppShell`),
+  sem tocar em nenhuma tela. Ver atualização no
+  `docs/decisions/0021-identidade-visual-navegacao.md`.

@@ -164,7 +164,11 @@ export function AppShell({
         </div>
       </aside>
 
-      <main className="flex-1 bg-white">{children}</main>
+      <main className="flex-1 bg-brand-cream lg:min-h-screen">
+        <div className="m-3 rounded-lg bg-white shadow-sm sm:m-6 lg:m-8">
+          {children}
+        </div>
+      </main>
     </div>
   );
 }
