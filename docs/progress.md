@@ -923,6 +923,34 @@ Aprovada e validada em produção em 2026-09-26 pelo dono do produto.
   criação (texto/design) e visualização de cronograma/calendário do
   mLabs; desmarcar todos os checkboxes de situação hoje equivale a
   "todos" (sem JS de cliente pra tratar esse caso).
+- **Etapa Workflow.4 — Legenda e pré-visualização da mídia:** código
+  pronto em 2026-09-24 — dúvida do dono do produto sobre subir mídia
+  pro Drive vs. pro sistema; decisão: continuar só com link (sem
+  hospedar arquivo), mas pré-visualizar o que já está no link, imitando
+  a leitura "como vai ficar postado" que o time já conhece do mLabs.
+  `content_demand` ganha `caption` (legenda, nova coluna) — diferente
+  do `briefing`, é o texto final do post, e é o único campo da demanda
+  editável depois de criada (`update_content_demand_caption`, mesmo
+  padrão de permissão de `update_content_demand_status`). Na tela de
+  detalhe, o link da mídia ganha pré-visualização quando reconhecido:
+  imagem direta vira `<img>`, link do Google Drive vira embed nativo
+  do Drive (`<iframe>`) — qualquer outro link continua só como link
+  clicável. Lógica pura extraída e testada em
+  `lib/workflow/media-preview.ts` (8 testes novos). Decisões em
+  `docs/decisions/0029-workflow-legenda-preview-midia.md`.
+- Testes: migration testada localmente (sócio e colaborador atribuído
+  editam legenda; colaborador não atribuído e financeiro bloqueados);
+  `npm run lint`, `typecheck`, `test` (112 testes, 8 novos) e `build`
+  sem erro; Playwright completo sem erro (20 testes). Verificação
+  visual da estrutura (campo Legenda, layout da pré-visualização) com
+  rota temporária — carregamento real de imagem/embed não pôde ser
+  verificado nesta sessão (proxy do sandbox bloqueia acesso a hosts
+  externos como `images.unsplash.com`/`drive.google.com`; confirmado
+  com `curl`, não é bug do código).
+- **Fora do escopo** (registrado no backlog): preview de vídeo fora do
+  Drive; legenda por canal (é uma só, compartilhada); preview do Drive
+  depende do arquivo estar compartilhado como "qualquer pessoa com o
+  link".
 - **Próxima etapa (Workflow.2, ainda não iniciada):** login de cliente
   de verdade (não existe nenhuma infraestrutura disso hoje —
   `client_invite` é só formulário de cadastro), isolado por

@@ -499,5 +499,19 @@ Etapas da Onda 0, uma por vez, cada uma com minha aprovação antes da seguinte:
 > fim; sempre aparece mesmo com período filtrado). Lógica extraída e
 > testada em `lib/workflow/period-filter.ts`. Sem migration — ver
 > `docs/decisions/0028-workflow-lista-filtros.md`.
+>
+> **Etapa Workflow.4 — Legenda e pré-visualização da mídia:** código
+> pronto em 2026-09-24 — dúvida do dono do produto sobre hospedar mídia
+> no Drive vs. no sistema; decisão: continuar só com link (sem
+> hospedar arquivo), mas pré-visualizar o que já está no link.
+> `content_demand` ganha `caption` (legenda, nova coluna) — diferente
+> do briefing, é o texto final do post, e é o único campo editável
+> depois de criada (`update_content_demand_caption`, mesmo padrão de
+> permissão de `update_content_demand_status`). Tela de detalhe ganha
+> pré-visualização do link da mídia quando reconhecido (imagem direta
+> ou Google Drive) — qualquer outro link continua só como link
+> clicável. Lógica extraída e testada em
+> `lib/workflow/media-preview.ts` — ver
+> `docs/decisions/0029-workflow-legenda-preview-midia.md`.
 > **Próxima etapa (Workflow.2):** login de cliente de verdade (não
 > existe hoje) pra aprovar demandas direto pelo sistema.

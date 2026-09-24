@@ -41,6 +41,7 @@ export function ContentDemandForm({
       briefing: "",
       mediaUrl: "",
       tags: "",
+      caption: "",
     },
   });
 
@@ -138,6 +139,13 @@ export function ContentDemandForm({
 
       <Field label="Tags (separadas por vírgula, opcional)">
         <input {...register("tags")} className={inputClass} />
+      </Field>
+
+      <Field
+        label="Legenda (texto final do post, opcional)"
+        error={errors.caption?.message}
+      >
+        <textarea rows={4} {...register("caption")} className={inputClass} />
       </Field>
 
       <Field label="Briefing (opcional)" error={errors.briefing?.message}>

@@ -247,3 +247,14 @@
   visualização de cronograma/calendário:** a referência do mLabs tem
   esse nível de detalhe; decidido não replicar por enquanto (fora do
   que foi pedido, granularidade que não temos hoje). Ver ADR 0028.
+- **Workflow — pré-visualização de mídia só reconhece imagem direta e
+  Google Drive:** vídeo hospedado em outro serviço (link direto de
+  `.mp4`, Dropbox etc.) continua só como link, sem preview. Ver ADR
+  0029.
+- **Workflow — pré-visualização do Drive depende do compartilhamento
+  estar como "qualquer pessoa com o link":** se o editor esquecer de
+  configurar isso, quem aprova vê erro de permissão dentro do preview
+  — não dá pra resolver só pelo nosso sistema. Ver ADR 0029.
+- **Workflow — legenda não é por canal:** uma legenda só, compartilhada
+  entre todos os canais marcados na demanda, mesmo que o texto ideal
+  varie entre Instagram/Facebook/LinkedIn etc. Ver ADR 0029.

@@ -37,6 +37,7 @@ export async function createContentDemand(
       briefing: data.briefing || null,
       media_url: data.mediaUrl || null,
       tags: parseTags(data.tags),
+      caption: data.caption || null,
       created_by: user.id,
     })
     .select("id")
@@ -67,5 +68,21 @@ export async function updateContentDemandStatus(
   if (error) return { ok: false, message: error.message };
 
   revalidatePath("/projetos/workflow");
+  return { ok: true };
+}
+
+export async function updateContentDemandCaption(
+  demandId: string,
+  caption: string,
+): Promise<ActionResult> {
+  const supabase = await createClient();
+  const { error } = await supabase.rpc("update_content_demand_caption", {
+    p_demand_id: demandId,
+    p_caption: caption || null,
+  });
+
+  if (error) return { ok: false, message: error.message };
+
+  revalidatePath(`/projetos/workflow/${demandId}`);
   return { ok: true };
 }

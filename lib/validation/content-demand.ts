@@ -49,6 +49,9 @@ export const createContentDemandSchema = z.object({
     .optional()
     .or(z.literal("")),
   tags: z.string().trim().max(300).optional().or(z.literal("")),
+  // Texto final do post (diferente do briefing, que é instrução de
+  // criação) — mesmo limite de legenda do Instagram.
+  caption: z.string().trim().max(2200).optional().or(z.literal("")),
 });
 
 export type CreateContentDemandInput = z.output<typeof createContentDemandSchema>;
