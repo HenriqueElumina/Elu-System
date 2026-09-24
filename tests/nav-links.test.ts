@@ -30,4 +30,11 @@ describe("navLinksForRole", () => {
     expect(hrefs).not.toContain("/projetos");
     expect(hrefs).toContain("/financeiro");
   });
+
+  it("marca linha divisória antes de Leads e Projetos, só pra separação visual", () => {
+    const breaks = navLinksForRole("socio")
+      .filter((link) => link.groupBreakBefore)
+      .map((link) => link.href);
+    expect(breaks).toEqual(["/leads", "/projetos"]);
+  });
 });

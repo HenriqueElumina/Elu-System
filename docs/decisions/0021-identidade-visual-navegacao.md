@@ -97,3 +97,17 @@ branco por cima resolve isso sem perder o efeito de cor de fundo.
 Verificado visualmente com a mesma técnica (rota temporária, removida
 antes do commit) — ver screenshots enviados ao dono do produto na
 conversa.
+
+## Atualização (mesmo dia) — linhas divisórias na sidebar
+
+O dono do produto pediu linhas separando visualmente os módulos da
+sidebar. Não é uma categoria com nome — só separação visual, confirmado
+explicitamente ("não é dividir em categorias, é somente colocar linhas
+dividindo o que já tem"). `NavLink` ganhou um campo opcional
+`groupBreakBefore`; marcado em Leads e Projetos (início de cada bloco
+visual: Clientes/Serviços · Leads/Contratos/Financeiro ·
+Projetos/Colaboradores). O `AppShell` desenha uma linha fina
+(`<hr>`) antes de qualquer item marcado, exceto se ele for o primeiro
+item visível pra aquele perfil (evita linha "solta" no topo quando um
+perfil não vê os itens antes dela). Sem nome de categoria, sem ícone —
+só a linha, como pedido.

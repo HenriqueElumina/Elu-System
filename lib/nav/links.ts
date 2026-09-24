@@ -4,6 +4,9 @@ export type NavLink = {
   href: string;
   label: string;
   roles: readonly UserRole[];
+  // Linha divisória antes deste item, só pra separação visual — não é
+  // uma categoria com nome, só agrupa o que já existe.
+  groupBreakBefore?: boolean;
 };
 
 // Espelha as checagens de perfil feitas em cada app/*/page.tsx — se uma
@@ -23,6 +26,7 @@ export const NAV_LINKS: readonly NavLink[] = [
     href: "/leads",
     label: "Leads",
     roles: ["socio", "financeiro", "gestor"],
+    groupBreakBefore: true,
   },
   {
     href: "/contratos",
@@ -38,6 +42,7 @@ export const NAV_LINKS: readonly NavLink[] = [
     href: "/projetos",
     label: "Projetos",
     roles: ["socio", "gestor", "colaborador"],
+    groupBreakBefore: true,
   },
   {
     href: "/colaboradores",

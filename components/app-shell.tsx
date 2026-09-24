@@ -47,21 +47,25 @@ function SidebarContent({
       </div>
 
       <nav className="flex-1 space-y-1 px-3">
-        {links.map((link) => {
+        {links.map((link, index) => {
           const active = isActive(pathname, link.href);
           return (
-            <Link
-              key={link.href}
-              href={link.href}
-              onClick={onNavigate}
-              className={`block rounded-md px-3 py-2 text-sm font-medium transition-colors ${
-                active
-                  ? "bg-brand-cream text-brand-charcoal"
-                  : "text-brand-cream/80 hover:bg-white/5 hover:text-brand-cream"
-              }`}
-            >
-              {link.label}
-            </Link>
+            <div key={link.href}>
+              {link.groupBreakBefore && index > 0 && (
+                <hr className="my-2 border-white/10" />
+              )}
+              <Link
+                href={link.href}
+                onClick={onNavigate}
+                className={`block rounded-md px-3 py-2 text-sm font-medium transition-colors ${
+                  active
+                    ? "bg-brand-cream text-brand-charcoal"
+                    : "text-brand-cream/80 hover:bg-white/5 hover:text-brand-cream"
+                }`}
+              >
+                {link.label}
+              </Link>
+            </div>
           );
         })}
       </nav>

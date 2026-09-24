@@ -403,5 +403,7 @@ Etapas da Onda 0, uma por vez, cada uma com minha aprovação antes da seguinte:
 > dono do produto validar visualmente em produção (não foi possível
 > autenticar contra o Supabase real nesta sessão). **Mesmo dia:** fundo
 > bege atrás do conteúdo em todas as telas, com cartão branco por cima
-> (mudança só no `AppShell`, sem tocar em nenhuma tela) — ver atualização
-> no mesmo ADR.
+> (mudança só no `AppShell`, sem tocar em nenhuma tela); linhas finas
+> separando visualmente os módulos da sidebar (sem nome de categoria,
+> só separação visual) — ver atualizações no mesmo ADR
+> (`docs/decisions/0021-identidade-visual-navegacao.md`).
