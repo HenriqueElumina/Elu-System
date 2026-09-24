@@ -11,10 +11,45 @@ import {
   type TaskStatus,
 } from "@/lib/validation/task";
 import { timeEntrySchema, type TimeEntryInput } from "@/lib/validation/time-entry";
+import { PROJECT_STATUSES } from "@/lib/validation/project";
 
 type ActionResult<T = undefined> =
   | ({ ok: true } & (T extends undefined ? object : T))
   | { ok: false; message: string };
+
+export async function updateProjectStatus(
+  projectId: string,
+  status: (typeof PROJECT_STATUSES)[number],
+): Promise<ActionResult> {
+  if (!PROJECT_STATUSES.includes(status)) {
+    return { ok: false, message: "Status inválido." };
+  }
+
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from("project")
+    .update({ status })
+    .eq("id", projectId);
+
+  if (error) return { ok: false, message: error.message };
+
+  revalidatePath("/projetos");
+  revalidatePath(`/projetos/${projectId}`);
+  return { ok: true };
+}
+
+export async function deleteProject(projectId: string): Promise<ActionResult> {
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from("project")
+    .update({ deleted_at: new Date().toISOString() })
+    .eq("id", projectId);
+
+  if (error) return { ok: false, message: error.message };
+
+  revalidatePath("/projetos");
+  return { ok: true };
+}
 
 export async function updateTaskStatus(
   taskId: string,

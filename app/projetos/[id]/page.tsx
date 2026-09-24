@@ -109,7 +109,9 @@ export default async function ProjetoDetailPage({
           </Link>
         )}
         {" — "}
-        {PROJECT_STATUS_LABELS[project.status] ?? project.status}
+        {PROJECT_STATUS_LABELS[
+          project.status as keyof typeof PROJECT_STATUS_LABELS
+        ] ?? project.status}
       </p>
 
       <section>

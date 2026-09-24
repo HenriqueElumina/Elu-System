@@ -814,3 +814,26 @@ Aprovada e validada em produção em 2026-09-26 pelo dono do produto.
   garantir que só Financeiro tem subcategorias) e `build` sem erro;
   Playwright completo sem erro (18 testes). Verificação visual com uma
   prop temporária de preview, removida antes do commit.
+
+### Projetos agrupados (Onboarding/Vigente/Arquivados) e excluir (código pronto em 2026-09-24)
+
+- Mesmo padrão de Contratos (ADRs 0023/0024). Mapeamento direto dos 4
+  status que `project` já tinha, sem uso até aqui: Onboarding =
+  Planejamento, Vigente = Ativo, Arquivados = Concluído + Cancelado
+  (com "Excluir", soft delete via `deleted_at`, que também já existia
+  sem uso).
+- **Diferente de Contratos:** não existia nenhum jeito de mudar o
+  status de um projeto em lugar nenhum do sistema (ficava travado em
+  "Planejamento" pra sempre) — essa etapa criou `updateProjectStatus`
+  do zero, além do seletor de status compacto em cada linha.
+  `lib/validation/project.ts` ganhou `PROJECT_STATUSES` (só existia o
+  `Record` de labels, sem a lista tipada dos valores válidos).
+- Decisões em
+  `docs/decisions/0026-projetos-onboarding-vigente-arquivados.md`.
+- Testes: `npm run lint`, `typecheck`, `test` (89 testes, sem novo —
+  RLS já existente cobre as duas ações) e `build` sem erro; Playwright
+  completo sem erro (18 testes). Verificação visual com rota temporária
+  e dados de exemplo, removida antes do commit.
+- **Fora do escopo:** auditoria; máquina de estados travando
+  transições de status (registrado no backlog, mesma pendência de
+  Contratos).

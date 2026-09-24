@@ -189,6 +189,9 @@
   que não fazem sentido no funil real (ex.: Rascunho → Encerrado). Se um
   dia isso causar erro operacional, vale travar as transições
   permitidas. Ver ADR 0024.
+- **Projetos — excluir/trocar status sem auditoria e sem máquina de
+  estados:** mesmas duas pendências dos Contratos, agora em Projetos.
+  Ver ADR 0026.
 - **Colaboradores — só `socio`/`financeiro` convidam:** `gestor` só
   enxerga a lista (sem custo), não convida — decisão da Etapa 9.1 porque
   o formulário de convite já inclui custo/hora. Rever se isso atrapalhar

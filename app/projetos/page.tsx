@@ -2,7 +2,26 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { AppShell } from "@/components/app-shell";
-import { PROJECT_STATUS_LABELS } from "@/lib/validation/project";
+import {
+  PROJECT_STATUS_LABELS,
+  type PROJECT_STATUSES,
+} from "@/lib/validation/project";
+import { StatusSelect } from "./status-select";
+import { DeleteProjectButton } from "./delete-project-button";
+
+type ProjectStatus = (typeof PROJECT_STATUSES)[number];
+
+// Agrupamento visual por estágio (mesmo padrão da ADR 0023/0024 pra
+// Contratos). "Arquivados" usa o próprio status — ver ADR 0026.
+const STATUS_GROUPS: readonly {
+  label: string;
+  statuses: readonly ProjectStatus[];
+  allowDelete?: boolean;
+}[] = [
+  { label: "Onboarding", statuses: ["planning"] },
+  { label: "Vigente", statuses: ["active"] },
+  { label: "Arquivados", statuses: ["completed", "cancelled"], allowDelete: true },
+];
 
 export default async function ProjetosPage() {
   const supabase = await createClient();
@@ -25,6 +44,8 @@ export default async function ProjetosPage() {
       </main>
     );
   }
+
+  const canManage = profile.role === "socio" || profile.role === "gestor";
 
   const { data: projects, error } = await supabase
     .from("project")
@@ -53,56 +74,98 @@ export default async function ProjetosPage() {
       )}
 
       {!error && projects && projects.length > 0 && (
-        <table className="w-full border-collapse text-sm">
-          <thead>
-            <tr className="border-b border-gray-200 text-left text-gray-500">
-              <th className="py-2 pr-4">Nome</th>
-              <th className="py-2 pr-4">Cliente</th>
-              <th className="py-2 pr-4">Início</th>
-              <th className="py-2">Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            {projects.map((project) => {
-              const client = project.client as unknown as {
-                id: string;
-                legal_name: string;
-              } | null;
-              return (
-                <tr key={project.id} className="border-b border-gray-100">
-                  <td className="py-2 pr-4">
-                    <Link
-                      href={`/projetos/${project.id}`}
-                      className="text-gray-900 underline-offset-2 hover:underline"
-                    >
-                      {project.name}
-                    </Link>
-                  </td>
-                  <td className="py-2 pr-4">
-                    {client ? (
-                      <Link
-                        href={`/clientes/${client.id}`}
-                        className="text-gray-900 underline-offset-2 hover:underline"
-                      >
-                        {client.legal_name}
-                      </Link>
-                    ) : (
-                      "-"
-                    )}
-                  </td>
-                  <td className="py-2 pr-4">
-                    {project.start_date
-                      ? new Date(project.start_date).toLocaleDateString("pt-BR")
-                      : "-"}
-                  </td>
-                  <td className="py-2">
-                    {PROJECT_STATUS_LABELS[project.status] ?? project.status}
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
+        <div className="space-y-10">
+          {STATUS_GROUPS.map((group) => {
+            const groupProjects = projects.filter((project) =>
+              (group.statuses as readonly string[]).includes(project.status),
+            );
+
+            return (
+              <section key={group.label}>
+                <h2 className="mb-3 text-sm font-semibold text-gray-700">
+                  {group.label}{" "}
+                  <span className="font-normal text-gray-400">
+                    ({groupProjects.length})
+                  </span>
+                </h2>
+
+                {groupProjects.length === 0 && (
+                  <p className="text-sm text-gray-400">Nenhum</p>
+                )}
+
+                {groupProjects.length > 0 && (
+                  <table className="w-full border-collapse text-sm">
+                    <thead>
+                      <tr className="border-b border-gray-200 text-left text-gray-500">
+                        <th className="py-2 pr-4">Nome</th>
+                        <th className="py-2 pr-4">Cliente</th>
+                        <th className="py-2 pr-4">Início</th>
+                        <th className="py-2 pr-4">Status</th>
+                        {canManage && group.allowDelete && (
+                          <th className="py-2"></th>
+                        )}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {groupProjects.map((project) => {
+                        const client = project.client as unknown as {
+                          id: string;
+                          legal_name: string;
+                        } | null;
+                        return (
+                          <tr key={project.id} className="border-b border-gray-100">
+                            <td className="py-2 pr-4">
+                              <Link
+                                href={`/projetos/${project.id}`}
+                                className="text-gray-900 underline-offset-2 hover:underline"
+                              >
+                                {project.name}
+                              </Link>
+                            </td>
+                            <td className="py-2 pr-4">
+                              {client ? (
+                                <Link
+                                  href={`/clientes/${client.id}`}
+                                  className="text-gray-900 underline-offset-2 hover:underline"
+                                >
+                                  {client.legal_name}
+                                </Link>
+                              ) : (
+                                "-"
+                              )}
+                            </td>
+                            <td className="py-2 pr-4">
+                              {project.start_date
+                                ? new Date(project.start_date).toLocaleDateString("pt-BR")
+                                : "-"}
+                            </td>
+                            <td className="py-2 pr-4">
+                              {canManage ? (
+                                <StatusSelect
+                                  projectId={project.id}
+                                  currentStatus={project.status as ProjectStatus}
+                                />
+                              ) : (
+                                PROJECT_STATUS_LABELS[
+                                  project.status as keyof typeof PROJECT_STATUS_LABELS
+                                ] ?? project.status
+                              )}
+                            </td>
+                            {canManage && group.allowDelete && (
+                              <td className="py-2">
+                                <DeleteProjectButton projectId={project.id} />
+                              </td>
+                            )}
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                )}
+              </section>
+            );
+          })}
+        </div>
       )}
       </div>
     </AppShell>

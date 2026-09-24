@@ -445,3 +445,12 @@ Etapas da Onda 0, uma por vez, cada uma com minha aprovação antes da seguinte:
 > Removidos os links repetidos que cada tela do Financeiro tinha no
 > topo (redundantes com o menu novo) — ver
 > `docs/decisions/0025-financeiro-categoria-subcategoria.md`.
+>
+> **Projetos agrupados (Onboarding/Vigente/Arquivados) e excluir:**
+> código pronto em 2026-09-24 — mesmo padrão de Contratos, mapeando os
+> 4 status que `project` já tinha sem uso (Onboarding = Planejamento,
+> Vigente = Ativo, Arquivados = Concluído + Cancelado, com "Excluir").
+> Diferente de Contratos, não existia nenhum jeito de mudar o status de
+> um projeto — essa etapa criou `updateProjectStatus` do zero, além do
+> seletor de status compacto em cada linha de `/projetos` — ver
+> `docs/decisions/0026-projetos-onboarding-vigente-arquivados.md`.
