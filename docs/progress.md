@@ -870,11 +870,19 @@ Aprovada e validada em produção em 2026-09-26 pelo dono do produto.
   sem erro (19 testes, 1 novo). Verificação visual (board, sidebar)
   com rota temporária e dados de exemplo, removida antes do commit.
 - **Fora do escopo** (registrado no backlog): editar/duplicar/excluir
-  demanda; tela de detalhe (comentários, histórico); upload de arquivo
+  demanda; comentários/histórico na tela de detalhe; upload de arquivo
   de verdade (só link por enquanto); auditoria; funil mais detalhado
   (aprovação interna separada da do cliente, ajustes, agendamento).
-- **Pendência:** aplicar a migration no Supabase real e validar em
-  produção.
+- **Migration aplicada e validada em produção em 2026-09-24** — dono do
+  produto já criou uma demanda real (`content_demand`) com sucesso.
+- **Correção no mesmo dia:** o card do quadro não mostrava
+  `briefing`/link de mídia/tags (ficavam salvos mas inacessíveis), e o
+  título não linkava pra lugar nenhum — achado pelo dono do produto ao
+  tentar abrir o link do Drive de uma demanda real. Nova tela
+  `/projetos/workflow/[id]` (só leitura, mostra tudo, link da mídia
+  clicável) + título do card virou link, mesmo padrão das outras
+  listas. Sem migration. Ver atualização no mesmo ADR
+  (`docs/decisions/0027-workflow-demandas-conteudo.md`).
 - **Próxima etapa (Workflow.2, ainda não iniciada):** login de cliente
   de verdade (não existe nenhuma infraestrutura disso hoje —
   `client_invite` é só formulário de cadastro), isolado por

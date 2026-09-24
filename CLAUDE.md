@@ -467,6 +467,11 @@ Etapas da Onda 0, uma por vez, cada uma com minha aprovação antes da seguinte:
 > "Projetos" vira categoria com "Workflow" ao lado. "Aprovado/Agendado"
 > por enquanto é sócio/gestor confirmando com o cliente por fora do
 > sistema — ver `docs/decisions/0027-workflow-demandas-conteudo.md`.
-> **Pendência:** aplicar a migration no Supabase real e validar em
-> produção. **Próxima etapa (Workflow.2):** login de cliente de
-> verdade (não existe hoje) pra aprovar demandas direto pelo sistema.
+> **Migration aplicada e validada em produção em 2026-09-24.**
+> **Correção no mesmo dia:** o card do quadro não mostrava
+> `briefing`/link de mídia/tags (dono do produto não conseguia abrir o
+> link do Drive de uma demanda real) — nova tela
+> `/projetos/workflow/[id]` (só leitura, mostra tudo) + título do card
+> virou link, mesmo padrão das outras listas. Sem migration. **Próxima
+> etapa (Workflow.2):** login de cliente de verdade (não existe hoje)
+> pra aprovar demandas direto pelo sistema.

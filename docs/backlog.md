@@ -199,9 +199,10 @@
   uma etapa própria. Ver ADR 0027.
 - **Workflow — sem editar/duplicar/excluir demanda:** só criar e mudar
   status por enquanto (igual foi pedido). Ver ADR 0027.
-- **Workflow — sem tela de detalhe:** tudo fica visível no card do
-  quadro; sem comentários, histórico de status ou mais de um link de
-  mídia por demanda. Ver ADR 0027.
+- **Workflow — tela de detalhe é só leitura:** `/projetos/workflow/[id]`
+  (adicionada no mesmo dia, ver ADR 0027) mostra tudo mas não edita;
+  sem comentários, histórico de status ou mais de um link de mídia por
+  demanda.
 - **Workflow — upload de arquivo de verdade:** hoje é só um campo de
   link (colar URL do Drive, por exemplo). Upload real precisa de
   Supabase Storage, ainda não configurado no projeto. Ver ADR 0027.

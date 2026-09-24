@@ -107,9 +107,12 @@ export default async function WorkflowPage() {
                           key={demand.id}
                           className="rounded-md border border-gray-200 p-3 text-sm"
                         >
-                          <p className="font-medium text-gray-900">
+                          <Link
+                            href={`/projetos/workflow/${demand.id}`}
+                            className="font-medium text-gray-900 underline-offset-2 hover:underline"
+                          >
                             {demand.title}
-                          </p>
+                          </Link>
                           <p className="text-gray-500">
                             {client?.legal_name ?? "-"}
                           </p>

@@ -94,12 +94,24 @@ só reaproveitado.
 
 ## Consequências
 
-- Sem tela de detalhe da demanda (`/projetos/workflow/[id]`) — tudo
-  fica visível no card do quadro por enquanto. Se os campos crescerem
-  (comentários, histórico, mais mídia), vira uma fatia própria.
 - Sem editar/duplicar/excluir demanda ainda — só criar e mudar status,
   igual foi pedido. Registrado no backlog.
 - Sem auditoria de quem mudou status (mesmo padrão de outras ações
   administrativas que ainda não gravam em `audit_log`).
 - "Aguardando aprovação" ainda depende de alguém do time confirmar com
   o cliente por fora do sistema — resolve na Workflow.2.
+
+## Correção no mesmo dia — tela de detalhe da demanda
+
+O card do quadro só mostrava título, cliente, responsável, canais e
+data — **sem `briefing`, link da mídia ou tags**, que ficavam salvos no
+banco mas inacessíveis em qualquer tela (achado pelo dono do produto ao
+tentar abrir o link do Drive de uma demanda real, já em produção).
+Diferente de toda outra lista do sistema (leads, contratos, projetos),
+o card não linkava pra lugar nenhum.
+
+Corrigido com uma tela nova, só leitura, `/projetos/workflow/[id]`
+(cliente, responsável, canais, data prevista, tags, briefing completo,
+link da mídia clicável, quem/quando aprovou) — e o título do card no
+quadro virou link pra ela, mesmo padrão das outras listas. Sem
+migration (os campos já existiam, só não eram consultados/exibidos).
