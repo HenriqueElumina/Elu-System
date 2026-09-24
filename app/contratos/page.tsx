@@ -2,8 +2,26 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { AppShell } from "@/components/app-shell";
-import { CONTRACT_STATUS_LABELS } from "@/lib/validation/contract";
+import {
+  CONTRACT_STATUS_LABELS,
+  type CONTRACT_STATUSES,
+} from "@/lib/validation/contract";
 import { centsToReais } from "@/lib/validation/service";
+
+type ContractStatus = (typeof CONTRACT_STATUSES)[number];
+
+// Agrupamento visual por estágio (ADR 0023). "Arquivados" aqui ainda é
+// só Cancelado/Encerrado por status — vira um campo próprio (reversível,
+// independente do status) na Etapa Contratos.2.
+const STATUS_GROUPS: readonly {
+  label: string;
+  statuses: readonly ContractStatus[];
+}[] = [
+  { label: "Aguardando elaboração", statuses: ["draft"] },
+  { label: "Pendente de assinatura", statuses: ["sent"] },
+  { label: "Vigente", statuses: ["signed", "active"] },
+  { label: "Arquivados", statuses: ["cancelled", "finished"] },
+];
 
 export default async function ContratosPage() {
   const supabase = await createClient();
@@ -55,53 +73,78 @@ export default async function ContratosPage() {
       )}
 
       {!error && contracts && contracts.length > 0 && (
-        <table className="w-full border-collapse text-sm">
-          <thead>
-            <tr className="border-b border-gray-200 text-left text-gray-500">
-              <th className="py-2 pr-4">Cliente</th>
-              <th className="py-2 pr-4">Início</th>
-              <th className="py-2 pr-4">Valor</th>
-              <th className="py-2">Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            {contracts.map((contract) => {
-              const total = (contract.contract_item ?? []).reduce(
-                (sum, item) => sum + item.quantity * item.unit_price_cents,
-                0,
-              );
-              const client = contract.client as unknown as {
-                legal_name: string;
-              } | null;
-              return (
-                <tr key={contract.id} className="border-b border-gray-100">
-                  <td className="py-2 pr-4">
-                    <Link
-                      href={`/contratos/${contract.id}`}
-                      className="text-gray-900 underline-offset-2 hover:underline"
-                    >
-                      {client?.legal_name ?? "-"}
-                    </Link>
-                  </td>
-                  <td className="py-2 pr-4">
-                    {new Date(contract.start_date).toLocaleDateString("pt-BR")}
-                  </td>
-                  <td className="py-2 pr-4">
-                    {centsToReais(total).toLocaleString("pt-BR", {
-                      style: "currency",
-                      currency: "BRL",
-                    })}
-                  </td>
-                  <td className="py-2">
-                    {CONTRACT_STATUS_LABELS[
-                      contract.status as keyof typeof CONTRACT_STATUS_LABELS
-                    ] ?? contract.status}
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
+        <div className="space-y-10">
+          {STATUS_GROUPS.map((group) => {
+            const groupContracts = contracts.filter((contract) =>
+              (group.statuses as readonly string[]).includes(contract.status),
+            );
+
+            return (
+              <section key={group.label}>
+                <h2 className="mb-3 text-sm font-semibold text-gray-700">
+                  {group.label}{" "}
+                  <span className="font-normal text-gray-400">
+                    ({groupContracts.length})
+                  </span>
+                </h2>
+
+                {groupContracts.length === 0 && (
+                  <p className="text-sm text-gray-400">Nenhum</p>
+                )}
+
+                {groupContracts.length > 0 && (
+                  <table className="w-full border-collapse text-sm">
+                    <thead>
+                      <tr className="border-b border-gray-200 text-left text-gray-500">
+                        <th className="py-2 pr-4">Cliente</th>
+                        <th className="py-2 pr-4">Início</th>
+                        <th className="py-2 pr-4">Valor</th>
+                        <th className="py-2">Status</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {groupContracts.map((contract) => {
+                        const total = (contract.contract_item ?? []).reduce(
+                          (sum, item) => sum + item.quantity * item.unit_price_cents,
+                          0,
+                        );
+                        const client = contract.client as unknown as {
+                          legal_name: string;
+                        } | null;
+                        return (
+                          <tr key={contract.id} className="border-b border-gray-100">
+                            <td className="py-2 pr-4">
+                              <Link
+                                href={`/contratos/${contract.id}`}
+                                className="text-gray-900 underline-offset-2 hover:underline"
+                              >
+                                {client?.legal_name ?? "-"}
+                              </Link>
+                            </td>
+                            <td className="py-2 pr-4">
+                              {new Date(contract.start_date).toLocaleDateString("pt-BR")}
+                            </td>
+                            <td className="py-2 pr-4">
+                              {centsToReais(total).toLocaleString("pt-BR", {
+                                style: "currency",
+                                currency: "BRL",
+                              })}
+                            </td>
+                            <td className="py-2">
+                              {CONTRACT_STATUS_LABELS[
+                                contract.status as keyof typeof CONTRACT_STATUS_LABELS
+                              ] ?? contract.status}
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                )}
+              </section>
+            );
+          })}
+        </div>
       )}
       </div>
     </AppShell>

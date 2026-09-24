@@ -763,3 +763,22 @@ Aprovada e validada em produção em 2026-09-26 pelo dono do produto.
   "lixeira" pra lead excluído.
 - **Pendência:** aplicar a migration no Supabase real e o dono do
   produto validar em produção.
+
+### Etapa Contratos.1 — Agrupar por estágio (código pronto em 2026-09-24)
+
+- Primeira de duas etapas (dono do produto pediu pra dividir). Sem
+  migration — só `app/contratos/page.tsx`. Contratos agora aparecem em
+  4 seções empilhadas: Aguardando elaboração (Rascunho), Pendente de
+  assinatura (Enviado), Vigente (Assinado + Ativo), Arquivados
+  (Cancelado + Encerrado — temporário, vira campo próprio na Etapa
+  Contratos.2). Mapeamento confirmado com o dono do produto.
+- Decisões em `docs/decisions/0023-agrupar-contratos-por-estagio.md`.
+- Testes: `npm run lint`, `typecheck`, `test` (87 testes, sem novo) e
+  `build` sem erro; Playwright completo sem erro (18 testes).
+  Verificação visual com rota temporária e dados cobrindo os 6 status,
+  removida antes do commit.
+- **Próxima etapa (Contratos.2, ainda não iniciada):** `contract` ganha
+  `archived_at` (mesmo padrão do `lead`), ação de excluir usando o
+  `deleted_at` que já existia, botões "Arquivar"/"Excluir" visíveis só
+  pra contrato Cancelado/Encerrado, e "Arquivados" passa a refletir o
+  campo novo em vez do status.

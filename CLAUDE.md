@@ -419,3 +419,13 @@ Etapas da Onda 0, uma por vez, cada uma com minha aprovação antes da seguinte:
 > link "Ver arquivados" com Desarquivar/Excluir — ver
 > `docs/decisions/0022-excluir-arquivar-filtro-leads.md`. **Pendência:**
 > aplicar a migration no Supabase real e validar em produção.
+>
+> **Etapa Contratos.1 — Agrupar por estágio:** código pronto em
+> 2026-09-24 — sem migration. `/contratos` mostra 4 seções empilhadas
+> (Aguardando elaboração = Rascunho; Pendente de assinatura = Enviado;
+> Vigente = Assinado + Ativo; Arquivados = Cancelado + Encerrado, por
+> enquanto usando só o status) — ver
+> `docs/decisions/0023-agrupar-contratos-por-estagio.md`. Primeira de
+> duas etapas (dono do produto pediu pra dividir); **Contratos.2**
+> (arquivar/excluir de verdade, com campo próprio, botões só pra
+> contrato Cancelado/Encerrado) ainda não começou.
