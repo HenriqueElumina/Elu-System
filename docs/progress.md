@@ -729,3 +729,8 @@ Aprovada e validada em produção em 2026-09-26 pelo dono do produto.
   pedido do dono do produto pra separar **todos** os itens entre si.
   Sem nome de categoria, sem ícone. `lib/nav/links.ts` e
   `components/app-shell.tsx`.
+- **Formato visual aprovado pelo dono do produto** (sidebar, cores,
+  fundo bege + cartão branco, linhas divisórias) a partir dos
+  screenshots enviados nesta sessão. **Ainda pendente:** validação com
+  login real em produção (perfis diferentes, mobile de verdade) — não
+  testado ainda.
