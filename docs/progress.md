@@ -898,6 +898,31 @@ Aprovada e validada em produção em 2026-09-26 pelo dono do produto.
   corrigido adicionando `lib/**` ao `content`. Sem migration. Ver
   atualização no mesmo ADR
   (`docs/decisions/0027-workflow-demandas-conteudo.md`).
+- **Etapa Workflow.3 — Visualização em lista e filtros:** código pronto
+  em 2026-09-24 — pedido do dono do produto (print de referência do
+  mLabs). `/projetos/workflow` ganha alternância **Painel | Lista**
+  (`?view=lista`, mesma tela, mesma consulta) e uma barra de filtros
+  por **Situação** (multi-seleção), **Cliente**, **Responsável** e
+  **Período** (atalhos Hoje/Esta semana/Este mês + personalizado) —
+  tudo em query string, sem JavaScript de cliente, mesmo padrão já
+  usado no filtro de dias dos Leads. Lista = mesmos 5 estágios
+  empilhados, cada um em uma tabela (Demanda, Cliente, Responsável,
+  Canais, Publicação prevista) ordenada por data prevista de
+  publicação (mais próxima primeiro, sem data no fim). Demanda sem
+  data prevista sempre aparece, mesmo com período filtrado. Lógica de
+  período e ordenação extraída em `lib/workflow/period-filter.ts`,
+  testada (12 testes novos). Sem migration — é a mesma consulta em
+  `content_demand`, só com `where`s condicionais. Decisões em
+  `docs/decisions/0028-workflow-lista-filtros.md`.
+- Testes: `npm run lint`, `typecheck`, `test` (104 testes, 12 novos) e
+  `build` sem erro; Playwright completo sem erro (20 testes).
+  Verificação visual (Painel com filtros, Lista ordenada, filtro
+  combinado de situação + cliente escondendo grupos não selecionados)
+  com rota temporária e dados de exemplo, removida antes do commit.
+- **Fora do escopo** (registrado no backlog): ícones de checklist de
+  criação (texto/design) e visualização de cronograma/calendário do
+  mLabs; desmarcar todos os checkboxes de situação hoje equivale a
+  "todos" (sem JS de cliente pra tratar esse caso).
 - **Próxima etapa (Workflow.2, ainda não iniciada):** login de cliente
   de verdade (não existe nenhuma infraestrutura disso hoje —
   `client_invite` é só formulário de cadastro), isolado por

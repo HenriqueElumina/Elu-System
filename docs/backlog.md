@@ -237,3 +237,13 @@
   a geração automática só vale pra contratos assinados a partir de
   2026-09-30 (transição de status é o gatilho). Projetos mais antigos
   ficam sem tarefas a menos que alguém gere manualmente. Ver ADR 0014.
+- **Workflow — desmarcar todas as situações no filtro equivale a "todas":**
+  o checkbox "Situação" manda o campo `status` na URL só quando pelo
+  menos um vem marcado; desmarcar todos e filtrar cai no mesmo
+  comportamento de "sem filtro" (mostra tudo), em vez de mostrar
+  nenhuma demanda. Sem JavaScript de cliente pra impedir isso hoje. Ver
+  ADR 0028.
+- **Workflow — sem ícones de checklist de criação (texto/design) nem
+  visualização de cronograma/calendário:** a referência do mLabs tem
+  esse nível de detalhe; decidido não replicar por enquanto (fora do
+  que foi pedido, granularidade que não temos hoje). Ver ADR 0028.

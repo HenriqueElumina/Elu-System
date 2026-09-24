@@ -487,5 +487,17 @@ Etapas da Onda 0, uma por vez, cada uma com minha aprovação antes da seguinte:
 > `lib/**`, então o Tailwind purgava as classes novas; corrigido
 > adicionando `lib/**` ao `content`. Sem migration — ver atualização no
 > mesmo ADR (`docs/decisions/0027-workflow-demandas-conteudo.md`).
+>
+> **Etapa Workflow.3 — Visualização em lista e filtros:** código pronto
+> em 2026-09-24 — pedido do dono do produto (print de referência do
+> mLabs). `/projetos/workflow` ganha alternância Painel | Lista
+> (`?view=lista`) e filtros por Situação (multi-seleção), Cliente,
+> Responsável e Período (atalhos Hoje/Esta semana/Este mês +
+> personalizado) — tudo em query string, sem JS de cliente, mesmo
+> padrão do filtro de dias dos Leads. Lista = mesmos 5 estágios
+> empilhados, ordenados por data prevista de publicação (sem data no
+> fim; sempre aparece mesmo com período filtrado). Lógica extraída e
+> testada em `lib/workflow/period-filter.ts`. Sem migration — ver
+> `docs/decisions/0028-workflow-lista-filtros.md`.
 > **Próxima etapa (Workflow.2):** login de cliente de verdade (não
 > existe hoje) pra aprovar demandas direto pelo sistema.
