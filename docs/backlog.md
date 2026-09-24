@@ -175,6 +175,12 @@
 - **Colaboradores — sem reenviar convite expirado/perdido:** se o link
   expirar (7 dias) ou a pessoa perder o e-mail, o jeito hoje é gerar um
   convite novo do zero. Ver ADR 0018.
+- **Leads — arquivar/excluir sem auditoria:** mesmo padrão de outras
+  ações administrativas que ainda não gravam em `audit_log`. Ver
+  ADR 0022.
+- **Leads — sem "lixeira":** lead excluído não aparece em lugar nenhum
+  da tela, nem na lista de arquivados. Se um dia for pedido recuperar um
+  lead excluído por engano, é direto no banco. Ver ADR 0022.
 - **Colaboradores — só `socio`/`financeiro` convidam:** `gestor` só
   enxerga a lista (sem custo), não convida — decisão da Etapa 9.1 porque
   o formulário de convite já inclui custo/hora. Rever se isso atrapalhar

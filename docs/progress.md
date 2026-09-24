@@ -734,3 +734,32 @@ Aprovada e validada em produção em 2026-09-26 pelo dono do produto.
   screenshots enviados nesta sessão. **Ainda pendente:** validação com
   login real em produção (perfis diferentes, mobile de verdade) — não
   testado ainda.
+
+### Etapa Leads.1 — Excluir, arquivar e filtro por data (código pronto em 2026-09-24)
+
+- Nova coluna `lead.archived_at` (arquivar fica separado de excluir —
+  não mexe no `status`, dá pra desarquivar); `lead.deleted_at` (já
+  existia desde a Etapa 1.3, sem uso até aqui) ganha ação de verdade.
+  Sem mudança de RLS (a policy `lead_write` de `socio`/`gestor` já
+  cobria `UPDATE`).
+- `app/leads/actions.ts` ganha `archiveLead`, `unarchiveLead`,
+  `deleteLead`; botões novos (`archive-lead-button.tsx`,
+  `delete-lead-button.tsx`), com confirmação, visíveis só pra
+  `socio`/`gestor`.
+- `/leads`: filtro "cadastrados nos últimos 30/60/90 dias" (form GET,
+  mesmo padrão do Fluxo de caixa; lógica isolada e testada em
+  `lib/leads/date-filter.ts`); cada card do Kanban mostra "Cadastrado em
+  DD/MM/AAAA, HH:MM"; link "Ver arquivados" leva a uma lista separada
+  (fora do Kanban) com "Desarquivar"/"Excluir". `/leads/[id]` ganhou a
+  data de cadastro no cabeçalho.
+- Decisões em `docs/decisions/0022-excluir-arquivar-filtro-leads.md`.
+- Testes: migration testada localmente (`socio` arquiva, `gestor`
+  exclui, `financeiro` bloqueado nas duas ações; revert limpo);
+  `npm run lint`, `typecheck`, `test` (87 testes, 5 novos) e `build` sem
+  erro; Playwright completo sem erro (18 testes). Verificação visual da
+  tela com rota temporária e dados de exemplo, removida antes do
+  commit.
+- **Fora do escopo:** auditoria de quem arquivou/excluiu; tela de
+  "lixeira" pra lead excluído.
+- **Pendência:** aplicar a migration no Supabase real e o dono do
+  produto validar em produção.

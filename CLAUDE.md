@@ -406,4 +406,16 @@ Etapas da Onda 0, uma por vez, cada uma com minha aprovação antes da seguinte:
 > (mudança só no `AppShell`, sem tocar em nenhuma tela); linhas finas
 > separando visualmente os módulos da sidebar (sem nome de categoria,
 > só separação visual) — ver atualizações no mesmo ADR
-> (`docs/decisions/0021-identidade-visual-navegacao.md`).
+> (`docs/decisions/0021-identidade-visual-navegacao.md`). Formato visual
+> aprovado pelo dono do produto a partir dos screenshots enviados na
+> sessão.
+>
+> **Etapa Leads.1 — Excluir, arquivar e filtro por data:** código pronto
+> em 2026-09-24 — `lead` ganha `archived_at` (arquivar não mexe no
+> `status`, dá pra desarquivar; separado de excluir); `deleted_at`
+> (existia desde a Etapa 1.3) ganha ação de verdade pela primeira vez.
+> `/leads`: filtro "cadastrados nos últimos 30/60/90 dias", data de
+> cadastro em cada card, botões Arquivar/Excluir (`socio`/`gestor`),
+> link "Ver arquivados" com Desarquivar/Excluir — ver
+> `docs/decisions/0022-excluir-arquivar-filtro-leads.md`. **Pendência:**
+> aplicar a migration no Supabase real e validar em produção.

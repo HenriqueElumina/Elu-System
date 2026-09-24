@@ -169,6 +169,45 @@ export async function updateProposal(
   return { ok: true };
 }
 
+export async function archiveLead(leadId: string): Promise<ActionResult> {
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from("lead")
+    .update({ archived_at: new Date().toISOString() })
+    .eq("id", leadId);
+
+  if (error) return { ok: false, message: error.message };
+
+  revalidatePath("/leads");
+  return { ok: true };
+}
+
+export async function unarchiveLead(leadId: string): Promise<ActionResult> {
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from("lead")
+    .update({ archived_at: null })
+    .eq("id", leadId);
+
+  if (error) return { ok: false, message: error.message };
+
+  revalidatePath("/leads");
+  return { ok: true };
+}
+
+export async function deleteLead(leadId: string): Promise<ActionResult> {
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from("lead")
+    .update({ deleted_at: new Date().toISOString() })
+    .eq("id", leadId);
+
+  if (error) return { ok: false, message: error.message };
+
+  revalidatePath("/leads");
+  return { ok: true };
+}
+
 export async function changeProposalStatus(
   proposalId: string,
   leadId: string,

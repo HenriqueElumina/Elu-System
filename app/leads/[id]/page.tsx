@@ -66,7 +66,17 @@ export default async function LeadDetailPage({
       <Link href="/leads" className="text-sm text-gray-500 hover:underline">
         ← Voltar
       </Link>
-      <h1 className="mb-6 mt-2 text-xl font-semibold">{lead.company_name}</h1>
+      <h1 className="mt-2 text-xl font-semibold">{lead.company_name}</h1>
+      <p className="mb-6 text-xs text-gray-400">
+        Cadastrado em{" "}
+        {new Date(lead.created_at).toLocaleString("pt-BR", {
+          day: "2-digit",
+          month: "2-digit",
+          year: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+        })}
+      </p>
 
       {canManage && (
         <div className="mb-4">
