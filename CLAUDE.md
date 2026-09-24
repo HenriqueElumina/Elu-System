@@ -513,5 +513,15 @@ Etapas da Onda 0, uma por vez, cada uma com minha aprovação antes da seguinte:
 > clicável. Lógica extraída e testada em
 > `lib/workflow/media-preview.ts` — ver
 > `docs/decisions/0029-workflow-legenda-preview-midia.md`.
+> **Pendência crítica reportada em produção no mesmo dia:** migration
+> `20261008090000_workflow_legenda_caption.sql` não aplicada no Supabase
+> real quebrou a tela de verdade (não só faltou funcionalidade) — criar
+> demanda deu erro "Could not find the 'caption' column" e abrir
+> qualquer demanda existente virou 404 (a busca falhava silenciosamente
+> pela coluna faltando, tratado como "não existe"). SQL da migration foi
+> reenviado ao dono do produto pra rodar no painel do Supabase; sem
+> mudança de código necessária. **Lição registrada:** daqui pra frente,
+> avisar sempre explicitamente quando uma etapa tem migration pendente
+> de aplicar, mesmo quando a mudança parece pequena.
 > **Próxima etapa (Workflow.2):** login de cliente de verdade (não
 > existe hoje) pra aprovar demandas direto pelo sistema.

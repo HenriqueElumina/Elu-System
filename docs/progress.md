@@ -938,6 +938,15 @@ Aprovada e validada em produção em 2026-09-26 pelo dono do produto.
   clicável. Lógica pura extraída e testada em
   `lib/workflow/media-preview.ts` (8 testes novos). Decisões em
   `docs/decisions/0029-workflow-legenda-preview-midia.md`.
+- **Pendência crítica (avisada tarde demais — ver correção abaixo):**
+  aplicar a migration `20261008090000_workflow_legenda_caption.sql` no
+  Supabase real. Sem isso, a tela quebra de verdade (não é só uma
+  funcionalidade faltando): criar demanda dá erro "Could not find the
+  'caption' column", e abrir qualquer demanda já existente vira 404
+  (a busca falha silenciosamente por causa da coluna faltando, e a
+  tela trata isso como "não existe"). Reportado pelo dono do produto em
+  produção em 2026-09-24 — corrigido só rodando a migration (sem
+  mudança de código necessária).
 - Testes: migration testada localmente (sócio e colaborador atribuído
   editam legenda; colaborador não atribuído e financeiro bloqueados);
   `npm run lint`, `typecheck`, `test` (112 testes, 8 novos) e `build`
