@@ -43,9 +43,19 @@ describe("navLinksForRole", () => {
     ]);
   });
 
+  it("Projetos tem as 2 subcategorias, na ordem certa", () => {
+    const projetos = navLinksForRole("socio").find(
+      (link) => link.href === "/projetos",
+    );
+    expect(projetos?.children?.map((child) => child.href)).toEqual([
+      "/projetos",
+      "/projetos/workflow",
+    ]);
+  });
+
   it("nenhum outro módulo tem subcategorias", () => {
     const others = navLinksForRole("socio").filter(
-      (link) => link.href !== "/financeiro",
+      (link) => link.href !== "/financeiro" && link.href !== "/projetos",
     );
     expect(others.every((link) => !link.children)).toBe(true);
   });

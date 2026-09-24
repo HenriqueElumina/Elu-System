@@ -837,3 +837,46 @@ Aprovada e validada em produção em 2026-09-26 pelo dono do produto.
 - **Fora do escopo:** auditoria; máquina de estados travando
   transições de status (registrado no backlog, mesma pendência de
   Contratos).
+
+### Etapa Workflow.1 — Quadro de demandas de conteúdo (código pronto em 2026-09-24)
+
+- Pedido do dono do produto, com print de referência (mLabs): "core
+  operacional da agência" — demandas de conteúdo (post, arte, vídeo,
+  artigo) do início até a aprovação/publicação. Cobre "aprovação de
+  conteúdo e vídeo", já prevista pro escopo da Onda 2 (não é avanço de
+  onda). Dividido em duas etapas: esta é a primeira, sem login de
+  cliente ainda.
+- Nova tabela `content_demand` (título, cliente, responsável, canais —
+  só marcador visual, data prevista, briefing, link de mídia, tags,
+  status) — separada do sistema de tarefas existente (`task`,
+  propósitos diferentes, RLS igual: sócio/gestor tudo, colaborador só
+  o que é seu). Funil simplificado (5 estágios, não os 8 da
+  referência): Rascunho → Em produção → Aguardando aprovação →
+  Aprovado/Agendado → Concluído.
+- `update_content_demand_status` (SECURITY DEFINER, mesmo padrão de
+  `update_task_status`) carimba quem aprovou quando o status vira
+  "Aprovado/Agendado" — hoje é sócio/gestor confirmando com o cliente
+  por fora do sistema; essa mesma função vira a base da Workflow.2
+  (cliente aprovando de verdade).
+- Tela nova `/projetos/workflow` (Kanban de 5 colunas) +
+  `/projetos/workflow/novo` (criar demanda); "Projetos" vira categoria
+  com "Workflow" ao lado na sidebar (mesmo padrão do Financeiro).
+- Decisões em `docs/decisions/0027-workflow-demandas-conteudo.md`.
+- Testes: migration testada localmente (sócio cria; colaborador não
+  atribuído bloqueado; colaborador atribuído consegue; financeiro não
+  vê nada; achado e corrigido um bug — o carimbo de aprovação estava
+  sendo apagado ao mover pra "Concluído"); `npm run lint`, `typecheck`,
+  `test` (92 testes, 2 novos) e `build` sem erro; Playwright completo
+  sem erro (19 testes, 1 novo). Verificação visual (board, sidebar)
+  com rota temporária e dados de exemplo, removida antes do commit.
+- **Fora do escopo** (registrado no backlog): editar/duplicar/excluir
+  demanda; tela de detalhe (comentários, histórico); upload de arquivo
+  de verdade (só link por enquanto); auditoria; funil mais detalhado
+  (aprovação interna separada da do cliente, ajustes, agendamento).
+- **Pendência:** aplicar a migration no Supabase real e validar em
+  produção.
+- **Próxima etapa (Workflow.2, ainda não iniciada):** login de cliente
+  de verdade (não existe nenhuma infraestrutura disso hoje —
+  `client_invite` é só formulário de cadastro), isolado por
+  `client_id`; tela do cliente vendo as próprias demandas em
+  "Aguardando aprovação" com Aprovar/Pedir ajuste.

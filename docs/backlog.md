@@ -192,6 +192,22 @@
 - **Projetos — excluir/trocar status sem auditoria e sem máquina de
   estados:** mesmas duas pendências dos Contratos, agora em Projetos.
   Ver ADR 0026.
+- **Workflow — funil mais detalhado:** a referência (mLabs) separa
+  "Aprovação interna" de "Aprovação do cliente" e tem "Ajustes"/
+  "Aguardando agendamento" como estágios à parte. Começamos com 5
+  estágios simplificados; se fizer falta no uso real, detalhar mais é
+  uma etapa própria. Ver ADR 0027.
+- **Workflow — sem editar/duplicar/excluir demanda:** só criar e mudar
+  status por enquanto (igual foi pedido). Ver ADR 0027.
+- **Workflow — sem tela de detalhe:** tudo fica visível no card do
+  quadro; sem comentários, histórico de status ou mais de um link de
+  mídia por demanda. Ver ADR 0027.
+- **Workflow — upload de arquivo de verdade:** hoje é só um campo de
+  link (colar URL do Drive, por exemplo). Upload real precisa de
+  Supabase Storage, ainda não configurado no projeto. Ver ADR 0027.
+- **Workflow — sem auditoria de mudança de status:** mesmo padrão de
+  outras ações administrativas que ainda não gravam em `audit_log`.
+  Ver ADR 0027.
 - **Colaboradores — só `socio`/`financeiro` convidam:** `gestor` só
   enxerga a lista (sem custo), não convida — decisão da Etapa 9.1 porque
   o formulário de convite já inclui custo/hora. Rever se isso atrapalhar

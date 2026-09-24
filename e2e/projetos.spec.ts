@@ -13,3 +13,10 @@ test("visitante não autenticado é redirecionado ao tentar acessar /projetos/[i
   await page.goto("/projetos/00000000-0000-0000-0000-000000000000");
   await expect(page).toHaveURL(/\/login$/);
 });
+
+test("visitante não autenticado é redirecionado ao tentar acessar /projetos/workflow", async ({
+  page,
+}) => {
+  await page.goto("/projetos/workflow");
+  await expect(page).toHaveURL(/\/login$/);
+});

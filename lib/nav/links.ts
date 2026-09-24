@@ -52,6 +52,10 @@ export const NAV_LINKS: readonly NavLink[] = [
     href: "/projetos",
     label: "Projetos",
     roles: ["socio", "gestor", "colaborador"],
+    children: [
+      { href: "/projetos", label: "Projetos" },
+      { href: "/projetos/workflow", label: "Workflow" },
+    ],
   },
   {
     href: "/colaboradores",

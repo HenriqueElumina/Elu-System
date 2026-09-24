@@ -454,3 +454,19 @@ Etapas da Onda 0, uma por vez, cada uma com minha aprovação antes da seguinte:
 > um projeto — essa etapa criou `updateProjectStatus` do zero, além do
 > seletor de status compacto em cada linha de `/projetos` — ver
 > `docs/decisions/0026-projetos-onboarding-vigente-arquivados.md`.
+>
+> **Etapa Workflow.1 — Quadro de demandas de conteúdo:** código pronto
+> em 2026-09-24 — pedido do dono do produto (print de referência da
+> mLabs), cobre "aprovação de conteúdo e vídeo" já previsto pro escopo
+> da Onda 2 (não é avanço de onda). Nova tabela `content_demand`
+> (título, cliente, responsável, canais, data prevista, briefing, link
+> de mídia, tags), separada do sistema de tarefas existente. Funil
+> simplificado (5 estágios: Rascunho → Em produção → Aguardando
+> aprovação → Aprovado/Agendado → Concluído — não os 8 da referência).
+> Tela `/projetos/workflow` (Kanban) + `/projetos/workflow/novo`;
+> "Projetos" vira categoria com "Workflow" ao lado. "Aprovado/Agendado"
+> por enquanto é sócio/gestor confirmando com o cliente por fora do
+> sistema — ver `docs/decisions/0027-workflow-demandas-conteudo.md`.
+> **Pendência:** aplicar a migration no Supabase real e validar em
+> produção. **Próxima etapa (Workflow.2):** login de cliente de
+> verdade (não existe hoje) pra aprovar demandas direto pelo sistema.
