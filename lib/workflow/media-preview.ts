@@ -35,6 +35,17 @@ export function resolveMediaPreview(
         embedUrl: `https://drive.google.com/file/d/${fileId}/preview`,
       };
     }
+
+    // Pasta do Drive (comum quando tem mais de uma versão/tamanho do
+    // material final) — embed nativo do Drive mostra os arquivos em
+    // miniatura, mesma área de preview.
+    const folderMatch = parsed.pathname.match(/\/drive\/folders\/([^/?]+)/);
+    if (folderMatch) {
+      return {
+        kind: "drive",
+        embedUrl: `https://drive.google.com/embeddedfolderview?id=${folderMatch[1]}#grid`,
+      };
+    }
   }
 
   return { kind: "none" };

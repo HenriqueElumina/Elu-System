@@ -63,3 +63,19 @@ antiga, se o link que já estava lá era bruto ou final.
 - Sem edição do link do material bruto depois de criada a demanda —
   só o material final é editável. Se precisar trocar o bruto, fica
   fora de escopo por enquanto (registrado no backlog).
+
+## Correção no mesmo dia — preview de pasta do Drive
+
+Reportado pelo dono do produto em produção: colou um link de **pasta**
+do Drive (`drive.google.com/drive/folders/ID`) no material final e a
+pré-visualização não apareceu. `resolveMediaPreview` só reconhecia
+link de **arquivo** (`/file/d/ID/...`), então pasta caía em "sem
+preview" — comportamento correto pro código como estava, mas o caso de
+uso é real (materiais finais frequentemente têm mais de uma
+versão/tamanho, então o editor cola a pasta inteira).
+
+Corrigido adicionando reconhecimento de pasta em
+`lib/workflow/media-preview.ts`, usando o embed nativo do Drive pra
+pasta (`drive.google.com/embeddedfolderview?id=ID#grid`, mesma área de
+`<iframe>` já usada pro preview de arquivo — nenhuma tela precisou
+mudar, só a função pura). Teste novo cobrindo o caso. Sem migration.

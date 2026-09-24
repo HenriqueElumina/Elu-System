@@ -46,6 +46,18 @@ describe("resolveMediaPreview", () => {
     });
   });
 
+  it("link de pasta do Drive vira embed de pasta (grid)", () => {
+    expect(
+      resolveMediaPreview(
+        "https://drive.google.com/drive/folders/1yY-V2Xm7WwNZLLcdJAH2gyTWfUNNHoKI",
+      ),
+    ).toEqual({
+      kind: "drive",
+      embedUrl:
+        "https://drive.google.com/embeddedfolderview?id=1yY-V2Xm7WwNZLLcdJAH2gyTWfUNNHoKI#grid",
+    });
+  });
+
   it("link do Drive sem id reconhecível não tem preview", () => {
     expect(resolveMediaPreview("https://drive.google.com/drive/my-drive")).toEqual(
       { kind: "none" },

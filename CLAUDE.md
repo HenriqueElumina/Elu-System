@@ -538,5 +538,12 @@ Etapas da Onda 0, uma por vez, cada uma com minha aprovação antes da seguinte:
 > **Pendência (mesma lição de novo):** aplicar a migration
 > `20261009090000_workflow_material_final.sql` no Supabase real antes
 > de usar.
+> **Correção no mesmo dia:** dono do produto testou em produção com um
+> link de **pasta** do Drive no material final — sem preview, porque
+> `resolveMediaPreview` só reconhecia link de arquivo. Corrigido
+> adicionando reconhecimento de pasta (embed `embeddedfolderview`
+> nativo do Drive), sem mudar nenhuma tela — só a função pura em
+> `lib/workflow/media-preview.ts`. Sem migration — ver atualização no
+> mesmo ADR (`docs/decisions/0030-workflow-material-bruto-vs-final.md`).
 > **Próxima etapa (Workflow.2):** login de cliente de verdade (não
 > existe hoje) pra aprovar demandas direto pelo sistema.

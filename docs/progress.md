@@ -984,6 +984,15 @@ Aprovada e validada em produção em 2026-09-26 pelo dono do produto.
   `test` (112 testes) e `build` sem erro; Playwright completo sem erro
   (20 testes). Verificação visual (dois campos separados, sem preview
   no bruto, preview + "Editar link" no final) com rota temporária.
+- **Correção no mesmo dia:** dono do produto validou em produção e
+  colou um link de **pasta** do Drive no material final — sem
+  preview, porque `resolveMediaPreview` só reconhecia link de
+  arquivo. Corrigido adicionando reconhecimento de pasta (embed nativo
+  `embeddedfolderview` do Drive, mesma área de `<iframe>`), sem
+  precisar mudar nenhuma tela — só a função pura em
+  `lib/workflow/media-preview.ts` (1 teste novo, 113 no total). Sem
+  migration. Ver atualização no mesmo ADR
+  (`docs/decisions/0030-workflow-material-bruto-vs-final.md`).
 - **Próxima etapa (Workflow.2, ainda não iniciada):** login de cliente
   de verdade (não existe nenhuma infraestrutura disso hoje —
   `client_invite` é só formulário de cadastro), isolado por
