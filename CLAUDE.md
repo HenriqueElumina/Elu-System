@@ -426,6 +426,13 @@ Etapas da Onda 0, uma por vez, cada uma com minha aprovação antes da seguinte:
 > Vigente = Assinado + Ativo; Arquivados = Cancelado + Encerrado, por
 > enquanto usando só o status) — ver
 > `docs/decisions/0023-agrupar-contratos-por-estagio.md`. Primeira de
-> duas etapas (dono do produto pediu pra dividir); **Contratos.2**
-> (arquivar/excluir de verdade, com campo próprio, botões só pra
-> contrato Cancelado/Encerrado) ainda não começou.
+> duas etapas (dono do produto pediu pra dividir).
+>
+> **Etapa Contratos.2 — Excluir arquivados e trocar status na lista:**
+> código pronto em 2026-09-24 — sem migration (confirmado com o dono do
+> produto que o campo `archived_at` cogitado na ADR 0023 não é
+> necessário; "Arquivados" continua = Cancelado/Encerrado por status).
+> Botão "Excluir" (soft delete, só na seção Arquivados) e seletor de
+> status compacto em cada linha de `/contratos` (dá pra trocar o
+> estágio sem abrir o contrato) — ver
+> `docs/decisions/0024-excluir-arquivados-status-inline-contratos.md`.

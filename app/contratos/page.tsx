@@ -7,20 +7,23 @@ import {
   type CONTRACT_STATUSES,
 } from "@/lib/validation/contract";
 import { centsToReais } from "@/lib/validation/service";
+import { StatusSelect } from "./status-select";
+import { DeleteContractButton } from "./delete-contract-button";
 
 type ContractStatus = (typeof CONTRACT_STATUSES)[number];
 
-// Agrupamento visual por estágio (ADR 0023). "Arquivados" aqui ainda é
-// só Cancelado/Encerrado por status — vira um campo próprio (reversível,
-// independente do status) na Etapa Contratos.2.
+// Agrupamento visual por estágio (ADR 0023). "Arquivados" usa o próprio
+// status (Cancelado/Encerrado) — confirmado com o dono do produto que
+// isso já basta, sem precisar de um campo separado (ADR 0024).
 const STATUS_GROUPS: readonly {
   label: string;
   statuses: readonly ContractStatus[];
+  allowDelete?: boolean;
 }[] = [
   { label: "Aguardando elaboração", statuses: ["draft"] },
   { label: "Pendente de assinatura", statuses: ["sent"] },
   { label: "Vigente", statuses: ["signed", "active"] },
-  { label: "Arquivados", statuses: ["cancelled", "finished"] },
+  { label: "Arquivados", statuses: ["cancelled", "finished"], allowDelete: true },
 ];
 
 export default async function ContratosPage() {
@@ -44,6 +47,8 @@ export default async function ContratosPage() {
       </main>
     );
   }
+
+  const canManage = profile.role === "socio" || profile.role === "gestor";
 
   const { data: contracts, error } = await supabase
     .from("contract")
@@ -99,7 +104,10 @@ export default async function ContratosPage() {
                         <th className="py-2 pr-4">Cliente</th>
                         <th className="py-2 pr-4">Início</th>
                         <th className="py-2 pr-4">Valor</th>
-                        <th className="py-2">Status</th>
+                        <th className="py-2 pr-4">Status</th>
+                        {canManage && group.allowDelete && (
+                          <th className="py-2"></th>
+                        )}
                       </tr>
                     </thead>
                     <tbody>
@@ -130,11 +138,23 @@ export default async function ContratosPage() {
                                 currency: "BRL",
                               })}
                             </td>
-                            <td className="py-2">
-                              {CONTRACT_STATUS_LABELS[
-                                contract.status as keyof typeof CONTRACT_STATUS_LABELS
-                              ] ?? contract.status}
+                            <td className="py-2 pr-4">
+                              {canManage ? (
+                                <StatusSelect
+                                  contractId={contract.id}
+                                  currentStatus={contract.status as ContractStatus}
+                                />
+                              ) : (
+                                CONTRACT_STATUS_LABELS[
+                                  contract.status as keyof typeof CONTRACT_STATUS_LABELS
+                                ] ?? contract.status
+                              )}
                             </td>
+                            {canManage && group.allowDelete && (
+                              <td className="py-2">
+                                <DeleteContractButton contractId={contract.id} />
+                              </td>
+                            )}
                           </tr>
                         );
                       })}

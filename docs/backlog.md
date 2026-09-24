@@ -181,6 +181,14 @@
 - **Leads — sem "lixeira":** lead excluído não aparece em lugar nenhum
   da tela, nem na lista de arquivados. Se um dia for pedido recuperar um
   lead excluído por engano, é direto no banco. Ver ADR 0022.
+- **Contratos — excluir/trocar status sem auditoria:** mesmo padrão de
+  outras ações administrativas que ainda não gravam em `audit_log`. Ver
+  ADR 0024.
+- **Contratos — status sem máquina de estados:** o seletor de status
+  (na lista e na tela de detalhe) permite qualquer transição, mesmo as
+  que não fazem sentido no funil real (ex.: Rascunho → Encerrado). Se um
+  dia isso causar erro operacional, vale travar as transições
+  permitidas. Ver ADR 0024.
 - **Colaboradores — só `socio`/`financeiro` convidam:** `gestor` só
   enxerga a lista (sem custo), não convida — decisão da Etapa 9.1 porque
   o formulário de convite já inclui custo/hora. Rever se isso atrapalhar

@@ -290,6 +290,19 @@ export async function updateContractStatus(
   return { ok: true };
 }
 
+export async function deleteContract(contractId: string): Promise<ActionResult> {
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from("contract")
+    .update({ deleted_at: new Date().toISOString() })
+    .eq("id", contractId);
+
+  if (error) return { ok: false, message: error.message };
+
+  revalidatePath("/contratos");
+  return { ok: true };
+}
+
 export async function markInvoiceAsPaid(
   invoiceId: string,
   contractId: string,

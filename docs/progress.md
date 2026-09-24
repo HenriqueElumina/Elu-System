@@ -777,8 +777,23 @@ Aprovada e validada em produção em 2026-09-26 pelo dono do produto.
   `build` sem erro; Playwright completo sem erro (18 testes).
   Verificação visual com rota temporária e dados cobrindo os 6 status,
   removida antes do commit.
-- **Próxima etapa (Contratos.2, ainda não iniciada):** `contract` ganha
-  `archived_at` (mesmo padrão do `lead`), ação de excluir usando o
-  `deleted_at` que já existia, botões "Arquivar"/"Excluir" visíveis só
-  pra contrato Cancelado/Encerrado, e "Arquivados" passa a refletir o
-  campo novo em vez do status.
+### Etapa Contratos.2 — Excluir arquivados e trocar status na lista (código pronto em 2026-09-24)
+
+- **Sem migration** — o dono do produto confirmou que não precisa do
+  campo `archived_at` separado cogitado na ADR 0023; "Arquivados"
+  continua sendo Cancelado/Encerrado por status.
+- `deleteContract` (soft delete via `contract.deleted_at`, que já
+  existia sem uso) + botão "Excluir", visível só na seção "Arquivados".
+- Cada linha de `/contratos` ganha um seletor de status compacto
+  (`status-select.tsx`, reaproveitando `updateContractStatus` que já
+  existia) — dá pra trocar o estágio sem abrir o contrato. Tela de
+  detalhe não mudou.
+- Ambos só pra `socio`/`gestor` (mesma regra de sempre).
+- Decisões em
+  `docs/decisions/0024-excluir-arquivados-status-inline-contratos.md`.
+- Testes: `npm run lint`, `typecheck`, `test` (87 testes, sem novo —
+  RLS já existente cobre as duas ações) e `build` sem erro; Playwright
+  completo sem erro (18 testes). Verificação visual com rota temporária
+  e dados de exemplo, removida antes do commit.
+- **Fora do escopo:** auditoria; máquina de estados travando transições
+  de status (registrado no backlog).
