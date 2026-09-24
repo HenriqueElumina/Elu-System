@@ -7,9 +7,9 @@ import {
   CONTENT_DEMAND_STATUS_ACCENTS,
   CONTENT_CHANNELS,
 } from "@/lib/validation/content-demand";
-import { resolveMediaPreview } from "@/lib/workflow/media-preview";
 import { StatusSelect } from "../status-select";
 import { CaptionEditor } from "../caption-editor";
+import { FinalMediaEditor } from "../final-media-editor";
 
 const CHANNEL_LABELS = Object.fromEntries(
   CONTENT_CHANNELS.map((channel) => [channel.key, channel.label]),
@@ -57,7 +57,7 @@ export default async function DemandaDetailPage({
   const { data: demand } = await supabase
     .from("content_demand")
     .select(
-      "id, title, status, channels, scheduled_at, assigned_to, briefing, media_url, caption, tags, created_at, approved_at, client:client_id(legal_name), assignee:assigned_to(full_name), approver:approved_by(full_name)",
+      "id, title, status, channels, scheduled_at, assigned_to, briefing, media_url, final_media_url, caption, tags, created_at, approved_at, client:client_id(legal_name), assignee:assigned_to(full_name), approver:approved_by(full_name)",
     )
     .eq("id", id)
     .is("deleted_at", null)
@@ -69,7 +69,6 @@ export default async function DemandaDetailPage({
   const assignee = demand.assignee as unknown as { full_name: string } | null;
   const approver = demand.approver as unknown as { full_name: string } | null;
   const canAct = canManage || demand.assigned_to === user.id;
-  const preview = resolveMediaPreview(demand.media_url);
 
   return (
     <AppShell userName={profile.full_name} userRole={profile.role}>
@@ -123,35 +122,28 @@ export default async function DemandaDetailPage({
               ? demand.tags.join(", ")
               : "-"}
           </Field>
-          <Field label="Link da mídia">
+          <Field label="Link do material bruto">
             {demand.media_url ? (
-              <>
-                <a
-                  href={demand.media_url}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="text-gray-900 underline-offset-2 hover:underline"
-                >
-                  {demand.media_url}
-                </a>
-                {preview.kind === "image" && (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    src={preview.url}
-                    alt=""
-                    className="mt-2 max-h-80 rounded-md border border-gray-200"
-                  />
-                )}
-                {preview.kind === "drive" && (
-                  <iframe
-                    src={preview.embedUrl}
-                    className="mt-2 h-80 w-full rounded-md border border-gray-200"
-                    allow="autoplay"
-                  />
-                )}
-              </>
+              <a
+                href={demand.media_url}
+                target="_blank"
+                rel="noreferrer"
+                className="text-gray-900 underline-offset-2 hover:underline"
+              >
+                {demand.media_url}
+              </a>
             ) : (
               "-"
+            )}
+          </Field>
+          <Field label="Link do material final">
+            {canAct ? (
+              <FinalMediaEditor
+                demandId={demand.id}
+                currentUrl={demand.final_media_url}
+              />
+            ) : (
+              <p>{demand.final_media_url || "-"}</p>
             )}
           </Field>
           <Field label="Legenda">

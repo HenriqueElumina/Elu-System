@@ -523,5 +523,20 @@ Etapas da Onda 0, uma por vez, cada uma com minha aprovação antes da seguinte:
 > mudança de código necessária. **Lição registrada:** daqui pra frente,
 > avisar sempre explicitamente quando uma etapa tem migration pendente
 > de aplicar, mesmo quando a mudança parece pequena.
+>
+> **Etapa Workflow.5 — Link de material bruto separado do material
+> final:** código pronto em 2026-09-24 — feedback do dono do produto
+> depois de validar a Workflow.4: o link colado na criação da demanda
+> é o material bruto (sem preview); o link que o editor cola ao
+> terminar a arte/vídeo é o que precisa de pré-visualização.
+> `content_demand` ganha `final_media_url` (novo, com preview,
+> editável a qualquer momento pelo editor — mesmo padrão de permissão
+> da legenda); `media_url` (existente) perde o preview e vira só "Link
+> do material bruto". Demandas já criadas não têm o link migrado
+> automaticamente (decisão do dono do produto) — ver
+> `docs/decisions/0030-workflow-material-bruto-vs-final.md`.
+> **Pendência (mesma lição de novo):** aplicar a migration
+> `20261009090000_workflow_material_final.sql` no Supabase real antes
+> de usar.
 > **Próxima etapa (Workflow.2):** login de cliente de verdade (não
 > existe hoje) pra aprovar demandas direto pelo sistema.

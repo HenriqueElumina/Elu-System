@@ -258,3 +258,6 @@
 - **Workflow — legenda não é por canal:** uma legenda só, compartilhada
   entre todos os canais marcados na demanda, mesmo que o texto ideal
   varie entre Instagram/Facebook/LinkedIn etc. Ver ADR 0029.
+- **Workflow — link do material bruto não é editável depois de criada
+  a demanda:** só o material final ganhou edição nesta etapa. Se
+  precisar trocar o link do bruto depois, hoje não dá. Ver ADR 0030.

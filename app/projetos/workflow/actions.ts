@@ -1,5 +1,6 @@
 "use server";
 
+import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import {
@@ -8,6 +9,13 @@ import {
   CONTENT_DEMAND_STATUSES,
   type CreateContentDemandInput,
 } from "@/lib/validation/content-demand";
+
+const finalMediaUrlSchema = z
+  .string()
+  .trim()
+  .url("Link inválido")
+  .optional()
+  .or(z.literal(""));
 
 type ActionResult<T = undefined> =
   | ({ ok: true } & (T extends undefined ? object : T))
@@ -79,6 +87,25 @@ export async function updateContentDemandCaption(
   const { error } = await supabase.rpc("update_content_demand_caption", {
     p_demand_id: demandId,
     p_caption: caption || null,
+  });
+
+  if (error) return { ok: false, message: error.message };
+
+  revalidatePath(`/projetos/workflow/${demandId}`);
+  return { ok: true };
+}
+
+export async function updateContentDemandFinalMedia(
+  demandId: string,
+  finalMediaUrl: string,
+): Promise<ActionResult> {
+  const parsed = finalMediaUrlSchema.safeParse(finalMediaUrl);
+  if (!parsed.success) return { ok: false, message: "Link inválido." };
+
+  const supabase = await createClient();
+  const { error } = await supabase.rpc("update_content_demand_final_media", {
+    p_demand_id: demandId,
+    p_final_media_url: parsed.data || null,
   });
 
   if (error) return { ok: false, message: error.message };

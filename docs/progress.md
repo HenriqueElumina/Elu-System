@@ -960,6 +960,30 @@ Aprovada e validada em produção em 2026-09-26 pelo dono do produto.
   Drive; legenda por canal (é uma só, compartilhada); preview do Drive
   depende do arquivo estar compartilhado como "qualquer pessoa com o
   link".
+- **Etapa Workflow.5 — Link de material bruto separado do material
+  final:** código pronto em 2026-09-24 — feedback do dono do produto
+  após validar a Workflow.4 em produção: o link colado na criação da
+  demanda é o material bruto (sem edição, sem necessidade de preview);
+  o link que precisa de pré-visualização é o que o editor cola ao
+  terminar a arte/vídeo. `content_demand` ganha `final_media_url`
+  (novo); `media_url` (existente) perde a pré-visualização e vira só
+  "Link do material bruto"; `final_media_url` é o único com preview,
+  editável a qualquer momento pelo editor
+  (`update_content_demand_final_media`, mesmo padrão de permissão da
+  legenda). Demandas já criadas não têm o link migrado
+  automaticamente — decisão do dono do produto, ficam só com material
+  bruto até o editor colar o final. Decisões em
+  `docs/decisions/0030-workflow-material-bruto-vs-final.md`.
+- **Pendência (mesma lição da etapa anterior, já avisada no resumo):**
+  aplicar a migration `20261009090000_workflow_material_final.sql` no
+  Supabase real antes de usar — senão quebra do mesmo jeito que a
+  0008 quebrou (erro ao criar demanda / 404 ao abrir demanda
+  existente).
+- Testes: migration testada localmente (mesmos casos de permissão da
+  legenda, agora pro material final); `npm run lint`, `typecheck`,
+  `test` (112 testes) e `build` sem erro; Playwright completo sem erro
+  (20 testes). Verificação visual (dois campos separados, sem preview
+  no bruto, preview + "Editar link" no final) com rota temporária.
 - **Próxima etapa (Workflow.2, ainda não iniciada):** login de cliente
   de verdade (não existe nenhuma infraestrutura disso hoje —
   `client_invite` é só formulário de cadastro), isolado por

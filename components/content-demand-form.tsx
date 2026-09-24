@@ -127,7 +127,7 @@ export function ContentDemandForm({
       </Field>
 
       <Field
-        label="Link da mídia (opcional)"
+        label="Link do material bruto (opcional)"
         error={errors.mediaUrl?.message}
       >
         <input
