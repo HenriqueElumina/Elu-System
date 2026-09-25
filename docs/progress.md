@@ -1093,7 +1093,7 @@ Aprovada e validada em produção em 2026-09-26 pelo dono do produto.
   pendência de notificação da Workflow.2.
 - **Sem migration nesta etapa.**
 
-### Editar dados do projeto (código pronto em 2026-09-25)
+### Editar dados do projeto (concluída e validada em produção em 2026-09-25)
 
 - Migration `20261011090000_editar_dados_projeto.sql`: `project` ganha
   `end_date` (nullable, sem trigger automático) — antes só existia
@@ -1114,5 +1114,5 @@ Aprovada e validada em produção em 2026-09-26 pelo dono do produto.
   bloqueado); Playwright completo sem erro (24 testes, sem novo).
   Verificação visual do formulário aberto com rota temporária, removida
   antes do commit.
-- **Pendência:** aplicar a migration no Supabase real e validar em
-  produção.
+- Migration aplicada no Supabase real e testada em produção pelo dono
+  do produto: "Deu certo."
