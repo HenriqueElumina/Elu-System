@@ -994,8 +994,66 @@ Aprovada e validada em produção em 2026-09-26 pelo dono do produto.
   `lib/workflow/media-preview.ts` (1 teste novo, 113 no total). Sem
   migration. Ver atualização no mesmo ADR
   (`docs/decisions/0030-workflow-material-bruto-vs-final.md`).
-- **Próxima etapa (Workflow.2, ainda não iniciada):** login de cliente
-  de verdade (não existe nenhuma infraestrutura disso hoje —
-  `client_invite` é só formulário de cadastro), isolado por
-  `client_id`; tela do cliente vendo as próprias demandas em
-  "Aguardando aprovação" com Aprovar/Pedir ajuste.
+### Etapa Workflow.2 — Login de cliente e aprovação real (código pronto em 2026-09-25)
+
+- `profile` ganha `client_id` (só preenchido quando `role = 'cliente'`)
+  — primeira role do sistema com isolamento por registro específico,
+  em vez de acesso amplo por perfil.
+- Convite por pessoa (não login único da empresa), mesmo padrão exato
+  do convite de colaborador (Etapa 9.1): nova tabela
+  `client_user_invite` + `get_client_user_invite`/
+  `submit_client_user_invite` (`SECURITY DEFINER`) — a pessoa cria a
+  própria conta (`auth.signUp`), e só a função de submissão promove o
+  profile (que nasce `colaborador` por padrão) pra `cliente` com o
+  `client_id` certo, validando o token do convite.
+- `/clientes/[id]` ganha seção "Acessos" (lista quem já tem login +
+  link "Convidar login", só `socio`/`gestor`); `/clientes/[id]/convidar-login`
+  (formulário) + `/convite-cliente/[token]` (pública, cria a conta).
+- Tela nova `/portal` (só `role = 'cliente'`, reaproveitando o
+  `AppShell` — sidebar fica vazia porque nenhum módulo lista `cliente`
+  em `NAV_LINKS`): lista as próprias demandas "Aguardando aprovação"
+  (só campos relevantes pro cliente — sem briefing/tags/responsável,
+  que são internos), com botões **Aprovar** e **Pedir ajuste**.
+- `content_demand` ganha `client_feedback` (nova coluna) e uma policy
+  de select restrita pro cliente (só a própria demanda, só enquanto
+  `awaiting_approval` — sai da lista assim que aprovada ou com ajuste
+  pedido). `update_content_demand_status` estendida (não duplicada)
+  pra aceitar `cliente`, travada numa única transição
+  (`awaiting_approval` → `approved_scheduled`, só na própria demanda).
+  Nova função `request_content_demand_changes` — só cliente, observação
+  obrigatória, volta a demanda pra "Em produção".
+- **Correção de RLS encontrada no caminho:** `profile_select` (Etapa
+  0.3) só deixava cada um ver a própria linha ou sócio ver todas —
+  gestor não enxergaria quem já tem login de cliente, mesmo podendo
+  convidar. Nova policy aditiva e restrita
+  (`profile_select_client_users`) libera sócio/gestor só pra perfis
+  `role = 'cliente'`, sem abrir profile de colaborador/sócio/financeiro.
+- `lib/supabase/middleware.ts`: redirecionamento pós-login agora
+  depende do perfil — `cliente` vai pra `/portal`, resto continua indo
+  pra `/clientes`.
+- Migration `supabase/migrations/20261010090000_login_cliente_aprovacao.sql`.
+  Decisões em `docs/decisions/0031-login-cliente-aprovacao.md`.
+- Testes: migration testada localmente com dois clientes diferentes
+  (isolamento confirmado — cliente A não vê nem consegue agir na
+  demanda do cliente B; aprovar carimba `approved_by`; pedir ajuste
+  grava a observação e volta o status; bloqueado sem observação;
+  gestor vê o profile do cliente, colaborador não; revert limpo);
+  `npm run lint`, `typecheck`, `test` (121 testes, 8 novos) e `build`
+  sem erro; Playwright completo sem erro (23 testes, 3 novos).
+  Verificação visual (`/portal` com dois cartões, incluindo "Pedir
+  ajuste" expandido; seção "Acessos") com rota temporária, removida
+  antes do commit.
+- **Fora do escopo** (registrado no backlog): reenviar convite
+  expirado/desativar login de cliente pela tela; histórico de
+  aprovações/ajustes pro cliente ver; notificação automática avisando
+  demanda nova aguardando aprovação; estágio visual próprio pra
+  "ajuste pedido" (hoje volta pro mesmo "Em produção" de sempre).
+- **Decisões do dono do produto no mesmo dia:** postagem automática
+  nas redes sociais dos clientes fica pra a última fase do projeto;
+  itens nunca testados contra API real (Efí, UX.1) ficam pra depois do
+  lançamento do sistema — ambos sem etapa de código associada, só
+  registrados no backlog.
+- **Pendência:** aplicar a migration
+  `20261010090000_login_cliente_aprovacao.sql` no Supabase real e
+  validar o fluxo completo em produção (convidar, criar conta, aprovar
+  e pedir ajuste com um cliente de teste) antes de considerar pronto.

@@ -7,6 +7,10 @@ import {
   clientIntakeSchema,
   type ClientIntakeInput,
 } from "@/lib/validation/client-intake";
+import {
+  createClientUserInviteSchema,
+  type CreateClientUserInviteInput,
+} from "@/lib/validation/client-user";
 
 export async function createInvite(note: string) {
   const supabase = await createClient();
@@ -149,6 +153,38 @@ export async function createClientDirect(
 
   revalidatePath("/clientes");
   return { ok: true, clientId: client.id as string };
+}
+
+export async function createClientUserInvite(
+  clientId: string,
+  input: CreateClientUserInviteInput,
+): Promise<{ ok: true; token: string } | { ok: false; message: string }> {
+  const parsed = createClientUserInviteSchema.safeParse(input);
+  if (!parsed.success) return { ok: false, message: "Dados inválidos." };
+  const data = parsed.data;
+
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { ok: false, message: "Sessão expirada." };
+
+  const { data: invite, error } = await supabase
+    .from("client_user_invite")
+    .insert({
+      email: data.email,
+      client_id: clientId,
+      created_by_profile_id: user.id,
+    })
+    .select("token")
+    .single();
+
+  if (error || !invite) {
+    return { ok: false, message: error?.message ?? "Erro ao gerar o convite." };
+  }
+
+  revalidatePath(`/clientes/${clientId}`);
+  return { ok: true, token: invite.token as string };
 }
 
 export async function linkLeadToClient(

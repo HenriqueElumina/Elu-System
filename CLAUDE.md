@@ -546,5 +546,38 @@ Etapas da Onda 0, uma por vez, cada uma com minha aprovação antes da seguinte:
 > nativo do Drive), sem mudar nenhuma tela — só a função pura em
 > `lib/workflow/media-preview.ts`. Sem migration — ver atualização no
 > mesmo ADR (`docs/decisions/0030-workflow-material-bruto-vs-final.md`).
-> **Próxima etapa (Workflow.2):** login de cliente de verdade (não
-> existe hoje) pra aprovar demandas direto pelo sistema.
+>
+> **Etapa Workflow.2 — Login de cliente e aprovação real:** código
+> pronto em 2026-09-25 — `profile` ganha `client_id` (primeira role com
+> isolamento por registro específico, não mais acesso amplo por
+> perfil); convite por pessoa (mesmo padrão do convite de colaborador,
+> Etapa 9.1) via `client_user_invite` +
+> `get_client_user_invite`/`submit_client_user_invite`
+> (`SECURITY DEFINER`, promove o profile recém-criado de `colaborador`
+> pra `cliente`). `/clientes/[id]` ganha seção "Acessos" +
+> `/clientes/[id]/convidar-login`; `/convite-cliente/[token]` pública
+> cria a conta. Tela nova `/portal` (`role = 'cliente'`, reaproveitando
+> o `AppShell` — sidebar vazia, nenhum módulo lista `cliente`): lista
+> as próprias demandas "Aguardando aprovação", com **Aprovar**
+> (`update_content_demand_status` estendida, travada numa única
+> transição) e **Pedir ajuste** (`request_content_demand_changes`,
+> nova, observação obrigatória, volta pra "Em produção").
+> `content_demand` ganha `client_feedback` + policy de select restrita
+> ao próprio cliente e só enquanto aguardando aprovação. **Correção de
+> RLS encontrada no caminho:** `profile_select` (Etapa 0.3) não deixava
+> gestor ver quem já tem login de cliente, mesmo podendo convidar —
+> nova policy restrita (`profile_select_client_users`) corrige, sem
+> abrir profile de outros perfis internos pra gestor. Redirecionamento
+> pós-login agora depende do perfil (`cliente` → `/portal`) — ver
+> `docs/decisions/0031-login-cliente-aprovacao.md`.
+> **Pendência:** aplicar a migration
+> `20261010090000_login_cliente_aprovacao.sql` no Supabase real e
+> validar o fluxo completo em produção antes de considerar pronto.
+>
+> **Decisões do dono do produto no mesmo dia:** postagem automática nas
+> redes sociais dos clientes (Ayrshare/Postiz) fica pra a última fase
+> do projeto; itens nunca testados contra API real (confirmação de
+> pagamento via webhook da Efí, cliente pessoa física, validação visual
+> da Etapa UX.1 com login real) ficam pra depois do lançamento do
+> sistema — ambos sem etapa de código associada, só registrados no
+> backlog.

@@ -1,5 +1,16 @@
 # Backlog
 
+- **Postagem automática nas redes sociais dos clientes (integração tipo
+  Ayrshare/Postiz):** decisão do dono do produto (2026-09-25) — fica
+  pra **última fase do projeto**, depois de tudo o resto. Análise
+  comparativa de fornecedores já entregue (documento enviado ao dono do
+  produto), sem etapa de código associada ainda.
+- **Itens nunca testados contra ambiente real (Efí — confirmação de
+  pagamento via webhook, cliente pessoa física; validação visual da
+  Etapa UX.1 com login real):** decisão do dono do produto (2026-09-25)
+  — revisar **depois do lançamento do sistema**, não bloqueia nada até
+  lá.
+
 - **NFSe:** validar com o contador o provedor final (Focus NFe / PlugNotas /
   eNotas) considerando Simples Nacional + Bragança Paulista/SP. Bloqueante
   para o módulo Financeiro na Onda 1. **Decisão do dono do produto
@@ -261,3 +272,20 @@
 - **Workflow — link do material bruto não é editável depois de criada
   a demanda:** só o material final ganhou edição nesta etapa. Se
   precisar trocar o link do bruto depois, hoje não dá. Ver ADR 0030.
+- **Login de cliente — sem reenviar convite expirado/perdido nem
+  desativar acesso pela tela:** mesma pendência já registrada pro
+  colaborador (ADR 0018), agora também pro cliente. Ver ADR 0031.
+- **Portal do cliente — sem histórico de aprovações/ajustes:** a
+  demanda sai da lista assim que aprovada ou com ajuste pedido — o
+  cliente não tem onde ver o que já aprovou antes. Decisão deliberada
+  de manter simples nesta etapa; se fizer falta no uso real, é uma
+  tela nova. Ver ADR 0031.
+- **Portal do cliente — sem notificação avisando demanda nova
+  aguardando aprovação:** o cliente só descobre entrando no sistema,
+  não tem e-mail/WhatsApp automático. Isso é módulo de
+  automações/notificações (Onda 4). Ver ADR 0031.
+- **Workflow — funil ainda não distingue "ajuste pedido pelo cliente"
+  de "em produção normal":** `request_content_demand_changes` volta a
+  demanda pro mesmo status `in_production` de sempre, só com
+  `client_feedback` preenchido — não tem um estágio visual próprio
+  pra "aguardando ajuste do time". Ver ADR 0031.

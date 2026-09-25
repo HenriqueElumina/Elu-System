@@ -30,9 +30,10 @@ export async function updateSession(request: NextRequest) {
   } = await supabase.auth.getUser();
 
   const isLoginPage = request.nextUrl.pathname.startsWith("/login");
-  // /convite/[token] e /convite-colaborador/[token]: páginas públicas que
-  // cliente/colaborador preenchem sem login. /redefinir-senha: chega com
-  // um código de recuperação, também antes de ter sessão.
+  // /convite/[token], /convite-colaborador/[token] e /convite-cliente/[token]:
+  // páginas públicas que cliente/colaborador preenchem sem login.
+  // /redefinir-senha: chega com um código de recuperação, também antes de
+  // ter sessão.
   const isPublicPage =
     isLoginPage ||
     request.nextUrl.pathname.startsWith("/convite") ||
@@ -63,8 +64,14 @@ export async function updateSession(request: NextRequest) {
   }
 
   if (user && isLoginPage) {
+    const { data: profile } = await supabase
+      .from("profile")
+      .select("role")
+      .eq("id", user.id)
+      .single();
+
     const url = request.nextUrl.clone();
-    url.pathname = "/clientes";
+    url.pathname = profile?.role === "cliente" ? "/portal" : "/clientes";
     return NextResponse.redirect(url);
   }
 

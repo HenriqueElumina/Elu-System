@@ -58,6 +58,14 @@ export default async function ClienteDetailPage({
     .select("platform, platform_other_label, handle, followers_count")
     .eq("client_id", id);
 
+  const { data: clientUsers } = await supabase
+    .from("profile")
+    .select("full_name, email, active")
+    .eq("client_id", id)
+    .eq("role", "cliente");
+
+  const canInviteLogin = profile.role === "socio" || profile.role === "gestor";
+
   const canApprove =
     client.onboarding_status === "pending_review" &&
     (profile.role === "socio" || profile.role === "gestor" || profile.role === "financeiro");
@@ -140,6 +148,33 @@ export default async function ClienteDetailPage({
           </ul>
         ) : (
           <p className="text-sm text-gray-500">Nenhuma rede social informada.</p>
+        )}
+      </Section>
+
+      <Section title="Acessos (login do cliente)">
+        {clientUsers && clientUsers.length > 0 ? (
+          <ul className="mb-3 space-y-1 text-sm">
+            {clientUsers.map((clientUser, index) => (
+              <li key={index}>
+                {clientUser.full_name} — {clientUser.email}
+                {!clientUser.active && (
+                  <span className="text-gray-400"> (desativado)</span>
+                )}
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="mb-3 text-sm text-gray-500">
+            Ninguém desse cliente tem login ainda.
+          </p>
+        )}
+        {canInviteLogin && (
+          <Link
+            href={`/clientes/${id}/convidar-login`}
+            className="text-sm font-medium text-gray-900 underline-offset-2 hover:underline"
+          >
+            + Convidar login
+          </Link>
         )}
       </Section>
       </div>
