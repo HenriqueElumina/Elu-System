@@ -29,19 +29,32 @@ function LoginPageInner() {
     setLoading(true);
 
     const supabase = createClient();
-    const { error: signInError } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
+    const { data: signInData, error: signInError } =
+      await supabase.auth.signInWithPassword({ email, password });
 
-    setLoading(false);
-
-    if (signInError) {
+    if (signInError || !signInData.user) {
+      setLoading(false);
       setError("E-mail ou senha inválidos.");
       return;
     }
 
-    router.replace("/clientes");
+    // Link direto (ex.: aprovação mandada pro cliente) tem prioridade sobre
+    // o destino padrão do perfil.
+    const nextParam = searchParams.get("next");
+    if (nextParam && nextParam.startsWith("/") && !nextParam.startsWith("//")) {
+      router.replace(nextParam);
+      router.refresh();
+      return;
+    }
+
+    const { data: profile } = await supabase
+      .from("profile")
+      .select("role")
+      .eq("id", signInData.user.id)
+      .single();
+
+    setLoading(false);
+    router.replace(profile?.role === "cliente" ? "/portal" : "/clientes");
     router.refresh();
   }
 

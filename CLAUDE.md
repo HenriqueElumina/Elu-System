@@ -581,3 +581,21 @@ Etapas da Onda 0, uma por vez, cada uma com minha aprovação antes da seguinte:
 > da Etapa UX.1 com login real) ficam pra depois do lançamento do
 > sistema — ambos sem etapa de código associada, só registrados no
 > backlog.
+>
+> **Link direto de aprovação pro cliente:** código pronto em
+> 2026-09-25 — pedido do dono do produto pra sócio/gestor conseguirem
+> mandar o link de uma demanda específica pro cliente aprovar.
+> **Bug corrigido no caminho:** o formulário de login sempre mandava
+> todo mundo pra `/clientes`, ignorando o perfil — cliente logando pela
+> tela normal caía em "Acesso não autorizado" em vez de `/portal`
+> (o redirecionamento por perfil da Workflow.2 só existia no middleware,
+> que não cobre o fluxo normal de login). Corrigido: login busca a role
+> depois de autenticar e decide o destino certo. Tela nova `/portal/[id]`
+> (aprovação de uma demanda só); botão "Copiar link para o cliente" em
+> `/projetos/workflow/[id]` (mesmo grupo que já vê o seletor de status).
+> Link sobrevive ao login via `?next=` (middleware grava, `/login`
+> respeita, validando que é um caminho interno seguro). 16 specs e2e
+> ajustadas (`/\/login$/` → `/\/login/`, já que o redirect sempre carrega
+> `?next=` agora) — ver
+> `docs/decisions/0032-link-direto-aprovacao-cliente.md`. Sem migration
+> nesta etapa.

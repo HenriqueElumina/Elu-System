@@ -10,6 +10,7 @@ import {
 import { StatusSelect } from "../status-select";
 import { CaptionEditor } from "../caption-editor";
 import { FinalMediaEditor } from "../final-media-editor";
+import { CopyClientLinkButton } from "../copy-client-link-button";
 
 const CHANNEL_LABELS = Object.fromEntries(
   CONTENT_CHANNELS.map((channel) => [channel.key, channel.label]),
@@ -82,8 +83,9 @@ export default async function DemandaDetailPage({
         <h1 className="mb-6 mt-2 text-xl font-semibold">{demand.title}</h1>
 
         {canAct && (
-          <div className="mb-6">
+          <div className="mb-6 flex flex-wrap items-center gap-2">
             <StatusSelect demandId={demand.id} currentStatus={demand.status} />
+            <CopyClientLinkButton demandId={demand.id} />
           </div>
         )}
 

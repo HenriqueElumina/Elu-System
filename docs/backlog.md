@@ -289,3 +289,12 @@
   demanda pro mesmo status `in_production` de sempre, só com
   `client_feedback` preenchido — não tem um estágio visual próprio
   pra "aguardando ajuste do time". Ver ADR 0031.
+- **Link direto de aprovação — não é magic link:** o link
+  `/portal/[id]` só funciona se o cliente já tiver conta criada (pelo
+  convite da Workflow.2). Se a agência mandar o link antes de convidar
+  o login, a pessoa cai na tela de login sem credencial nenhuma. Ver
+  ADR 0032.
+- **Link direto de aprovação — sem aviso automático:** copiar o link
+  não manda nada sozinho, a agência ainda precisa mandar por fora do
+  sistema (WhatsApp, e-mail). Mesma pendência de notificação já
+  registrada na Workflow.2. Ver ADR 0032.

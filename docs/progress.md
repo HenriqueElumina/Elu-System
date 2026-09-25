@@ -1057,3 +1057,38 @@ Aprovada e validada em produção em 2026-09-26 pelo dono do produto.
   `20261010090000_login_cliente_aprovacao.sql` no Supabase real e
   validar o fluxo completo em produção (convidar, criar conta, aprovar
   e pedir ajuste com um cliente de teste) antes de considerar pronto.
+
+### Link direto de aprovação pro cliente (código pronto em 2026-09-25)
+
+- **Bug corrigido:** o formulário de login (`app/login/page.tsx`) sempre
+  mandava todo mundo pra `/clientes`, ignorando o perfil — um cliente
+  logando pela tela normal caía em "Acesso não autorizado" em vez de
+  `/portal`. Agora busca a role depois do login e decide o destino
+  (`cliente` → `/portal`, resto → `/clientes`). O redirecionamento por
+  perfil que já existia no middleware só cobria o caso raro de abrir
+  `/login` já autenticado, não o fluxo normal de login.
+- Tela nova `/portal/[id]` — aprovação de uma demanda só, reaproveitando
+  o `DemandCard` já existente; lógica de formatação extraída pra
+  `app/portal/format.ts` (compartilhada com a lista).
+- Botão "Copiar link para o cliente" em `/projetos/workflow/[id]`,
+  visível pro mesmo grupo que já vê o seletor de status (`canAct`:
+  sócio/gestor sempre, colaborador só na própria demanda atribuída).
+- Link sobrevive ao login: middleware grava `?next=<destino>` ao
+  redirecionar visitante não autenticado; `/login` (e o próprio
+  middleware, no caso de abrir já autenticado) respeita esse `next`
+  antes do destino padrão do perfil, validando que é um caminho interno
+  seguro.
+- Decisões em `docs/decisions/0032-link-direto-aprovacao-cliente.md`.
+- **16 arquivos de teste e2e ajustados:** com o `?next=` sempre presente
+  no redirecionamento pra `/login`, o match `toHaveURL(/\/login$/)`
+  (âncora de fim de string) quebraria em todo o app — trocado pra
+  `/\/login/` (sem âncora), exceto o teste de credenciais inválidas
+  (que visita `/login` direto, sem redirecionamento).
+- Testes: `npm run lint`, `typecheck`, `test` (121 testes, sem novo) e
+  `build` sem erro; Playwright completo sem erro (24 testes, 1 novo).
+  Verificação visual (botão mudando pra "Link copiado!" após o clique)
+  com rota temporária, removida antes do commit.
+- **Fora do escopo:** o link não é "magic link" (cliente precisa já ter
+  conta); sem aviso automático quando o link é copiado — mesma
+  pendência de notificação da Workflow.2.
+- **Sem migration nesta etapa.**

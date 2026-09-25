@@ -4,14 +4,14 @@ test("visitante não autenticado é redirecionado ao tentar acessar /colaborador
   page,
 }) => {
   await page.goto("/colaboradores");
-  await expect(page).toHaveURL(/\/login$/);
+  await expect(page).toHaveURL(/\/login/);
 });
 
 test("visitante não autenticado é redirecionado ao tentar acessar /colaboradores/convidar", async ({
   page,
 }) => {
   await page.goto("/colaboradores/convidar");
-  await expect(page).toHaveURL(/\/login$/);
+  await expect(page).toHaveURL(/\/login/);
 });
 
 test("link de convite de colaborador inválido/inexistente mostra mensagem amigável, sem exigir login", async ({

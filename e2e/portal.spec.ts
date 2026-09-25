@@ -4,7 +4,14 @@ test("visitante não autenticado é redirecionado ao tentar acessar /portal", as
   page,
 }) => {
   await page.goto("/portal");
-  await expect(page).toHaveURL(/\/login$/);
+  await expect(page).toHaveURL(/\/login/);
+});
+
+test("visitante não autenticado é redirecionado ao tentar acessar /portal/[id]", async ({
+  page,
+}) => {
+  await page.goto("/portal/00000000-0000-0000-0000-000000000000");
+  await expect(page).toHaveURL(/\/login\?next=/);
 });
 
 test("visitante não autenticado é redirecionado ao tentar acessar /clientes/[id]/convidar-login", async ({
@@ -13,7 +20,7 @@ test("visitante não autenticado é redirecionado ao tentar acessar /clientes/[i
   await page.goto(
     "/clientes/00000000-0000-0000-0000-000000000000/convidar-login",
   );
-  await expect(page).toHaveURL(/\/login$/);
+  await expect(page).toHaveURL(/\/login/);
 });
 
 test("link de convite de cliente inválido/inexistente mostra mensagem amigável, sem exigir login", async ({

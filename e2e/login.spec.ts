@@ -4,7 +4,7 @@ test("visitante não autenticado é redirecionado para o login", async ({
   page,
 }) => {
   await page.goto("/");
-  await expect(page).toHaveURL(/\/login$/);
+  await expect(page).toHaveURL(/\/login/);
   await expect(page.getByRole("heading", { name: "Elu System" })).toBeVisible();
   await expect(page.getByLabel("E-mail")).toBeVisible();
   await expect(page.getByLabel("Senha")).toBeVisible();

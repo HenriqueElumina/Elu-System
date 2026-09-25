@@ -1,22 +1,8 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { AppShell } from "@/components/app-shell";
-import { CONTENT_CHANNELS } from "@/lib/validation/content-demand";
 import { DemandCard } from "./demand-card";
-
-const CHANNEL_LABELS = Object.fromEntries(
-  CONTENT_CHANNELS.map((channel) => [channel.key, channel.label]),
-);
-
-function formatScheduledAt(iso: string) {
-  return new Date(iso).toLocaleString("pt-BR", {
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-  });
-}
+import { channelsLabel, formatScheduledAt } from "./format";
 
 export default async function PortalPage() {
   const supabase = await createClient();
@@ -76,13 +62,7 @@ export default async function PortalPage() {
                 key={demand.id}
                 demandId={demand.id}
                 title={demand.title}
-                channelsLabel={
-                  demand.channels && demand.channels.length > 0
-                    ? demand.channels
-                        .map((key: string) => CHANNEL_LABELS[key] ?? key)
-                        .join(" · ")
-                    : "Canal não informado"
-                }
+                channelsLabel={channelsLabel(demand.channels)}
                 scheduledAtLabel={
                   demand.scheduled_at ? formatScheduledAt(demand.scheduled_at) : null
                 }

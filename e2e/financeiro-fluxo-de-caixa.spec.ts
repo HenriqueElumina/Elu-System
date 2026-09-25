@@ -4,5 +4,5 @@ test("visitante não autenticado é redirecionado ao tentar acessar /financeiro/
   page,
 }) => {
   await page.goto("/financeiro/fluxo-de-caixa");
-  await expect(page).toHaveURL(/\/login$/);
+  await expect(page).toHaveURL(/\/login/);
 });

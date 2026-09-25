@@ -42,6 +42,11 @@ export async function updateSession(request: NextRequest) {
   if (!user && !isPublicPage) {
     const url = request.nextUrl.clone();
     url.pathname = "/login";
+    url.search = "";
+    // Preserva pra onde a pessoa tentou ir (ex.: um link direto de
+    // aprovação mandado pro cliente) -- o login volta pra cá depois de
+    // autenticar, em vez de cair sempre no destino padrão do perfil.
+    url.searchParams.set("next", request.nextUrl.pathname);
     return NextResponse.redirect(url);
   }
 
@@ -64,14 +69,21 @@ export async function updateSession(request: NextRequest) {
   }
 
   if (user && isLoginPage) {
-    const { data: profile } = await supabase
-      .from("profile")
-      .select("role")
-      .eq("id", user.id)
-      .single();
-
+    const nextParam = request.nextUrl.searchParams.get("next");
     const url = request.nextUrl.clone();
-    url.pathname = profile?.role === "cliente" ? "/portal" : "/clientes";
+    url.search = "";
+
+    if (nextParam && nextParam.startsWith("/") && !nextParam.startsWith("//")) {
+      url.pathname = nextParam;
+    } else {
+      const { data: profile } = await supabase
+        .from("profile")
+        .select("role")
+        .eq("id", user.id)
+        .single();
+      url.pathname = profile?.role === "cliente" ? "/portal" : "/clientes";
+    }
+
     return NextResponse.redirect(url);
   }
 
