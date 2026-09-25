@@ -599,3 +599,14 @@ Etapas da Onda 0, uma por vez, cada uma com minha aprovação antes da seguinte:
 > `?next=` agora) — ver
 > `docs/decisions/0032-link-direto-aprovacao-cliente.md`. Sem migration
 > nesta etapa.
+>
+> **Editar dados do projeto:** código pronto em 2026-09-25 — pedido do
+> dono do produto (item do backlog: projeto só nascia automático, sem
+> edição de nome/datas). `project` ganha `end_date` (só existia
+> `start_date`); novo formulário "Editar projeto" em `/projetos/[id]`
+> (nome, status, início, fim), visível só pra sócio/gestor — sem RPC
+> nova, RLS `project_write` já libera update livre pra esse grupo. Fim
+> não pode ser antes do início (validação nova, testada) — ver
+> `docs/decisions/0033-editar-dados-projeto.md`. **Pendência:** aplicar
+> a migration `20261011090000_editar_dados_projeto.sql` no Supabase
+> real e validar em produção.

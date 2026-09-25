@@ -11,7 +11,11 @@ import {
   type TaskStatus,
 } from "@/lib/validation/task";
 import { timeEntrySchema, type TimeEntryInput } from "@/lib/validation/time-entry";
-import { PROJECT_STATUSES } from "@/lib/validation/project";
+import {
+  PROJECT_STATUSES,
+  editProjectSchema,
+  type EditProjectInput,
+} from "@/lib/validation/project";
 
 type ActionResult<T = undefined> =
   | ({ ok: true } & (T extends undefined ? object : T))
@@ -29,6 +33,33 @@ export async function updateProjectStatus(
   const { error } = await supabase
     .from("project")
     .update({ status })
+    .eq("id", projectId);
+
+  if (error) return { ok: false, message: error.message };
+
+  revalidatePath("/projetos");
+  revalidatePath(`/projetos/${projectId}`);
+  return { ok: true };
+}
+
+export async function updateProject(
+  projectId: string,
+  input: EditProjectInput,
+): Promise<ActionResult> {
+  const parsed = editProjectSchema.safeParse(input);
+  if (!parsed.success) {
+    return { ok: false, message: parsed.error.issues[0]?.message ?? "Dados inválidos." };
+  }
+  const data = parsed.data;
+
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from("project")
+    .update({
+      name: data.name,
+      start_date: data.startDate,
+      end_date: data.endDate,
+    })
     .eq("id", projectId);
 
   if (error) return { ok: false, message: error.message };

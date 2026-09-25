@@ -2,7 +2,12 @@ import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { AppShell } from "@/components/app-shell";
-import { PROJECT_STATUS_LABELS } from "@/lib/validation/project";
+import {
+  PROJECT_STATUS_LABELS,
+  type PROJECT_STATUSES,
+} from "@/lib/validation/project";
+
+type ProjectStatus = (typeof PROJECT_STATUSES)[number];
 import { TASK_STATUS_LABELS } from "@/lib/validation/task";
 import { formatRelativeTime } from "@/lib/format/relative-time";
 import { TaskStatusActions } from "./task-status-actions";
@@ -12,6 +17,7 @@ import { DeleteTimeEntryButton } from "./delete-time-entry-button";
 import { NewTaskForm } from "./new-task-form";
 import { DuplicateTaskButton } from "./duplicate-task-button";
 import { EditTaskForm } from "./edit-task-form";
+import { EditProjectForm } from "./edit-project-form";
 import { sumLoggedHours } from "@/lib/tasks/time";
 
 export default async function ProjetoDetailPage({
@@ -45,7 +51,9 @@ export default async function ProjetoDetailPage({
 
   const { data: project } = await supabase
     .from("project")
-    .select("id, name, status, start_date, client:client_id(id, legal_name)")
+    .select(
+      "id, name, status, start_date, end_date, client:client_id(id, legal_name)",
+    )
     .eq("id", id)
     .is("deleted_at", null)
     .single();
@@ -102,7 +110,7 @@ export default async function ProjetoDetailPage({
         ← Voltar
       </Link>
       <h1 className="mb-2 mt-2 text-xl font-semibold">{project.name}</h1>
-      <p className="mb-8 text-sm text-gray-600">
+      <p className="mb-2 text-sm text-gray-600">
         {client && (
           <Link href={`/clientes/${client.id}`} className="hover:underline">
             {client.legal_name}
@@ -112,7 +120,23 @@ export default async function ProjetoDetailPage({
         {PROJECT_STATUS_LABELS[
           project.status as keyof typeof PROJECT_STATUS_LABELS
         ] ?? project.status}
+        {project.start_date &&
+          ` — início ${new Date(project.start_date).toLocaleDateString("pt-BR")}`}
+        {project.end_date &&
+          ` — fim ${new Date(project.end_date).toLocaleDateString("pt-BR")}`}
       </p>
+
+      {canManage && (
+        <div className="mb-8">
+          <EditProjectForm
+            projectId={project.id}
+            name={project.name}
+            status={project.status as ProjectStatus}
+            startDate={project.start_date}
+            endDate={project.end_date}
+          />
+        </div>
+      )}
 
       <section>
         <div className="mb-3 flex items-center justify-between">

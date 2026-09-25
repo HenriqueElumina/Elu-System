@@ -1092,3 +1092,27 @@ Aprovada e validada em produção em 2026-09-26 pelo dono do produto.
   conta); sem aviso automático quando o link é copiado — mesma
   pendência de notificação da Workflow.2.
 - **Sem migration nesta etapa.**
+
+### Editar dados do projeto (código pronto em 2026-09-25)
+
+- Migration `20261011090000_editar_dados_projeto.sql`: `project` ganha
+  `end_date` (nullable, sem trigger automático) — antes só existia
+  `start_date`.
+- Nova action `updateProject` (`app/projetos/actions.ts`) — update
+  direto de nome/datas, sem RPC nova (RLS `project_write` já libera
+  update livre pra sócio/gestor, mesmo padrão de `updateProjectStatus`).
+- Novo componente `EditProjectForm`
+  (`app/projetos/[id]/edit-project-form.tsx`): um formulário só (nome,
+  status, início, fim) atrás de um botão "Editar projeto" em
+  `/projetos/[id]`, visível só pra sócio/gestor. O seletor de status
+  solto que já existia na lista `/projetos` continua sem mudança.
+- Validação nova: data de fim não pode ser antes da data de início
+  (`editProjectSchema`, `lib/validation/project.ts`).
+- Decisões em `docs/decisions/0033-editar-dados-projeto.md`.
+- Testes: `npm run lint`, `typecheck`, `test` (125 testes, 4 novos) e
+  `build` sem erro; RLS testada localmente (gestor edita, colaborador é
+  bloqueado); Playwright completo sem erro (24 testes, sem novo).
+  Verificação visual do formulário aberto com rota temporária, removida
+  antes do commit.
+- **Pendência:** aplicar a migration no Supabase real e validar em
+  produção.
