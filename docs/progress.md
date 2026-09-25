@@ -938,15 +938,17 @@ Aprovada e validada em produção em 2026-09-26 pelo dono do produto.
   clicável. Lógica pura extraída e testada em
   `lib/workflow/media-preview.ts` (8 testes novos). Decisões em
   `docs/decisions/0029-workflow-legenda-preview-midia.md`.
-- **Pendência crítica (avisada tarde demais — ver correção abaixo):**
-  aplicar a migration `20261008090000_workflow_legenda_caption.sql` no
-  Supabase real. Sem isso, a tela quebra de verdade (não é só uma
-  funcionalidade faltando): criar demanda dá erro "Could not find the
-  'caption' column", e abrir qualquer demanda já existente vira 404
-  (a busca falha silenciosamente por causa da coluna faltando, e a
-  tela trata isso como "não existe"). Reportado pelo dono do produto em
-  produção em 2026-09-24 — corrigido só rodando a migration (sem
-  mudança de código necessária).
+- **Pendência crítica encontrada e resolvida no mesmo dia:** migration
+  `20261008090000_workflow_legenda_caption.sql` não tinha sido aplicada
+  no Supabase real. Sem ela, a tela quebrava de verdade (não era só uma
+  funcionalidade faltando): criar demanda dava erro "Could not find the
+  'caption' column", e abrir qualquer demanda já existente virava 404
+  (a busca falhava silenciosamente por causa da coluna faltando, e a
+  tela tratava isso como "não existe"). Reportado pelo dono do produto
+  em produção em 2026-09-24 — resolvido só rodando a migration (sem
+  mudança de código necessária). **Migration aplicada e validada em
+  produção em 2026-09-24** (confirmado pelo dono do produto: "Deu certo
+  e ficou show").
 - Testes: migration testada localmente (sócio e colaborador atribuído
   editam legenda; colaborador não atribuído e financeiro bloqueados);
   `npm run lint`, `typecheck`, `test` (112 testes, 8 novos) e `build`
@@ -974,11 +976,10 @@ Aprovada e validada em produção em 2026-09-26 pelo dono do produto.
   automaticamente — decisão do dono do produto, ficam só com material
   bruto até o editor colar o final. Decisões em
   `docs/decisions/0030-workflow-material-bruto-vs-final.md`.
-- **Pendência (mesma lição da etapa anterior, já avisada no resumo):**
-  aplicar a migration `20261009090000_workflow_material_final.sql` no
-  Supabase real antes de usar — senão quebra do mesmo jeito que a
-  0008 quebrou (erro ao criar demanda / 404 ao abrir demanda
-  existente).
+- **Migration `20261009090000_workflow_material_final.sql` aplicada e
+  validada em produção em 2026-09-24** — desta vez avisado antes, sem
+  susto: o dono do produto rodou o SQL e confirmou o campo "Link do
+  material final" salvando e aparecendo na tela.
 - Testes: migration testada localmente (mesmos casos de permissão da
   legenda, agora pro material final); `npm run lint`, `typecheck`,
   `test` (112 testes) e `build` sem erro; Playwright completo sem erro

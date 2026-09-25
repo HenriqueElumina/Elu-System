@@ -513,16 +513,17 @@ Etapas da Onda 0, uma por vez, cada uma com minha aprovação antes da seguinte:
 > clicável. Lógica extraída e testada em
 > `lib/workflow/media-preview.ts` — ver
 > `docs/decisions/0029-workflow-legenda-preview-midia.md`.
-> **Pendência crítica reportada em produção no mesmo dia:** migration
-> `20261008090000_workflow_legenda_caption.sql` não aplicada no Supabase
-> real quebrou a tela de verdade (não só faltou funcionalidade) — criar
-> demanda deu erro "Could not find the 'caption' column" e abrir
-> qualquer demanda existente virou 404 (a busca falhava silenciosamente
-> pela coluna faltando, tratado como "não existe"). SQL da migration foi
-> reenviado ao dono do produto pra rodar no painel do Supabase; sem
-> mudança de código necessária. **Lição registrada:** daqui pra frente,
-> avisar sempre explicitamente quando uma etapa tem migration pendente
-> de aplicar, mesmo quando a mudança parece pequena.
+> **Pendência crítica encontrada e resolvida no mesmo dia:** migration
+> `20261008090000_workflow_legenda_caption.sql` não tinha sido aplicada
+> no Supabase real, quebrando a tela de verdade (não só faltando
+> funcionalidade) — criar demanda dava erro "Could not find the
+> 'caption' column" e abrir qualquer demanda existente virava 404 (a
+> busca falhava silenciosamente pela coluna faltando, tratado como "não
+> existe"). **Migration aplicada e validada em produção em 2026-09-24**
+> (dono do produto confirmou: "Deu certo e ficou show"). **Lição
+> registrada:** daqui pra frente, avisar sempre explicitamente quando
+> uma etapa tem migration pendente de aplicar, mesmo quando a mudança
+> parece pequena.
 >
 > **Etapa Workflow.5 — Link de material bruto separado do material
 > final:** código pronto em 2026-09-24 — feedback do dono do produto
@@ -535,9 +536,9 @@ Etapas da Onda 0, uma por vez, cada uma com minha aprovação antes da seguinte:
 > do material bruto". Demandas já criadas não têm o link migrado
 > automaticamente (decisão do dono do produto) — ver
 > `docs/decisions/0030-workflow-material-bruto-vs-final.md`.
-> **Pendência (mesma lição de novo):** aplicar a migration
-> `20261009090000_workflow_material_final.sql` no Supabase real antes
-> de usar.
+> **Migration `20261009090000_workflow_material_final.sql` aplicada e
+> validada em produção em 2026-09-24** — desta vez avisado antes, sem
+> susto.
 > **Correção no mesmo dia:** dono do produto testou em produção com um
 > link de **pasta** do Drive no material final — sem preview, porque
 > `resolveMediaPreview` só reconhecia link de arquivo. Corrigido
